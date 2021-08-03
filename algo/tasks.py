@@ -2,13 +2,13 @@ import pandas as pd
 
 from . import serializers
 from celery import shared_task
-from .RSI_55.utils import backbone
+from .RSI_55_5_MIN.utils import backbone
 
 @shared_task(bind=True,max_retries=3)
 def RSI_55_RUNS_5_MIN(self):
   response = {'success': False,'ALL': []}
   # Workbook Path
-  flag_config            = 'algo/RSI_55/config/flag.json'
+  flag_config            = 'algo/RSI_55_5_MIN/config/flag.json'
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
