@@ -1,0 +1,17 @@
+./__pycache__
+
+# db.sqlite3
+
+# Compiled Python bytecode
+*.py[cod]
+*.pyc
+# Log files
+*.log
+
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
