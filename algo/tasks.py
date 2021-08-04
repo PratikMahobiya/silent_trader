@@ -29,7 +29,7 @@ def RSI_55_RUNS_5_MIN(self):
   data_frame, status = backbone.model_ema_rsi(intervals, company_Sheet, flag_config)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.TransactionSerializer(data=data_f)
+      serializer = serializers.RSI_55_5_MINSerializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
         response['ALL'].append(1)

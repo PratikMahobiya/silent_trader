@@ -19,5 +19,5 @@ from algo import urls as aurls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('algo/', include(aurls)),
+    path('', include(aurls)),
 ]

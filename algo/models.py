@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Transactions(models.Model):
+class RSI_55_5_MIN(models.Model):
     date                    = models.DateTimeField()
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
@@ -15,4 +15,4 @@ class Transactions(models.Model):
     def __int__(self):
     	return self.id
     class Meta:
-        db_table = 'Transaction'
+        db_table = 'RSI_55_5_MIN'
