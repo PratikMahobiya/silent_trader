@@ -1,8 +1,13 @@
+from datetime import datetime
 import pandas as pd
 
 from . import serializers
 from celery import shared_task
 from .RSI_55_5_MIN.utils import backbone
+
+@shared_task(bind=True,max_retries=3)
+def TEST(self):
+  return 'WORKING_{}'.format(datetime.now())
 
 @shared_task(bind=True,max_retries=3)
 def RSI_55_RUNS_5_MIN(self):
