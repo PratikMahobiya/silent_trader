@@ -25,7 +25,7 @@ app.conf.beat_schedule = {
     },
     'TESTING':{
         'task': 'algo.tasks.TEST',
-        'schedule': crontab(minute='*/5',hour='18-20', day_of_week='mon-fri'),
+        'schedule': crontab(minute='*/5', day_of_week='mon-fri'),
     },
 }
 
