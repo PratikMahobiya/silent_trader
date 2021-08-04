@@ -11,7 +11,7 @@ from . import tasks
 # Create your views here.
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = models.RSI_55_5_MIN.objects.all()
-    serializer_class = serializers.TransactionSerializer
+    serializer_class = serializers.RSI_55_5_MINSerializer
 
 def Model_55(request):
   tasks.RSI_55_RUNS_5_MIN.delay()
