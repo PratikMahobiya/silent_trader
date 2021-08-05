@@ -20,6 +20,7 @@ def RSI_55_RUNS_5_MIN(self):
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
 
   intervals      = ['5m','7d',60,55,50,12,'1h','1mo',8,14]
+  curr_time      = datetime.now()
   '''
   -> Intervals:-
     [
@@ -32,7 +33,7 @@ def RSI_55_RUNS_5_MIN(self):
 
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  data_frame, status = backbone.model_ema_rsi(intervals, company_Sheet, flag_config)
+  data_frame, status = backbone.model_ema_rsi(intervals, company_Sheet, flag_config,curr_time)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.RSI_55_5_MINSerializer(data=data_f)

@@ -9,7 +9,7 @@ from . import trade
 from . import get_data
 from . import trending_stocks
 
-def model_ema_rsi(intervals,company_sheet, flag_config):
+def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
   '''
     intervals       = Intervals for Trading and Trend Analysis
     company_sheet   = List of Companies with their Symbol
@@ -53,7 +53,7 @@ def model_ema_rsi(intervals,company_sheet, flag_config):
       trade_data_frame = get_data.download_trade_data(trade_stock_list,intervals)
 
       # Initiating trades
-      transactions = trade.trade_execution(trade_data_frame, intervals, flag, transactions)
+      transactions = trade.trade_execution(trade_data_frame, intervals, flag, transactions, curr_time)
     else:
       # print('None of them is in Trending.')
       return 'Done', False
@@ -68,7 +68,7 @@ def model_ema_rsi(intervals,company_sheet, flag_config):
 
       # Initiating trades
       stock_name = None
-      transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions)
+      transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
 
     elif len(flag['Entry']) == 1:
       # Convert dataframe to List of Companies
@@ -79,7 +79,7 @@ def model_ema_rsi(intervals,company_sheet, flag_config):
 
       # Initiating trades
       stock_name = flag['Entry'][0]
-      transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions)
+      transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
 
     else:
       return 'Done', False

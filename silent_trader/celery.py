@@ -23,10 +23,10 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.RSI_55_RUNS_5_MIN',
         'schedule': crontab(minute='*/5',hour='9-16', day_of_week='mon-fri'),
     },
-    'TESTING':{
-        'task': 'algo.tasks.TEST',
-        'schedule': crontab(minute='*/5',hour='9-16', day_of_week='mon-fri'),
-    },
+    # 'TESTING':{
+    #     'task': 'algo.tasks.TEST',
+    #     'schedule': crontab(minute='*/5',hour='9-16', day_of_week='mon-fri'),
+    # },
 }
 
 # Load task modules from all registered Django app configs.
