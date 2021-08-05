@@ -14,7 +14,7 @@ def TEST(self):
 def RSI_55_RUNS_5_MIN(self):
   response = {'success': False,'ALL': []}
   # Workbook Path
-  flag_config            = 'RSI_55_5_MIN/config/flag.json'
+  flag_config            = 'algo/RSI_55_5_MIN/config/flag.json'
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
