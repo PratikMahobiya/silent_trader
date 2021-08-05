@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     # Custom Apps
     'algo.apps.AlgoConfig',
 
-    # rest Framework -------
+    # Downloaded Apps -------
     'rest_framework',
     'django_celery_results',
     'django_celery_beat',
+    'import_export',
 ]
 
 MIDDLEWARE = [
