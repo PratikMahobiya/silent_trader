@@ -7,6 +7,7 @@ from .RSI_55_5_MIN.utils import backbone
 
 @shared_task(bind=True,max_retries=3)
 def TEST(self):
+  print('SUCCEDD_ YOU ARE IN RIGHT PATH.. GO ON.')
   return 'WORKING_{}'.format(datetime.now())
 
 @shared_task(bind=True,max_retries=3)
