@@ -20,7 +20,7 @@ def RSI_55_RUNS_5_MIN(self):
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
 
-  intervals      = ['5m','7d',60,55,50,12,'1h','1mo',8,14]
+  intervals      = ['5m','7d',60,55,40,15,'1h','1mo',8,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
@@ -65,7 +65,7 @@ def RSI_55_RUNS_15_MIN(self):
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
 
-  intervals      = ['15m','60d',60,55,50,12,'1h','1mo',8,14]
+  intervals      = ['15m','60d',60,55,30,12,'1h','1mo',8,8]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
