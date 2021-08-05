@@ -23,6 +23,10 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.RSI_55_RUNS_5_MIN',
         'schedule': crontab(minute='*/5',hour='9-16', day_of_week='mon-fri'),
     },
+    'RSI_55_RUNS_IN_EVERY_15_MIN':{
+        'task': 'algo.tasks.RSI_55_RUNS_15_MIN',
+        'schedule': crontab(minute='*/15',hour='9-16', day_of_week='mon-fri'),
+    },
     # 'TESTING':{
     #     'task': 'algo.tasks.TEST',
     #     'schedule': crontab(minute='*/5',hour='9-16', day_of_week='mon-fri'),
