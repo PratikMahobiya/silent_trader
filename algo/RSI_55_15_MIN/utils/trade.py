@@ -23,13 +23,16 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
         transactions.append({'symbol':stock,'indicate':'Entry','type':'RSI_55','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':None,'difference':None,'profit':None})
     
     # Difference btw ema-max-min is less or equal to 0.1 and price is above ema-min-max
-    elif ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.1) and data_frame.iloc[-1][stock] > ema_min[-1] and data_frame.iloc[-1][stock] > ema_max[-1] and ema_max[-1] > ema_min[-1]:
-        flag[stock]['buying_price'] = data_frame.iloc[-1][stock]
-        flag[stock]['buy'] = True
-        flag[stock]['stoploss'] = flag[stock]['buying_price'] - flag[stock]['buying_price']*0.005
-        flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*0.01
-        flag['Entry'].append(stock)
-        transactions.append({'symbol':stock,'indicate':'Entry','type':'CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-2],'rsi_exit_target':None,'difference':None,'profit':None})
+    elif ema_max[-1] > ema_min[-1]:
+      if data_frame.iloc[-1][stock] > ema_min[-1]:
+        if data_frame.iloc[-1][stock] > ema_max[-1]:
+          if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.1):
+            flag[stock]['buying_price'] = data_frame.iloc[-1][stock]
+            flag[stock]['buy'] = True
+            flag[stock]['stoploss'] = flag[stock]['buying_price'] - flag[stock]['buying_price']*0.005
+            flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*0.01
+            flag['Entry'].append(stock)
+            transactions.append({'symbol':stock,'indicate':'Entry','type':'CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-2],'rsi_exit_target':None,'difference':None,'profit':None})
 
 # SELL STOCK ; EXIT
 def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_time):
