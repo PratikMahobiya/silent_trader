@@ -40,7 +40,7 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
         flag[stock]['buy']      = False
-        transactions.append({'symbol':stock,'indicate':'Exit','type':'E-R_EXIT','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':flag[stock]['selling_val'],'difference':diff,'profit':profit})
+        transactions.append({'symbol':stock,'indicate':'Exit','type':'E-R_EXIT','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':flag[stock]['selling_val'],'difference':diff,'profit':profit})
         flag['Entry'].remove(stock)
         flag[stock]['stoploss'], flag[stock]['target'] = 0, 0
         flag[stock]['upper_val'], flag[stock]['selling_val']       = 0, 0
@@ -57,7 +57,7 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
         flag[stock]['buy']      = False
-        transactions.append({'symbol':stock,'indicate':'Exit','type':'StopLoss','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':flag[stock]['selling_val'],'difference':diff,'profit':profit})
+        transactions.append({'symbol':stock,'indicate':'Exit','type':'StopLoss','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':flag[stock]['selling_val'],'difference':diff,'profit':profit})
         flag['Entry'].remove(stock)
         flag[stock]['stoploss'], flag[stock]['target'] = 0, 0
         flag[stock]['upper_val'], flag[stock]['selling_val']       = 0, 0
@@ -73,7 +73,7 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
             diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
             profit        = (diff/flag[stock]['buying_price']) * 100
             flag[stock]['buy']      = False
-            transactions.append({'symbol':stock,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':flag[stock]['selling_val'],'difference':diff,'profit':profit})
+            transactions.append({'symbol':stock,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':flag[stock]['selling_val'],'difference':diff,'profit':profit})
             flag[stock]['stoploss'], flag[stock]['target'] = 0, 0
             flag[stock]['upper_val'], flag[stock]['selling_val']       = 0, 0
             flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
@@ -85,7 +85,7 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
         diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
         profit        = (diff/flag[stock_name]['buying_price']) * 100
         flag[stock_name]['buy']      = False
-        transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['buying_price'],'stoploss':flag[stock_name]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':flag[stock_name]['selling_val'],'difference':diff,'profit':profit})
+        transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'stoploss':flag[stock_name]['stoploss'],'rsi':rsi[-1],'rsi_exit_target':flag[stock_name]['selling_val'],'difference':diff,'profit':profit})
         flag[stock_name]['stoploss'], flag[stock_name]['target'] = 0, 0
         flag[stock_name]['upper_val'], flag[stock_name]['selling_val']       = 0, 0
         flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
