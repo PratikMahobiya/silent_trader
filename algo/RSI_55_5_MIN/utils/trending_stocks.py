@@ -1,13 +1,20 @@
 import talib
 
-def trending(data_frame,intervals):
-    trend = []
-    for stock in data_frame.columns:
-        trend_ema         = talib.EMA(data_frame[stock], timeperiod=intervals[8])
-        if data_frame.iloc[-1][stock] > trend_ema[-1]:
-          if trend_ema[-1] > trend_ema[-2]:
-            if trend_ema[-2] > trend_ema[-3]:
-              if data_frame.iloc[-1][stock] > data_frame.iloc[-2][stock]:
-                if data_frame.iloc[-1][stock] > data_frame.iloc[-3][stock]:
-                  trend.append(stock)
-    return trend
+def target_percentile(stock,data_open, data_close, intervals, flag):
+  temp_ = []
+  for open,close in zip(data_open[-intervals[9]:],data_close[-intervals[9]:]):
+    temp_.append(abs(((open-close)/open)*100))
+  target_percent = sum(temp_)/len(temp_)
+  flag[stock]['target_per'] = target_percent
+
+def trending(data_frame,intervals,flag):
+  trend = []
+  for stock in data_frame['Close'].columns:
+    rsi = talib.RSI(data_frame['Close'][stock], timeperiod = intervals[8])
+    if rsi[-1] > 50:
+      if rsi[-1] > rsi[-2]:
+        if rsi[-1] > rsi[-3]:
+          if rsi[-2] > rsi[-3]:
+            target_percentile(stock,data_frame['Open'][stock], data_frame['Close'][stock], intervals, flag)
+            trend.append(stock)
+  return trend

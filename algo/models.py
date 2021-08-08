@@ -14,6 +14,7 @@ class RSI_55_5_MIN(models.Model):
     emamax      			= models.FloatField(verbose_name='EMA_MIN', blank=True, null=True, default=None)
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
+    target_percent          = models.FloatField(verbose_name='TARGET (%)',blank=True,null=True,default=None)
     def __int__(self):
     	return self.id
     class Meta:
@@ -32,6 +33,7 @@ class RSI_55_15_MIN(models.Model):
     emamax      			= models.FloatField(verbose_name='EMA_MIN', blank=True, null=True, default=None)
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
+    target_percent          = models.FloatField(verbose_name='TARGET (%)',blank=True,null=True,default=None)
     def __int__(self):
     	return self.id
     class Meta:
