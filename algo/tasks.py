@@ -20,6 +20,7 @@ def RSI_55_RUNS_5_MIN(self):
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
 
+  # [trade_min,_trade_days,sell_rsi,buy_rsi,trade_ema_max,trade_ema_min,trend_min,trend_days,trend_rsi_time_period,trade_rsi_timeperiod,trade_target%_timeperiod]
   intervals      = ['5m','7d',60,55,40,15,'1h','1mo',8,14,14]
   curr_time      = datetime.now()
   '''
@@ -65,6 +66,7 @@ def RSI_55_RUNS_15_MIN(self):
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
 
+  # [trade_min,_trade_days,sell_rsi,buy_rsi,trade_ema_max,trade_ema_min,trend_min,trend_days,trend_rsi_time_period,trade_rsi_timeperiod,trade_target%_timeperiod]
   intervals      = ['15m','60d',60,55,30,8,'1h','1mo',8,8,14]
   curr_time      = datetime.now()
   '''

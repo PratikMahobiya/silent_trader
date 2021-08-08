@@ -13,7 +13,7 @@ def trade_execution(data_frame, intervals, flag, transactions, curr_time):
 
 # BUYS STOCKS ; ENTRY
 def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions , curr_time):
-    # In btw 50 and 55 and price is above ema-min-max
+    # In btw 50 and 55 and price is above ema-min-max and last 3 except curr rsi is below 55
     if data_frame.iloc[-1][stock] > ema_min[-1]:
       if ema_min[-1] > ema_max[-1]:
         if ((intervals[3] - 5) <= rsi[-1] <= intervals[3]):
