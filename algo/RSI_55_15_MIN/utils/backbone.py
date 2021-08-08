@@ -25,7 +25,7 @@ def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
     flag = {}
     flag['Entry'] = []
     for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'ema_min':0,'ema_max':0,'selling_price':0,'stoploss':0,'target':0}
+      flag[symb] = {'buy':False,'buying_price':0,'ema_min':0,'ema_max':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
 
