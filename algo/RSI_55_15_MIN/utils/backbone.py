@@ -45,7 +45,7 @@ def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
     data_frame = get_data.download_trend_data(stock_list,intervals)
 
     # Get the list of Trending Stocks
-    trending_stocks_list  = trending_stocks.trending(data_frame,intervals)
+    trending_stocks_list  = trending_stocks.trending(data_frame,intervals, flag)
     trade_stock_list      = flag['Entry'] + trending_stocks_list
     
     if len(trade_stock_list) != 0:
