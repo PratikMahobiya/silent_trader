@@ -14,17 +14,15 @@ def trade_execution(data_frame, intervals, flag, transactions, curr_time):
 # BUYS STOCKS ; ENTRY
 def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions , curr_time):
     # In btw 50 and 55 and price is above ema-min-max and last 3 except curr rsi is below 55
-    if data_frame.iloc[-1][stock] > ema_min[-1]:
-      if ema_min[-1] > ema_max[-1]:
-        if ((intervals[3] - 5) <= rsi[-1] <= intervals[3]):
-          if rsi[-2] < intervals[3] and rsi[-3] < intervals[3] and rsi[-4] < intervals[3]:
-            flag[stock]['buying_price'] = data_frame.iloc[-1][stock]
-            flag[stock]['buy'] = True
-            flag[stock]['stoploss'] = flag[stock]['buying_price'] - flag[stock]['buying_price']*0.0025
-            flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*flag[stock]['target_per']
-            flag['Entry'].append(stock)
-            flag[stock]['ema_min'], flag[stock]['ema_max'] = ema_min[-1], ema_max[-1]
-            transactions.append({'symbol':stock,'indicate':'Entry','type':'RSI_55','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'target':flag[stock]['target'],'emamin':flag[stock]['ema_min'],'emamax':flag[stock]['ema_max'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
+    if data_frame.iloc[-1][stock] > ema_min[-1] and ema_min[-1] > ema_max[-1] and ((intervals[3] - 5) <= rsi[-1] <= intervals[3]):
+      if rsi[-2] < intervals[3] and rsi[-3] < intervals[3] and rsi[-4] < intervals[3]:
+        flag[stock]['buying_price'] = data_frame.iloc[-1][stock]
+        flag[stock]['buy'] = True
+        flag[stock]['stoploss'] = flag[stock]['buying_price'] - flag[stock]['buying_price']*0.0025
+        flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*flag[stock]['target_per']
+        flag['Entry'].append(stock)
+        flag[stock]['ema_min'], flag[stock]['ema_max'] = ema_min[-1], ema_max[-1]
+        transactions.append({'symbol':stock,'indicate':'Entry','type':'RSI_55','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'target':flag[stock]['target'],'emamin':flag[stock]['ema_min'],'emamax':flag[stock]['ema_max'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
     
     # Difference btw ema-max-min is less or equal to 0.1 and price is above ema-min-max
     elif ema_max[-1] > ema_min[-1]:
