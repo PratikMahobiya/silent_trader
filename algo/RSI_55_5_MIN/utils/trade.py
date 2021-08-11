@@ -2,9 +2,9 @@ import talib
 
 def trade_execution(data_frame, intervals, flag, transactions, curr_time):
     for stock in data_frame.columns:
-        ema_max     = talib.EMA(data_frame[stock], timeperiod=intervals[4])
-        ema_min     = talib.EMA(data_frame[stock], timeperiod=intervals[5])
-        rsi         = talib.RSI(data_frame[stock], timeperiod=intervals[9])
+        ema_max     = talib.EMA(data_frame[stock].dropna(), timeperiod=intervals[4])
+        ema_min     = talib.EMA(data_frame[stock].dropna(), timeperiod=intervals[5])
+        rsi         = talib.RSI(data_frame[stock].dropna(), timeperiod=intervals[9])
         if flag[stock]['buy'] is False:
             buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions, curr_time)
         else:
@@ -74,7 +74,7 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
     # For more than one stock in a list
     if stock_name is None:
         for stock in data_frame.columns:
-            rsi         = talib.RSI(data_frame[stock], timeperiod=intervals[9])
+            rsi         = talib.RSI(data_frame[stock].dropna(), timeperiod=intervals[9])
             flag[stock]['selling_price'] = data_frame.iloc[-1][stock]
             diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
             profit        = (diff/flag[stock]['buying_price']) * 100
@@ -86,7 +86,7 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
             flag['Entry'].remove(stock)
     # for only one stock
     else:
-        rsi         = talib.RSI(data_frame, timeperiod=intervals[9])
+        rsi         = talib.RSI(data_frame.dropna(), timeperiod=intervals[9])
         flag[stock_name]['selling_price'] = data_frame.iloc[-1]
         diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
         profit        = (diff/flag[stock_name]['buying_price']) * 100
