@@ -15,6 +15,8 @@ class RSI_55_5_MIN(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
     target_percent          = models.FloatField(verbose_name='TARGET (%)',blank=True,null=True,default=None)
+    trend_rsi               = models.FloatField(verbose_name='TREND_RSI',blank=True,null=True,default=None)
+    target_hit              = models.BigIntegerField(verbose_name='No-OF_TARGET_HITS',blank=True,null=True,default=None)
     def __int__(self):
     	return self.id
     class Meta:
@@ -34,6 +36,8 @@ class RSI_55_15_MIN(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
     target_percent          = models.FloatField(verbose_name='TARGET (%)',blank=True,null=True,default=None)
+    trend_rsi               = models.FloatField(verbose_name='TREND_RSI',blank=True,null=True,default=None)
+    target_hit              = models.BigIntegerField(verbose_name='No-OF_TARGET_HITS',blank=True,null=True,default=None)
     def __int__(self):
     	return self.id
     class Meta:

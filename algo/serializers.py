@@ -4,9 +4,9 @@ from . import models
 class RSI_55_5_Min_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.RSI_55_5_MIN
-		fields 	= ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent')
+		fields 	= ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent','trend_rsi','target_hit')
 
 class RSI_55_15_Min_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.RSI_55_15_MIN
-		fields 	= ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent')
+		fields 	= ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent','trend_rsi','target_hit')
