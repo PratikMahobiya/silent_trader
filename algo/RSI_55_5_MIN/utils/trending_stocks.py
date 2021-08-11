@@ -10,9 +10,10 @@ def target_percentile(stock,data_open, data_close, intervals, flag):
 def trending(data_frame,intervals,flag):
   trend = []
   for stock in data_frame['Close'].columns:
-    rsi = talib.RSI(data_frame['Close'][stock].dropna(), timeperiod = intervals[8])
+    rsi = talib.RSI(data_frame['Close'][stock], timeperiod = intervals[8])
     if rsi[-1] > 50:
-      target_percentile(stock,data_frame['Open'][stock].dropna(), data_frame['Close'][stock].dropna(), intervals, flag)
+      flag[stock]['trend_rsi'] = rsi[-1]
+      target_percentile(stock,data_frame['Open'][stock], data_frame['Close'][stock], intervals, flag)
       trend.append(stock)
       # if rsi[-1] > rsi[-2]:
       #   if rsi[-1] > rsi[-3]:
