@@ -12,7 +12,7 @@ def trending(data_frame,intervals,flag):
   for stock in data_frame['Close'].columns:
     rsi = talib.RSI(data_frame['Close'][stock].dropna(), timeperiod = intervals[8])
     if rsi[-1] > 50:
-      target_percentile(stock,data_frame['Open'][stock], data_frame['Close'][stock], intervals, flag)
+      target_percentile(stock,data_frame['Open'][stock].dropna(), data_frame['Close'][stock].dropna(), intervals, flag)
       trend.append(stock)
       # if rsi[-1] > rsi[-2]:
       #   if rsi[-1] > rsi[-3]:
