@@ -1,8 +1,8 @@
 import datetime
 import os
 import json
-import pandas as pd
 
+from time import sleep
 from datetime import datetime, time
 
 from . import trade
@@ -37,6 +37,7 @@ def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
 
   # Regular Trades Execution
   if datetime.now().time() >= time(9,15,00) and datetime.now().time() < time(15,20,00):
+    sleep(30)
     # Convert dataframe to List of Companies
     comp_list   = companies_symbol.to_list()
     stock_list  = [stock for stock in comp_list if stock not in flag['Entry']]
@@ -59,6 +60,7 @@ def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
       return 'Done', False
   # Square off
   elif datetime.now().time() >= time(15,20,00) and datetime.now().time() < time(15,30,00):
+    sleep(30)
     if len(flag['Entry']) >= 2:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
