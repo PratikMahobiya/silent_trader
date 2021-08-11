@@ -24,11 +24,11 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
         flag[stock]['ema_min'], flag[stock]['ema_max'] = ema_min[-1], ema_max[-1]
         transactions.append({'symbol':stock,'indicate':'Entry','type':'RSI_55','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'target':flag[stock]['target'],'emamin':flag[stock]['ema_min'],'emamax':flag[stock]['ema_max'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
     
-    # Difference btw ema-max-min is less or equal to 0.1 and price is above ema-min-max
+    # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
     elif ema_max[-1] > ema_min[-1]:
       if data_frame.iloc[-1][stock] > ema_min[-1]:
         if data_frame.iloc[-1][stock] > ema_max[-1]:
-          if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.1):
+          if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
             flag[stock]['buying_price'] = data_frame.iloc[-1][stock]
             flag[stock]['buy'] = True
             flag[stock]['stoploss'] = flag[stock]['buying_price'] - flag[stock]['buying_price']*0.0025
