@@ -1,10 +1,10 @@
 import talib
 
 def trade_execution(data_frame, intervals, flag, transactions, curr_time):
-    for stock in data_frame.columns:
-        ema_max     = talib.EMA(data_frame[stock], timeperiod=intervals[4])
-        ema_min     = talib.EMA(data_frame[stock], timeperiod=intervals[5])
-        rsi         = talib.RSI(data_frame[stock], timeperiod=intervals[9])
+    for stock in data_frame['Close'].columns:
+        ema_max     = talib.EMA(data_frame['Close'][stock], timeperiod=intervals[4])
+        ema_min     = talib.EMA(data_frame['Close'][stock], timeperiod=intervals[5])
+        rsi         = talib.RSI(data_frame['Close'][stock], timeperiod=intervals[9])
         if flag[stock]['buy'] is False:
             buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions, curr_time)
         else:
@@ -15,10 +15,10 @@ def trade_execution(data_frame, intervals, flag, transactions, curr_time):
 def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions , curr_time):
   # Difference btw ema-max-min is less or equal to 0.1 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
-    if data_frame.iloc[-1][stock] > ema_min[-1]:
-      if data_frame.iloc[-1][stock] > ema_max[-1]:
+    if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
+      if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
         if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.1):
-          flag[stock]['buying_price'] = data_frame.iloc[-1][stock]
+          flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
           flag[stock]['buy'] = True
           flag[stock]['stoploss'] = flag[stock]['buying_price'] - flag[stock]['buying_price']*0.0025
           flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
@@ -29,11 +29,11 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.1, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1] and ema_min[-2] < ema_max[-2]:
-    if data_frame.iloc[-1][stock] > ema_min[-1]:
-      if data_frame.iloc[-1][stock] > ema_max[-1]:
+    if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
+      if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
         if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.1):
           if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
-            flag[stock]['buying_price'] = data_frame.iloc[-1][stock]
+            flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
             flag[stock]['buy'] = True
             flag[stock]['stoploss'] = flag[stock]['buying_price'] - flag[stock]['buying_price']*0.0025
             flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
@@ -46,8 +46,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
 def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_time):
     # Price is below ema-min and rsi is below 50
     tr = intervals[3] - 5
-    if data_frame.iloc[-1][stock] < ema_min[-1] and rsi[-1] < tr:
-        flag[stock]['selling_price'] = data_frame.iloc[-1][stock]
+    if data_frame['Close'].iloc[-1][stock] < ema_min[-1] and rsi[-1] < tr:
+        flag[stock]['selling_price'] = data_frame['Close'].iloc[-1][stock]
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
         flag[stock]['buy']      = False
@@ -59,14 +59,14 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
         flag[stock]['target_hit'] = 0
 
     # Update StopLoss by -0.25% of its curr price if it reaches its target% of its Buying price
-    elif data_frame.iloc[-1][stock] >= flag[stock]['target']:
-        flag[stock]['stoploss'] = data_frame.iloc[-1][stock] - data_frame.iloc[-1][stock]*0.0025
-        flag[stock]['target'] = data_frame.iloc[-1][stock]
+    elif data_frame['Close'].iloc[-1][stock] >= flag[stock]['target']:
+        flag[stock]['stoploss'] = data_frame['Close'].iloc[-1][stock] - data_frame['Close'].iloc[-1][stock]*0.0025
+        flag[stock]['target'] = data_frame['Close'].iloc[-1][stock]
         flag[stock]['target_hit'] += 1
     
     # if price hits StopLoss, Exit
-    elif data_frame.iloc[-1][stock] <= flag[stock]['stoploss']:
-        flag[stock]['selling_price'] = data_frame.iloc[-1][stock]
+    elif data_frame['Close'].iloc[-1][stock] <= flag[stock]['stoploss']:
+        flag[stock]['selling_price'] = data_frame['Close'].iloc[-1][stock]
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
         flag[stock]['buy']      = False
@@ -81,9 +81,9 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
 def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
     # For more than one stock in a list
     if stock_name is None:
-        for stock in data_frame.columns:
-            rsi         = talib.RSI(data_frame[stock], timeperiod=intervals[9])
-            flag[stock]['selling_price'] = data_frame.iloc[-1][stock]
+        for stock in data_frame['Close'].columns:
+            rsi         = talib.RSI(data_frame['Close'][stock], timeperiod=intervals[9])
+            flag[stock]['selling_price'] = data_frame['Close'].iloc[-1][stock]
             diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
             profit        = (diff/flag[stock]['buying_price']) * 100
             flag[stock]['buy']      = False
@@ -95,8 +95,8 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
             flag[stock]['target_hit'] = 0
     # for only one stock
     else:
-        rsi         = talib.RSI(data_frame, timeperiod=intervals[9])
-        flag[stock_name]['selling_price'] = data_frame.iloc[-1]
+        rsi         = talib.RSI(data_frame['Close'], timeperiod=intervals[9])
+        flag[stock_name]['selling_price'] = data_frame['Close'].iloc[-1]
         diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
         profit        = (diff/flag[stock_name]['buying_price']) * 100
         flag[stock_name]['buy']      = False
