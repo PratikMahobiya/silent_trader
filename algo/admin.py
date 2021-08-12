@@ -3,9 +3,9 @@ from . import models
 from import_export.admin import ExportActionMixin
 
 # Register your models here.
-@admin.register(models.RSI_55_5_MIN)
-class RSI_55_5_Min_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent','trend_rsi','target_hit')
+@admin.register(models.RSI_60_40_5_MIN)
+class RSI_60_40_5_Min_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','close','stoploss','lowerband','upperband','rsi','atr','difference','profit')
     list_filter = ("date",)
     list_per_page = 10
     search_fields = ['symbol','date']
