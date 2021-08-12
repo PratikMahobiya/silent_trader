@@ -51,7 +51,7 @@ def sell(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
         flag[stock]['buy']      = False
-        transactions.append({'symbol':stock,'indicate':'Exit','type':'Up_Cross','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'lowerband':None,'upperband':None,'rsi':None,'atr':None,'difference':diff,'profit':profit})
+        transactions.append({'symbol':stock,'indicate':'Exit','type':'StopLoss','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'lowerband':None,'upperband':None,'rsi':None,'atr':None,'difference':diff,'profit':profit})
         flag['Entry'].remove(stock)
         flag[stock]['lowerband'],flag[stock]['upperband'],flag[stock]['atr'] = 0,0,0
         flag[stock]['upper_val'],flag[stock]['selling_val']       = 0, 0
@@ -70,7 +70,7 @@ def sell(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
             diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
             profit        = (diff/flag[stock]['buying_price']) * 100
             flag[stock]['buy']      = False
-            transactions.append({'symbol':stock,'indicate':'Exit','type':'Up_Cross','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'lowerband':None,'upperband':flag[stock]['upperband'],'rsi':rsi[-2],'atr':None,'difference':diff,'profit':profit})
+            transactions.append({'symbol':stock,'indicate':'Exit','type':'RSI','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'lowerband':None,'upperband':flag[stock]['upperband'],'rsi':rsi[-2],'atr':None,'difference':diff,'profit':profit})
             flag['Entry'].remove(stock)
             flag[stock]['lowerband'],flag[stock]['upperband'],flag[stock]['atr'] = 0,0,0
             flag[stock]['upper_val'],flag[stock]['selling_val']       = 0, 0
