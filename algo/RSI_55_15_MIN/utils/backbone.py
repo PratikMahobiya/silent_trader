@@ -10,6 +10,7 @@ from . import get_data
 from . import trending_stocks
 
 def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
+  sleep(30)
   '''
     intervals       = Intervals for Trading and Trend Analysis
     company_sheet   = List of Companies with their Symbol
@@ -37,7 +38,6 @@ def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
 
   # Regular Trades Execution
   if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,15,00):
-    sleep(30)
     # Convert dataframe to List of Companies
     comp_list   = companies_symbol.to_list()
     stock_list  = [stock for stock in comp_list if stock not in flag['Entry']]
@@ -60,7 +60,6 @@ def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
       return 'Done', False
   # Square off
   elif datetime.now().time() >= time(15,15,00) and datetime.now().time() < time(15,30,00):
-    sleep(30)
     if len(flag['Entry']) >= 2:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
