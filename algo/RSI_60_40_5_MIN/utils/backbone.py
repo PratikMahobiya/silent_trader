@@ -44,7 +44,7 @@ def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
     # Initiating trades
     transactions = trade.trade_execution(trade_data_frame, intervals, flag, transactions, curr_time)
   # Square off
-  elif datetime.now().time() >= time(15,20,00) and datetime.now().time() < time(18,30,00):
+  elif datetime.now().time() >= time(15,20,00) and datetime.now().time() <= time(15,30,59):
     if len(flag['Entry']) >= 2:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
