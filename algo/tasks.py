@@ -195,3 +195,4 @@ def MODELS_RUNS_15_MIN(self):
     response.update({'TH_PACA': True,'TH_PACA_STATUS': 'ALL DONE.'})    
   elif status is False:
     response.update({'TH_PACA': True,'TH_PACA_STATUS': data_frame})
+  return response
