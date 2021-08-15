@@ -16,3 +16,31 @@ class RSI_55_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_filter = ("date",)
     list_per_page = 10
     search_fields = ['symbol','date']
+
+@admin.register(models.TD_CA_15_MIN)
+class TD_CA_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent','trend_rsi','target_hit')
+    list_filter = ("date",)
+    list_per_page = 10
+    search_fields = ['symbol','date']
+
+@admin.register(models.TD_PACA_15_MIN)
+class TD_PACA_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent','trend_rsi','target_hit')
+    list_filter = ("date",)
+    list_per_page = 10
+    search_fields = ['symbol','date']
+
+@admin.register(models.TH_CA_15_MIN)
+class TH_CA_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent','trend_rsi')
+    list_filter = ("date",)
+    list_per_page = 10
+    search_fields = ['symbol','date']
+
+@admin.register(models.TH_PACA_15_MIN)
+class TH_PACA_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent','trend_rsi')
+    list_filter = ("date",)
+    list_per_page = 10
+    search_fields = ['symbol','date']
