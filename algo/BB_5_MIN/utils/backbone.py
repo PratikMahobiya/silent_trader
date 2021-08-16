@@ -66,7 +66,7 @@ def model(intervals,company_sheet, flag_config, curr_time):
       transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
 
     else:
-      return 'Done', False
+      return 'ALL TRADES ARE ENDED.', False
 
   # Update config File:
   with open(flag_config, "w") as outfile:

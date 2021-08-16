@@ -19,7 +19,7 @@ def TEST(self):
 
 @shared_task(bind=True,max_retries=3)
 def BB_RUNS_5_MIN(self):
-  response = {'success': False,'ALL': []}
+  response = {'BB': False, 'STATUS': 'NONE'}
   # Workbook Path
   flag_config            = 'algo/BB_5_MIN/config/flag.json'
 
@@ -47,25 +47,16 @@ def BB_RUNS_5_MIN(self):
       serializer = serializers.BB_5_Min_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
-        response['ALL'].append(1)
       else:
-        response['ERROR'] = serializer.errors
-        response['ALL'].append(0)
-    if response['ALL'].count(0) == 0:
-      response.update({'success' : True})
-      return response
-    else:
-      return response
-  elif data_frame == 'Done' and status is False:
-    response.update({'success' : True})
-    response['SquareOff'] = True
-    return response
-  else:
-    return response
+        response['BB_SERIALIZER'] = serializer.errors
+    response.update({'BB': True, 'STATUS': 'ALL DONE.'})
+  elif status is False:
+    response.update({'BB': True, 'STATUS': data_frame})
+  return response
 
 @shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_15_MIN(self):
-  response = {'success': False,'ALL': []}
+  response = {'CROSS_OVER': False, 'STATUS': 'NONE'}
   # Workbook Path
   flag_config            = 'algo/CROSS_OVER_15_MIN/config/flag.json'
 
@@ -93,21 +84,12 @@ def CROSS_OVER_RUNS_15_MIN(self):
       serializer = serializers.CROSS_OVER_15_Min_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
-        response['ALL'].append(1)
       else:
-        response['ERROR'] = serializer.errors
-        response['ALL'].append(0)
-    if response['ALL'].count(0) == 0:
-      response.update({'success' : True})
-      return response
-    else:
-      return response
-  elif data_frame == 'Done' and status is False:
-    response.update({'success' : True})
-    response['SquareOff'] = True
-    return response
-  else:
-    return response
+        response['BB_SERIALIZER'] = serializer.errors
+    response.update({'CROSS_OVER': True, 'STATUS': 'ALL DONE.'})
+  elif status is False:
+    response.update({'CROSS_OVER': True, 'STATUS': data_frame})
+  return response
 
 @shared_task(bind=True,max_retries=3)
 def MODELS_RUNS_15_MIN(self):

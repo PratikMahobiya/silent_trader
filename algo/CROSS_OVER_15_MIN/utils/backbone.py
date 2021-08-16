@@ -10,7 +10,6 @@ from . import get_data
 from . import trending_stocks
 
 def model(intervals,company_sheet, flag_config, curr_time):
-  sleep(30)
   '''
     intervals       = Intervals for Trading and Trend Analysis
     company_sheet   = List of Companies with their Symbol
@@ -57,7 +56,7 @@ def model(intervals,company_sheet, flag_config, curr_time):
       transactions = trade.trade_execution(trade_data_frame, intervals, flag, transactions, curr_time)
     else:
       # print('None of them is in Trending.')
-      return 'Done', False
+      return 'NO STOCK IS IN TRENDING.', False
   # Square off
   elif datetime.now().time() >= time(15,15,00) and datetime.now().time() < time(15,30,00):
     if len(flag['Entry']) >= 2:
@@ -83,7 +82,7 @@ def model(intervals,company_sheet, flag_config, curr_time):
       transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
 
     else:
-      return 'Done', False
+      return 'ALL TRADES ARE ENDED.', False
 
   # Update config File:
   with open(flag_config, "w") as outfile:
