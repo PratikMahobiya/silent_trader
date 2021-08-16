@@ -116,7 +116,7 @@ def MODELS_RUNS_15_MIN(self):
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
   # Extract Symbols and Company Names from Dataframe
-  companies_symbol = company_Sheet['SYMBOL']
+  companies_symbol = company_Sheet['SYMBOL'].to_list()
 
   # [trade_min,_trade_days,sell_rsi,buy_rsi,trade_ema_max,trade_ema_min,trend_min,trend_days,trend_rsi_time_period,trade_rsi_timeperiod,trade_target%_timeperiod]
   intervals      = ['15m','60d',60,55,18,8,'1h','1mo',8,8,14]
