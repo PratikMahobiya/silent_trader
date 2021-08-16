@@ -17,30 +17,35 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
   if ema_max[-1] > ema_min[-1]:
     if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
       if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
-        if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.1):
-          flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
-          flag[stock]['buy'] = True
-          flag[stock]['stoploss'] = data_frame['Open'].iloc[-2][stock]
-          flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
-          flag['Entry'].append(stock)
-          flag[stock]['ema_min'], flag[stock]['ema_max'] = ema_min[-1], ema_max[-1]
-          transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'target':flag[stock]['target'],'emamin':flag[stock]['ema_min'],'emamax':flag[stock]['ema_max'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'trend_rsi':flag[stock]['trend_rsi'],'target_hit':flag[stock]['target_hit']})
-          flag[stock]['trend_rsi'] = 0
+        if data_frame['Close'].iloc[-2][stock] > ema_min[-2]:
+          if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
+            if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
+              flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
+              flag[stock]['buy'] = True
+              flag[stock]['stoploss'] = data_frame['Low'].iloc[-1][stock]
+              flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+              flag['Entry'].append(stock)
+              flag[stock]['ema_min'], flag[stock]['ema_max'] = ema_min[-1], ema_max[-1]
+              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'target':flag[stock]['target'],'emamin':flag[stock]['ema_min'],'emamax':flag[stock]['ema_max'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'trend_rsi':flag[stock]['trend_rsi'],'target_hit':flag[stock]['target_hit']})
+              flag[stock]['trend_rsi'] = 0
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.1, curr_rsi is greater than its prev_2_rsi's
-  elif ema_min[-1] > ema_max[-1] and ema_min[-2] < ema_max[-2]:
-    if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
-      if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
-        if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.1):
-          if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
-            flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
-            flag[stock]['buy'] = True
-            flag[stock]['stoploss'] = data_frame['Open'].iloc[-2][stock]
-            flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
-            flag['Entry'].append(stock)
-            flag[stock]['ema_min'], flag[stock]['ema_max'] = ema_min[-1], ema_max[-1]
-            transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'target':flag[stock]['target'],'emamin':flag[stock]['ema_min'],'emamax':flag[stock]['ema_max'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'trend_rsi':flag[stock]['trend_rsi'],'target_hit':flag[stock]['target_hit']})
-            flag[stock]['trend_rsi'] = 0
+  elif ema_min[-1] > ema_max[-1]:
+    if ema_min[-2] < ema_max[-2]:
+      if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
+        if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
+          if data_frame['Close'].iloc[-2][stock] > ema_min[-2]:
+            if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
+              if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
+                if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
+                  flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
+                  flag[stock]['buy'] = True
+                  flag[stock]['stoploss'] = data_frame['Low'].iloc[-1][stock]
+                  flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+                  flag['Entry'].append(stock)
+                  flag[stock]['ema_min'], flag[stock]['ema_max'] = ema_min[-1], ema_max[-1]
+                  transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-1],'target':flag[stock]['target'],'emamin':flag[stock]['ema_min'],'emamax':flag[stock]['ema_max'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'trend_rsi':flag[stock]['trend_rsi'],'target_hit':flag[stock]['target_hit']})
+                  flag[stock]['trend_rsi'] = 0
 
 # SELL STOCK ; EXIT
 def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_time):
@@ -82,10 +87,6 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
     flag[stock]['ema_min'], flag[stock]['ema_max']       = 0, 0
     flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
     flag[stock]['target_hit'] = 0
-
-  # if Nothing happens Update the StopLoss
-  else:
-    flag[stock]['stoploss'] = data_frame['Open'].iloc[-1][stock]
 
 # SQUARE OFF, EXIT
 def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
