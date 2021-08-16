@@ -3,8 +3,8 @@ import pandas as pd
 
 from . import serializers
 from celery import shared_task
-from .RSI_60_40_5_MIN.utils import backbone as backbone_5_60_40
-from .RSI_55_15_MIN.utils import backbone as backbone_15_55
+from .BB_5_MIN.utils import backbone as backbone_BB_5
+from .CROSS_OVER_15_MIN.utils import backbone as backbone_CR_15
 
 from .MODELS_15_MIN.utils import get_data as get_data_M1
 from .MODELS_15_MIN.TD_CA.utils import backbone as backbone_TD_CA
@@ -18,10 +18,10 @@ def TEST(self):
   return 'WORKING_{}'.format(datetime.now())
 
 @shared_task(bind=True,max_retries=3)
-def RSI_60_40_RUNS_5_MIN(self):
+def BB_RUNS_5_MIN(self):
   response = {'success': False,'ALL': []}
   # Workbook Path
-  flag_config            = 'algo/RSI_60_40_5_MIN/config/flag.json'
+  flag_config            = 'algo/BB_5_MIN/config/flag.json'
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
@@ -41,10 +41,10 @@ def RSI_60_40_RUNS_5_MIN(self):
 
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  data_frame, status = backbone_5_60_40.model_ema_rsi(intervals, company_Sheet, flag_config,curr_time)
+  data_frame, status = backbone_BB_5.model(intervals, company_Sheet, flag_config,curr_time)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.RSI_60_40_5_Min_Serializer(data=data_f)
+      serializer = serializers.BB_5_Min_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
         response['ALL'].append(1)
@@ -64,10 +64,10 @@ def RSI_60_40_RUNS_5_MIN(self):
     return response
 
 @shared_task(bind=True,max_retries=3)
-def RSI_55_RUNS_15_MIN(self):
+def CROSS_OVER_RUNS_15_MIN(self):
   response = {'success': False,'ALL': []}
   # Workbook Path
-  flag_config            = 'algo/RSI_55_15_MIN/config/flag.json'
+  flag_config            = 'algo/CROSS_OVER_15_MIN/config/flag.json'
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
@@ -87,10 +87,10 @@ def RSI_55_RUNS_15_MIN(self):
 
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  data_frame, status = backbone_15_55.model_ema_rsi(intervals, company_Sheet, flag_config,curr_time)
+  data_frame, status = backbone_CR_15.model(intervals, company_Sheet, flag_config,curr_time)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.RSI_55_15_Min_Serializer(data=data_f)
+      serializer = serializers.CROSS_OVER_15_Min_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
         response['ALL'].append(1)

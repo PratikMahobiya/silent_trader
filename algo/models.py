@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class RSI_60_40_5_MIN(models.Model):
+class BB_5_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
@@ -17,9 +17,9 @@ class RSI_60_40_5_MIN(models.Model):
     def __int__(self):
     	return self.id
     class Meta:
-        db_table = 'RSI_60_40_5_MIN'
+        db_table = 'BB_5_MIN'
 
-class RSI_55_15_MIN(models.Model):
+class CROSS_OVER_15_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
@@ -38,7 +38,7 @@ class RSI_55_15_MIN(models.Model):
     def __int__(self):
     	return self.id
     class Meta:
-        db_table = 'RSI_55_15_MIN'
+        db_table = 'CROSS_OVER_15_MIN'
 
 class TD_CA_15_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')

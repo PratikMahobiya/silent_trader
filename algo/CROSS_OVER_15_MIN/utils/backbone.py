@@ -9,7 +9,7 @@ from . import trade
 from . import get_data
 from . import trending_stocks
 
-def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
+def model(intervals,company_sheet, flag_config, curr_time):
   sleep(30)
   '''
     intervals       = Intervals for Trading and Trend Analysis

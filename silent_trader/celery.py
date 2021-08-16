@@ -19,12 +19,12 @@ app.conf.enable_utc = False
 app.conf.update(timezone = 'Asia/Kolkata')
 
 app.conf.beat_schedule = {
-    'RSI_60_40_RUNS_IN_EVERY_5_MIN':{
-        'task': 'algo.tasks.RSI_60_40_RUNS_5_MIN',
+    'BB_RUNS_IN_EVERY_5_MIN':{
+        'task': 'algo.tasks.BB_RUNS_5_MIN',
         'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
-    # 'RSI_55_RUNS_IN_EVERY_15_MIN':{
-    #     'task': 'algo.tasks.RSI_55_RUNS_15_MIN',
+    # 'CROSS_OVER_RUNS_IN_EVERY_15_MIN':{
+    #     'task': 'algo.tasks.CROSS_OVER_RUNS_15_MIN',
     #     'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     # },
     # 'TESTING':{
