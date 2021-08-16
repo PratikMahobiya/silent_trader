@@ -24,3 +24,7 @@ def RSI_60_40_5_MIN(request):
 def RSI_55_15_MIN(request):
   tasks.RSI_55_RUNS_15_MIN.delay()
   return HttpResponse("RSI_55_15_MIN_STARTED:--")
+
+def MODELS_15_MIN(request):
+  tasks.MODELS_RUNS_15_MIN.delay()
+  return HttpResponse("MODELS_15_MIN_STARTED:--")
