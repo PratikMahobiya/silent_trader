@@ -2,14 +2,12 @@ import datetime
 import os
 import json
 
-from time import sleep
 from datetime import datetime, time
 
 from . import trade
 from . import get_data
 
 def model_ema_rsi(intervals,company_sheet, flag_config, curr_time):
-  sleep(30)
   '''
     intervals       = Intervals for Trading and Trend Analysis
     company_sheet   = List of Companies with their Symbol
