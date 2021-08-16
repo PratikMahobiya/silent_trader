@@ -116,7 +116,8 @@ def MODELS_RUNS_15_MIN(self):
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
   # Extract Symbols and Company Names from Dataframe
-  companies_symbol = company_Sheet['SYMBOL'].to_list()
+  companies_symbol = company_Sheet['SYMBOL']
+  comp_list = companies_symbol.to_list()
 
   # [trade_min,_trade_days,sell_rsi,buy_rsi,trade_ema_max,trade_ema_min,trend_min,trend_days,trend_rsi_time_period,trade_rsi_timeperiod,trade_target%_timeperiod]
   intervals      = ['15m','60d',60,55,18,8,'1h','1mo',8,8,14]
@@ -133,8 +134,8 @@ def MODELS_RUNS_15_MIN(self):
 
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  trend_data = get_data_M1.download_trend_data(companies_symbol,intervals)
-  trade_data = get_data_M1.download_trade_data(companies_symbol,intervals)
+  trend_data = get_data_M1.download_trend_data(comp_list,intervals)
+  trade_data = get_data_M1.download_trade_data(comp_list,intervals)
 
   # TD_CA ------------------------------------------------------------------
   # Workbook Path
