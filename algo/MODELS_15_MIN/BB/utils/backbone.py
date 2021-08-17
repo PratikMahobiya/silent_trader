@@ -32,13 +32,13 @@ def model(trade_data,intervals,company_sheet, flag_config, curr_time):
       flag = json.load(outfile)
 
   # Regular Trades Execution
-  if datetime.now().time() >= time(9,15,00) and datetime.now().time() < time(15,20,00):
+  if datetime.now().time() >= time(9,15,00) and datetime.now().time() < time(15,15,00):
     # Initiating trades
     transactions = trade.trade_execution(trade_data, intervals, flag, transactions, curr_time)
     if len(transactions) == 0:
       return 'NOT GETTING ENTRY IN ANY OF THE STOCK', False
   # Square off
-  elif datetime.now().time() >= time(15,20,00) and datetime.now().time() <= time(15,30,59):
+  elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,30,59):
     if len(flag['Entry']) != 0:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
