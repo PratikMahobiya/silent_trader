@@ -25,8 +25,3 @@ class TH_PACA_T2_15_Min_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.TH_PACA_T2_15_MIN
 		fields 	= ('date','symbol','indicate','type','close','stoploss','target','rsi','emamin','emamax','difference','profit','target_percent','trend_rsi','target_hit')
-
-class BB_15_Min_Serializer(serializers.ModelSerializer):
-	class Meta:
-		model 	= models.BB
-		fields 	= ('date','symbol','indicate','type','close','stoploss','lowerband','upperband','rsi','atr','difference','profit')

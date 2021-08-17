@@ -37,10 +37,3 @@ class TH_PACA_T2_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_filter = ("date",)
     list_per_page = 10
     search_fields = ['symbol','date']
-
-@admin.register(models.BB)
-class BB_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','symbol','indicate','type','close','stoploss','lowerband','upperband','rsi','atr','difference','profit')
-    list_filter = ("date",)
-    list_per_page = 10
-    search_fields = ['symbol','date']

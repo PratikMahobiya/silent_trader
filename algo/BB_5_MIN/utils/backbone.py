@@ -41,6 +41,12 @@ def model(intervals,company_sheet, flag_config, curr_time):
 
     # Initiating trades
     transactions = trade.trade_execution(trade_data_frame, intervals, flag, transactions, curr_time)
+
+    # Update config File:
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+    return transactions, True
+
   # Square off
   elif datetime.now().time() >= time(15,20,00) and datetime.now().time() <= time(15,30,59):
     if len(flag['Entry']) >= 2:
@@ -53,7 +59,6 @@ def model(intervals,company_sheet, flag_config, curr_time):
       # Initiating trades
       stock_name = None
       transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
-
     elif len(flag['Entry']) == 1:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
@@ -64,11 +69,13 @@ def model(intervals,company_sheet, flag_config, curr_time):
       # Initiating trades
       stock_name = flag['Entry'][0]
       transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
-
     else:
-      return 'ALL TRADES ARE ENDED.', False
+      return 'ALL STOCKS ARE SQUARED OFF', False
 
-  # Update config File:
-  with open(flag_config, "w") as outfile:
-    json.dump(flag, outfile)
-  return transactions, True
+    # Update config File:
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+    return transactions, True
+
+  elif datetime.now().time() >= time(15,31,00):
+    return 'MARKET ENDED.', False  

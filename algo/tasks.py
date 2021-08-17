@@ -9,7 +9,6 @@ from .CROSS_OVER_15_MIN.utils import backbone as backbone_CR_15
 from .MODELS_15_MIN.utils import get_data as get_data_M1
 from .MODELS_15_MIN.TH_CA.utils import backbone as backbone_TH_CA
 from .MODELS_15_MIN.TH_PACA.utils import backbone as backbone_TH_PACA
-from .MODELS_15_MIN.BB.utils import backbone as backbone_BB
 from .MODELS_15_MIN.TH_PACA_T2.utils import backbone as backbone_TH_PACA_T2
 
 @shared_task(bind=True,max_retries=3)
@@ -93,7 +92,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
 
 @shared_task(bind=True,max_retries=3)
 def MODELS_RUNS_15_MIN(self):
-  response = {'TH_CA': False,'TH_CA_STATUS': 'NONE','TH_PACA': False,'TH_PACA_STATUS': 'NONE','TH_PACA_T2': False,'TH_PACA_T2_STATUS': 'NONE','BB': False,'BB_STATUS': 'NONE'}
+  response = {'TH_CA': False,'TH_CA_STATUS': 'NONE','TH_PACA': False,'TH_PACA_STATUS': 'NONE','TH_PACA_T2': False,'TH_PACA_T2_STATUS': 'NONE'}
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
@@ -163,19 +162,4 @@ def MODELS_RUNS_15_MIN(self):
     response.update({'TH_PACA_T2': True,'TH_PACA_T2_STATUS': 'ALL DONE.'})    
   elif status is False:
     response.update({'TH_PACA_T2': True,'TH_PACA_T2_STATUS': data_frame})
-  
-  # BB ------------------------------------------------------------------
-  # Workbook Path
-  flag_config            = 'algo/MODELS_15_MIN/BB/config/flag.json'
-  data_frame, status = backbone_BB.model(trade_data,intervals,company_Sheet,flag_config,curr_time)
-  if status is True:
-    for data_f in data_frame:
-      serializer = serializers.BB_15_Min_Serializer(data=data_f)
-      if serializer.is_valid():
-        serializer.save()
-      else:
-        response['BB_SERIALIZER'] = serializer.errors
-    response.update({'BB': True,'BB_STATUS': 'ALL DONE.'})    
-  elif status is False:
-    response.update({'BB': True,'BB_STATUS': data_frame})
   return response

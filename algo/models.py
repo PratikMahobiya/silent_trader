@@ -102,21 +102,3 @@ class TH_PACA_T2_15_MIN(models.Model):
     	return self.id
     class Meta:
         db_table = 'TH_PACA_T2_15_MIN'
-
-class BB(models.Model):
-    symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
-    indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
-    type           			= models.CharField(max_length=100, verbose_name='TYPE')
-    date                    = models.DateTimeField()
-    close    				= models.FloatField(verbose_name='PRICE')
-    stoploss   				= models.FloatField(verbose_name='STOPLOSS')
-    lowerband   			= models.FloatField(verbose_name='LOWER_BAND',blank=True,null=True,default=None)
-    upperband   			= models.FloatField(verbose_name='UPPER_BAND',blank=True,null=True,default=None)
-    rsi      			    = models.FloatField(verbose_name='RSI', blank=True, null=True, default=None)
-    atr      			    = models.FloatField(verbose_name='ATR', blank=True, null=True, default=None)
-    difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
-    profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
-    def __int__(self):
-    	return self.id
-    class Meta:
-        db_table = 'BB'
