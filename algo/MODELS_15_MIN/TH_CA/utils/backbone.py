@@ -45,6 +45,12 @@ def model(trend_data,trade_data,intervals,company_sheet,flag_config,curr_time):
     else:
       # print('None of them is in Trending.')
       return 'No stock is in Trend and Entry', False
+
+    # Update config File:
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+    return transactions, True
+
   # Square off
   elif datetime.now().time() >= time(15,15,00) and datetime.now().time() < time(15,30,00):
     # Convert dataframe to List of Companies
@@ -54,9 +60,11 @@ def model(trend_data,trade_data,intervals,company_sheet,flag_config,curr_time):
       # Initiating trades
       transactions = trade.square_off(trade_data,trade_stock_list,intervals,flag,transactions,curr_time)
     else:
-      # print('None of them is in Trending.')
-      return 'No Stock For SquareOff', False
-  # Update config File:
-  with open(flag_config, "w") as outfile:
-    json.dump(flag, outfile)
-  return transactions, True
+      return 'ALL STOCKS ARE SQUARED Off', False
+    # Update config File:
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+    return transactions, True
+  
+  elif datetime.now().time() >= time(15,30,00):
+    return 'MARKET CLOSED', False
