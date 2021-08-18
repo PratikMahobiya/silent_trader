@@ -79,3 +79,4 @@ def model(intervals,company_sheet, flag_config, curr_time):
 
   elif datetime.now().time() >= time(15,31,00):
     return 'MARKET ENDED.', False  
+  return 'MARKET NOT STARTED.', False

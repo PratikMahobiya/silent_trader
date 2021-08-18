@@ -68,3 +68,4 @@ def model(trend_data,trade_data,intervals,company_sheet,flag_config,curr_time):
 
   elif datetime.now().time() >= time(15,30,00):
     return 'MARKET CLOSED', False
+  return 'MARKET NOT STARTED.', False
