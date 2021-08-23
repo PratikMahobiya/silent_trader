@@ -10,7 +10,6 @@ from .BB_5_MIN.utils import backbone as backbone_BB_5
 from .CROSS_OVER_15_MIN.utils import backbone as backbone_CR_15
 
 from .MODELS_15_MIN.utils import get_data as get_data_M1
-from .MODELS_15_MIN.TH_CA.utils import backbone as backbone_TH_CA
 from .MODELS_15_MIN.TH_PACA.utils import backbone as backbone_TH_PACA
 from .MODELS_15_MIN.TH_PACA_T2.utils import backbone as backbone_TH_PACA_T2
 
@@ -26,10 +25,10 @@ def BB_RUNS_5_MIN(self):
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
   companies_symbol         = company_Sheet['SYMBOL']
+  sleep(65)
 
   # Workbook Path
   flag_config            = 'algo/BB_5_MIN/config/flag.json'
-
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
@@ -53,7 +52,7 @@ def BB_RUNS_5_MIN(self):
   '''
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  data_frame, status = backbone_BB_5.model(intervals, company_Sheet, flag,curr_time)
+  data_frame, status = backbone_BB_5.model(intervals, companies_symbol, flag, curr_time)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.BB_5_Min_Serializer(data=data_f)
@@ -72,28 +71,40 @@ def BB_RUNS_5_MIN(self):
 @shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_15_MIN(self):
   response = {'CROSS_OVER': False, 'STATUS': 'NONE'}
-  # Workbook Path
-  flag_config            = 'algo/CROSS_OVER_15_MIN/config/flag.json'
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
-
-  # [trade_min,_trade_days,sell_rsi,buy_rsi,trade_ema_max,trade_ema_min,trend_min,trend_days,trend_rsi_time_period,trade_rsi_timeperiod,trade_target%_timeperiod]
-  intervals      = ['15m','60d',60,55,18,8,'1h','1mo',8,8,14]
+  # Extract Symbols and Company Names from Dataframe
+  companies_symbol = company_Sheet['SYMBOL']
+  sleep(65)
+  '''
+    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
+  '''
+  intervals      = ['15m','60d',60,55,18,8,'30m','60d',8,8,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
-    [
-    first two:-  trading_interval, trading_period,
-    senond two:- trading_rsi_upper, trading_rsi_lower,
-    third two:-  trading_ema_max, trading_ema_min,
-    fourth two:- trend_interval, trend_period,
-    Fifth two:-  trend_ema_timeperiod, trade_rsi_timeperiod
-    ]
-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  data_frame, status = backbone_CR_15.model(intervals, company_Sheet, flag_config,curr_time)
+
+  # Workbook Path
+  flag_config            = 'algo/CROSS_OVER_15_MIN/config/flag.json'
+  # Create Flag config for each company
+  if not os.path.exists(flag_config):
+    # print("Created Flag Config File For all STOCKS.")
+    flag = {}
+    flag['Entry'] = []
+    for symb in companies_symbol:
+      flag[symb] = {'buy':False,'buying_price':0,'ema_min':0,'ema_max':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'trend_rsi':0,'target_hit':0}
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+  # Load The Last Updated Flag Config
+  else:
+    # print("Loaded Flag Config File For all Stocks.")
+    with open(flag_config, "r") as outfile:
+      flag = json.load(outfile)
+
+  data_frame, status = backbone_CR_15.model(intervals, companies_symbol, flag, curr_time)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.CROSS_OVER_15_Min_Serializer(data=data_f)
@@ -104,11 +115,14 @@ def CROSS_OVER_RUNS_15_MIN(self):
     response.update({'CROSS_OVER': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
     response.update({'CROSS_OVER': True, 'STATUS': data_frame})
+  # Update config File:
+  with open(flag_config, "w") as outfile:
+    json.dump(flag, outfile)
   return response
 
 @shared_task(bind=True,max_retries=3)
 def MODELS_RUNS_15_MIN(self):
-  response = {'TH_CA': False,'TH_CA_STATUS': 'NONE','TH_PACA': False,'TH_PACA_STATUS': 'NONE','TH_PACA_T2': False,'TH_PACA_T2_STATUS': 'NONE'}
+  response = {'TH_PACA': False,'TH_PACA_STATUS': 'NONE','TH_PACA_T2': False,'TH_PACA_T2_STATUS': 'NONE'}
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
@@ -127,41 +141,7 @@ def MODELS_RUNS_15_MIN(self):
   '''
   trend_data = get_data_M1.download_trend_data(comp_list,intervals)
   trade_data = get_data_M1.download_trade_data(comp_list,intervals)
-  
-  # TH_CA ------------------------------------------------------------------
-  # Workbook Path
-  flag_config            = 'algo/MODELS_15_MIN/TH_CA/config/flag.json'
-  # Create Flag config for each company
-  if not os.path.exists(flag_config):
-    # print("Created Flag Config File For all STOCKS.")
-    flag = {}
-    flag['Entry'] = []
-    for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'ema_min':0,'ema_max':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'trend_rsi':0,'target_hit':0}
-    with open(flag_config, "w") as outfile:
-      json.dump(flag, outfile)
-  # Load The Last Updated Flag Config
-  else:
-    # print("Loaded Flag Config File For all Stocks.")
-    with open(flag_config, "r") as outfile:
-      flag = json.load(outfile)
 
-  data_frame, status = backbone_TH_CA.model(trend_data,trade_data,intervals,flag,curr_time)
-  if status is True:
-    for data_f in data_frame:
-      serializer = serializers.TH_CA_15_Min_Serializer(data=data_f)
-      if serializer.is_valid():
-        serializer.save()
-      else:
-        response['TH_CA_SERIALIZER'] = serializer.errors
-    response.update({'TH_CA': True,'TH_CA_STATUS': 'ALL DONE.'})    
-  elif status is False:
-    response.update({'TH_CA': True,'TH_CA_STATUS': data_frame})
-  # Update config File:
-  with open(flag_config, "w") as outfile:
-    json.dump(flag, outfile)
-  # TH_CA --------------------------------------------------------------------
-  
   # TH_PACA ------------------------------------------------------------------
   # Workbook Path
   flag_config            = 'algo/MODELS_15_MIN/TH_PACA/config/flag.json'

@@ -15,9 +15,4 @@ def trending(data_frame,intervals,flag):
       flag[stock]['trend_rsi'] = rsi[-1]
       target_percentile(stock,data_frame['Open'][stock], data_frame['Close'][stock], intervals, flag)
       trend.append(stock)
-      # if rsi[-1] > rsi[-2]:
-      #   if rsi[-1] > rsi[-3]:
-      #     if rsi[-2] > rsi[-3]:
-      #       target_percentile(stock,data_frame['Open'][stock], data_frame['Close'][stock], intervals, flag)
-      #       trend.append(stock)
   return trend
