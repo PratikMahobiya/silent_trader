@@ -28,7 +28,7 @@ def BB_RUNS_5_MIN(self):
   sleep(65)
 
   # Workbook Path
-  flag_config            = 'algo/BB_5_MIN/config/flag.json'
+  flag_config            = 'algo/config/bb_flag.json'
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
@@ -88,7 +88,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   '''
 
   # Workbook Path
-  flag_config            = 'algo/CROSS_OVER_15_MIN/config/flag.json'
+  flag_config            = 'algo/config/cro_flag.json'
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
@@ -144,7 +144,7 @@ def MODELS_RUNS_15_MIN(self):
 
   # TH_PACA ------------------------------------------------------------------
   # Workbook Path
-  flag_config            = 'algo/MODELS_15_MIN/TH_PACA/config/flag.json'
+  flag_config            = 'algo/config/th_paca_flag.json'
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
@@ -178,7 +178,7 @@ def MODELS_RUNS_15_MIN(self):
 
   # TH_PACA_T2 ---------------------------------------------------------------
   # Workbook Path
-  flag_config            = 'algo/MODELS_15_MIN/TH_PACA_T2/config/flag.json'
+  flag_config            = 'algo/config/th_paca_t2_flag.json'
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
