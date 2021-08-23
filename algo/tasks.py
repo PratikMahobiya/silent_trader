@@ -1,4 +1,5 @@
 from datetime import datetime
+from time import sleep
 import pandas as pd
 
 from . import serializers
@@ -99,7 +100,8 @@ def MODELS_RUNS_15_MIN(self):
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
   comp_list = companies_symbol.to_list()
-
+  sleep(65)
+  
   # [trade_min,_trade_days,sell_rsi,buy_rsi,trade_ema_max,trade_ema_min,trend_min,trend_days,trend_rsi_time_period,trade_rsi_timeperiod,trade_target%_timeperiod]
   intervals      = ['15m','60d',60,55,18,8,'30m','60d',8,8,14,20,8,14,40]
   curr_time      = datetime.now()

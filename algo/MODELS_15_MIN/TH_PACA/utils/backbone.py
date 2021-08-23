@@ -3,12 +3,10 @@ import os
 import json
 
 from datetime import datetime, time
-from time import sleep
 from . import trade
 from . import trending_stocks
 
 def model(trend_data,trade_data,intervals,company_sheet,flag_config,curr_time):
-  sleep(65)
   '''
     intervals       = Intervals for Trading and Trend Analysis
     company_sheet   = List of Companies with their Symbol
