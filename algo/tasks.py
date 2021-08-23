@@ -1,8 +1,8 @@
 import os
 import json
-from datetime import datetime
-from time import sleep
 import pandas as pd
+from time import sleep
+from datetime import datetime
 
 from . import serializers
 from celery import shared_task
@@ -117,19 +117,12 @@ def MODELS_RUNS_15_MIN(self):
   comp_list = companies_symbol.to_list()
   sleep(65)
   
-  # [trade_min,_trade_days,sell_rsi,buy_rsi,trade_ema_max,trade_ema_min,trend_min,trend_days,trend_rsi_time_period,trade_rsi_timeperiod,trade_target%_timeperiod]
+  '''
+    -> interval = [Upper_rsi,Lower_rsi,EMA_MAX,EMA_MIN,TRADE_RSI,TREND_RSI,TRAGET_CANDLE_NUMBER]
+  '''
   intervals      = ['15m','60d',60,55,18,8,'30m','60d',8,8,14,20,8,14,40]
   curr_time      = datetime.now()
   '''
-  -> Intervals:-
-    [
-    first two:-  trading_interval, trading_period,
-    senond two:- trading_rsi_upper, trading_rsi_lower,
-    third two:-  trading_ema_max, trading_ema_min,
-    fourth two:- trend_interval, trend_period,
-    Fifth two:-  trend_ema_timeperiod, trade_rsi_timeperiod
-    ]
-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
   trend_data = get_data_M1.download_trend_data(comp_list,intervals)
@@ -138,7 +131,22 @@ def MODELS_RUNS_15_MIN(self):
   # TH_CA ------------------------------------------------------------------
   # Workbook Path
   flag_config            = 'algo/MODELS_15_MIN/TH_CA/config/flag.json'
-  data_frame, status = backbone_TH_CA.model(trend_data,trade_data,intervals,company_Sheet,flag_config,curr_time)
+  # Create Flag config for each company
+  if not os.path.exists(flag_config):
+    # print("Created Flag Config File For all STOCKS.")
+    flag = {}
+    flag['Entry'] = []
+    for symb in companies_symbol:
+      flag[symb] = {'buy':False,'buying_price':0,'ema_min':0,'ema_max':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'trend_rsi':0,'target_hit':0}
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+  # Load The Last Updated Flag Config
+  else:
+    # print("Loaded Flag Config File For all Stocks.")
+    with open(flag_config, "r") as outfile:
+      flag = json.load(outfile)
+
+  data_frame, status = backbone_TH_CA.model(trend_data,trade_data,intervals,flag,curr_time)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.TH_CA_15_Min_Serializer(data=data_f)
@@ -149,11 +157,30 @@ def MODELS_RUNS_15_MIN(self):
     response.update({'TH_CA': True,'TH_CA_STATUS': 'ALL DONE.'})    
   elif status is False:
     response.update({'TH_CA': True,'TH_CA_STATUS': data_frame})
+  # Update config File:
+  with open(flag_config, "w") as outfile:
+    json.dump(flag, outfile)
+  # TH_CA --------------------------------------------------------------------
   
   # TH_PACA ------------------------------------------------------------------
   # Workbook Path
   flag_config            = 'algo/MODELS_15_MIN/TH_PACA/config/flag.json'
-  data_frame, status = backbone_TH_PACA.model(trend_data,trade_data,intervals,company_Sheet,flag_config,curr_time)
+  # Create Flag config for each company
+  if not os.path.exists(flag_config):
+    # print("Created Flag Config File For all STOCKS.")
+    flag = {}
+    flag['Entry'] = []
+    for symb in companies_symbol:
+      flag[symb] = {'buy':False,'buying_price':0,'ema_min':0,'ema_max':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'trend_rsi':0,'target_hit':0}
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+  # Load The Last Updated Flag Config
+  else:
+    # print("Loaded Flag Config File For all Stocks.")
+    with open(flag_config, "r") as outfile:
+      flag = json.load(outfile)
+
+  data_frame, status = backbone_TH_PACA.model(trend_data,trade_data,intervals,flag,curr_time)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.TH_PACA_15_Min_Serializer(data=data_f)
@@ -164,11 +191,30 @@ def MODELS_RUNS_15_MIN(self):
     response.update({'TH_PACA': True,'TH_PACA_STATUS': 'ALL DONE.'})    
   elif status is False:
     response.update({'TH_PACA': True,'TH_PACA_STATUS': data_frame})
+  # Update config File:
+  with open(flag_config, "w") as outfile:
+    json.dump(flag, outfile)
+  # TH_PACA ------------------------------------------------------------------
 
-  # TH_PACA_T2 ------------------------------------------------------------------
+  # TH_PACA_T2 ---------------------------------------------------------------
   # Workbook Path
   flag_config            = 'algo/MODELS_15_MIN/TH_PACA_T2/config/flag.json'
-  data_frame, status = backbone_TH_PACA_T2.model(trend_data,trade_data,intervals,company_Sheet,flag_config,curr_time)
+  # Create Flag config for each company
+  if not os.path.exists(flag_config):
+    # print("Created Flag Config File For all STOCKS.")
+    flag = {}
+    flag['Entry'] = []
+    for symb in companies_symbol:
+      flag[symb] = {'buy':False,'buying_price':0,'ema_min':0,'ema_max':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'trend_rsi':0,'target_hit':0}
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+  # Load The Last Updated Flag Config
+  else:
+    # print("Loaded Flag Config File For all Stocks.")
+    with open(flag_config, "r") as outfile:
+      flag = json.load(outfile)
+
+  data_frame, status = backbone_TH_PACA_T2.model(trend_data,trade_data,intervals,flag,curr_time)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.TH_PACA_T2_15_Min_Serializer(data=data_f)
@@ -179,4 +225,8 @@ def MODELS_RUNS_15_MIN(self):
     response.update({'TH_PACA_T2': True,'TH_PACA_T2_STATUS': 'ALL DONE.'})    
   elif status is False:
     response.update({'TH_PACA_T2': True,'TH_PACA_T2_STATUS': data_frame})
+  # Update config File:
+  with open(flag_config, "w") as outfile:
+    json.dump(flag, outfile)
+  # TH_PACA_T2 ---------------------------------------------------------------
   return response
