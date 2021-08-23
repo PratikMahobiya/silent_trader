@@ -8,6 +8,7 @@ from . import trade
 from . import get_data
 
 def model(intervals,company_sheet, flag_config, curr_time):
+  time.sleep(65)
   '''
     intervals       = Intervals for Trading and Trend Analysis
     company_sheet   = List of Companies with their Symbol
