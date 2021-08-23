@@ -1,3 +1,5 @@
+import os
+import json
 from datetime import datetime
 from time import sleep
 import pandas as pd
@@ -20,28 +22,38 @@ def TEST(self):
 @shared_task(bind=True,max_retries=3)
 def BB_RUNS_5_MIN(self):
   response = {'BB': False, 'STATUS': 'NONE'}
-  # Workbook Path
-  flag_config            = 'algo/BB_5_MIN/config/flag.json'
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
+  companies_symbol         = company_Sheet['SYMBOL']
 
-  # [trade_min,_trade_days,sell_rsi,buy_rsi,bollingerband,rsi,atr]
+  # Workbook Path
+  flag_config            = 'algo/BB_5_MIN/config/flag.json'
+
+  # Create Flag config for each company
+  if not os.path.exists(flag_config):
+    # print("Created Flag Config File For all STOCKS.")
+    flag = {}
+    flag['Entry'] = []
+    for symb in companies_symbol:
+      flag[symb] = {'buy':False,'buying_price':0,'lowerband':0,'upperband':0,'atr':0,'selling_price':0,'stoploss':0,'selling_val':0,'upper_val':0}
+    with open(flag_config, "w") as outfile:
+      json.dump(flag, outfile)
+  # Load The Last Updated Flag Config
+  else:
+    # print("Loaded Flag Config File For all Stocks.")
+    with open(flag_config, "r") as outfile:
+      flag = json.load(outfile)
+
+  '''
+    -> intervals = [Time_period, Number_oF_Days,Upper_rsi, Lower_rsi, Bollinger_Band, RSI, ATR]
+  '''
   intervals      = ['5m','7d',60,40,20,8,14]
   curr_time      = datetime.now()
   '''
-  -> Intervals:-
-    [
-    first two:-  trading_interval, trading_period,
-    senond two:- trading_rsi_upper, trading_rsi_lower,
-    third two:-  trading_ema_max, trading_ema_min,
-    fourth two:- trend_interval, trend_period,
-    Fifth two:-  trend_ema_timeperiod, trade_rsi_timeperiod
-    ]
-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  data_frame, status = backbone_BB_5.model(intervals, company_Sheet, flag_config,curr_time)
+  data_frame, status = backbone_BB_5.model(intervals, company_Sheet, flag,curr_time)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.BB_5_Min_Serializer(data=data_f)
@@ -52,6 +64,9 @@ def BB_RUNS_5_MIN(self):
     response.update({'BB': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
     response.update({'BB': True, 'STATUS': data_frame})
+  # Update config File:
+  with open(flag_config, "w") as outfile:
+    json.dump(flag, outfile)
   return response
 
 @shared_task(bind=True,max_retries=3)
