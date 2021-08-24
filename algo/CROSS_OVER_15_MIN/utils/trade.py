@@ -75,19 +75,6 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
     flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
     flag[stock]['target_hit'] = 0
 
-  # Price is below ema-min and rsi is below 50
-  elif data_frame['Close'].iloc[-2][stock] < ema_min[-2] and rsi[-2] < (intervals[3] - 5):
-    flag[stock]['selling_price'] = data_frame['Close'].iloc[-2][stock]
-    diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
-    profit        = (diff/flag[stock]['buying_price']) * 100
-    flag[stock]['buy']      = False
-    transactions.append({'symbol':stock,'indicate':'Exit','type':'E-R_EXIT','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-2],'target':flag[stock]['target'],'emamin':None,'emamax':None,'target_percent':None,'difference':diff,'profit':profit,'trend_rsi':None,'target_hit':flag[stock]['target_hit']})
-    flag['Entry'].remove(stock)
-    flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
-    flag[stock]['ema_min'], flag[stock]['ema_max']       = 0, 0
-    flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
-    flag[stock]['target_hit'] = 0
-
 # SQUARE OFF, EXIT
 def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
   # For more than one stock in a list
