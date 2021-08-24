@@ -29,12 +29,12 @@ app.conf.beat_schedule = {
     },
     'CROSS_OVER_RUNS_IN_EVERY_15_MIN':{
         'task': 'algo.tasks.CROSS_OVER_RUNS_15_MIN',
-        'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
+        'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
-    'MODELS_RUNS_IN_EVERY_15_MIN':{
-        'task': 'algo.tasks.MODELS_RUNS_15_MIN',
-        'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
-    },
+    # 'MODELS_RUNS_IN_EVERY_15_MIN':{
+    #     'task': 'algo.tasks.MODELS_RUNS_15_MIN',
+    #     'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
+    # },
 }
 
 # Load task modules from all registered Django app configs.

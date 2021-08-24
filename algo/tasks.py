@@ -80,7 +80,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15m','60d',60,55,18,8,'30m','60d',8,8,14]
+  intervals      = ['5m','60d',60,55,18,8,'30m','60d',8,8,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-

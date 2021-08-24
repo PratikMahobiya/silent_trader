@@ -14,7 +14,7 @@ def model(intervals,companies_symbol, flag, curr_time):
   transactions = []
 
   # Regular Trades Execution
-  if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,15,00):
+  if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,20,00):
     # Convert dataframe to List of Companies
     comp_list   = companies_symbol.to_list()
     stock_list  = [stock for stock in comp_list if stock not in flag['Entry']]
@@ -36,7 +36,7 @@ def model(intervals,companies_symbol, flag, curr_time):
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.', False
   # Square off
-  elif datetime.now().time() >= time(15,15,00) and datetime.now().time() < time(15,30,00):
+  elif datetime.now().time() >= time(15,20,00) and datetime.now().time() < time(15,30,00):
     if len(flag['Entry']) >= 2:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
