@@ -1,7 +1,7 @@
 import talib
 
-def trade_execution(data_frame, trade_stock_list, intervals, flag, transactions, curr_time):
-    for stock in trade_stock_list:
+def trade_execution(data_frame, intervals, flag, transactions, curr_time):
+    for stock in data_frame['Close'].columns:
         ema_max     = talib.EMA(data_frame['Close'][stock], timeperiod=intervals[4])
         ema_min     = talib.EMA(data_frame['Close'][stock], timeperiod=intervals[5])
         rsi         = talib.RSI(data_frame['Close'][stock], timeperiod=intervals[9])
@@ -76,17 +76,32 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
     flag[stock]['target_hit'] = 0
 
 # SQUARE OFF, EXIT
-def square_off(data_frame,trade_stock_list, intervals, flag, transactions, curr_time):
-  for stock in trade_stock_list:
-    rsi         = talib.RSI(data_frame['Close'][stock], timeperiod=intervals[9])
-    flag[stock]['selling_price'] = data_frame['Close'].iloc[-2][stock]
-    diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
-    profit        = (diff/flag[stock]['buying_price']) * 100
-    flag[stock]['buy']      = False
-    transactions.append({'symbol':stock,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-2],'target':flag[stock]['target'],'emamin':None,'emamax':None,'target_percent':None,'difference':diff,'profit':profit,'trend_rsi':None,'target_hit':flag[stock]['target_hit']})
-    flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
-    flag[stock]['ema_min'], flag[stock]['ema_max']       = 0, 0
-    flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
-    flag['Entry'].remove(stock)
-    flag[stock]['target_hit'] = 0
+def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
+  # For more than one stock in a list
+  if stock_name is None:
+    for stock in data_frame['Close'].columns:
+      rsi         = talib.RSI(data_frame['Close'][stock], timeperiod=intervals[9])
+      flag[stock]['selling_price'] = data_frame['Close'].iloc[-2][stock]
+      diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
+      profit        = (diff/flag[stock]['buying_price']) * 100
+      flag[stock]['buy']      = False
+      transactions.append({'symbol':stock,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'rsi':rsi[-2],'target':flag[stock]['target'],'emamin':None,'emamax':None,'target_percent':None,'difference':diff,'profit':profit,'trend_rsi':None,'target_hit':flag[stock]['target_hit']})
+      flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
+      flag[stock]['ema_min'], flag[stock]['ema_max']       = 0, 0
+      flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
+      flag['Entry'].remove(stock)
+      flag[stock]['target_hit'] = 0
+  # for only one stock
+  else:
+    rsi         = talib.RSI(data_frame['Close'], timeperiod=intervals[9])
+    flag[stock_name]['selling_price'] = data_frame['Close'].iloc[-2]
+    diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
+    profit        = (diff/flag[stock_name]['buying_price']) * 100
+    flag[stock_name]['buy']      = False
+    transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'stoploss':flag[stock_name]['stoploss'],'rsi':rsi[-2],'target':flag[stock_name]['target'],'emamin':None,'emamax':None,'target_percent':None,'difference':diff,'profit':profit,'trend_rsi':None,'target_hit':flag[stock_name]['target_hit']})
+    flag[stock_name]['stoploss'], flag[stock_name]['target'], flag[stock_name]['target_per'] = 0, 0, 0
+    flag[stock_name]['ema_min'], flag[stock_name]['ema_max']       = 0, 0
+    flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
+    flag['Entry'].remove(stock_name)
+    flag[stock_name]['target_hit'] = 0
   return transactions

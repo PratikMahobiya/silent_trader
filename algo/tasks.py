@@ -7,16 +7,8 @@ from datetime import datetime
 from . import serializers
 from celery import shared_task
 from .BB_5_MIN.utils import backbone as backbone_BB_5
-from .CROSS_OVER_15_MIN.utils import backbone as backbone_CR_15
-
-from .MODELS_15_MIN.utils import get_data as get_data_M1
-from .MODELS_15_MIN.TH_PACA.utils import backbone as backbone_TH_PACA
-from .MODELS_15_MIN.TH_PACA_T2.utils import backbone as backbone_TH_PACA_T2
-
-@shared_task(bind=True,max_retries=3)
-def TEST(self):
-  print('SUCCEED YOU ARE IN RIGHT PATH.. GO ON.')
-  return 'WORKING_{}'.format(datetime.now())
+from .TH_CA_15_MIN.utils import backbone as backbone_TH_CA
+from .TH_PACA_T2_15_MIN.utils import backbone as backbone_TH_PACA_T2
 
 @shared_task(bind=True,max_retries=3)
 def BB_RUNS_5_MIN(self):
@@ -69,8 +61,8 @@ def BB_RUNS_5_MIN(self):
   return response
 
 @shared_task(bind=True,max_retries=3)
-def CROSS_OVER_RUNS_15_MIN(self):
-  response = {'CROSS_OVER': False, 'STATUS': 'NONE'}
+def TH_CA_RUNS_15_MIN(self):
+  response = {'TH_CA': False, 'STATUS': 'NONE'}
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
@@ -80,7 +72,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['5m','60d',60,55,18,8,'30m','60d',8,8,14]
+  intervals      = ['15m','60d',60,55,18,8,'30m','60d',8,8,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
@@ -88,7 +80,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   '''
 
   # Workbook Path
-  flag_config            = 'algo/config/cro_flag.json'
+  flag_config            = 'algo/config/th_ca_flag.json'
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
@@ -104,79 +96,41 @@ def CROSS_OVER_RUNS_15_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_CR_15.model(intervals, companies_symbol, flag, curr_time)
+  data_frame, status = backbone_TH_CA.model(intervals, companies_symbol, flag, curr_time)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.CROSS_OVER_15_Min_Serializer(data=data_f)
+      serializer = serializers.TH_CA_15_Min_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
       else:
-        response['BB_SERIALIZER'] = serializer.errors
-    response.update({'CROSS_OVER': True, 'STATUS': 'ALL DONE.'})
+        response['TH_CA_SERIALIZER'] = serializer.errors
+    response.update({'TH_CA': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
-    response.update({'CROSS_OVER': True, 'STATUS': data_frame})
+    response.update({'TH_CA': True, 'STATUS': data_frame})
   # Update config File:
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)
   return response
 
 @shared_task(bind=True,max_retries=3)
-def MODELS_RUNS_15_MIN(self):
-  response = {'TH_PACA': False,'TH_PACA_STATUS': 'NONE','TH_PACA_T2': False,'TH_PACA_T2_STATUS': 'NONE'}
+def TH_PACA_T2_RUNS_15_MIN(self):
+  response = {'TH_PACA_T2': False, 'STATUS': 'NONE'}
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
-  comp_list = companies_symbol.to_list()
   sleep(65)
-  
   '''
-    -> interval = [Upper_rsi,Lower_rsi,EMA_MAX,EMA_MIN,TRADE_RSI,TREND_RSI,TRAGET_CANDLE_NUMBER]
+    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15m','60d',60,55,18,8,'30m','60d',8,8,14,20,8,14,40]
+  intervals      = ['15m','60d',60,55,18,8,'30m','60d',8,8,14]
   curr_time      = datetime.now()
   '''
+  -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  trend_data = get_data_M1.download_trend_data(comp_list,intervals)
-  trade_data = get_data_M1.download_trade_data(comp_list,intervals)
 
-  # TH_PACA ------------------------------------------------------------------
-  # Workbook Path
-  flag_config            = 'algo/config/th_paca_flag.json'
-  # Create Flag config for each company
-  if not os.path.exists(flag_config):
-    # print("Created Flag Config File For all STOCKS.")
-    flag = {}
-    flag['Entry'] = []
-    for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'ema_min':0,'ema_max':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'trend_rsi':0,'target_hit':0}
-    with open(flag_config, "w") as outfile:
-      json.dump(flag, outfile)
-  # Load The Last Updated Flag Config
-  else:
-    # print("Loaded Flag Config File For all Stocks.")
-    with open(flag_config, "r") as outfile:
-      flag = json.load(outfile)
-
-  data_frame, status = backbone_TH_PACA.model(trend_data,trade_data,intervals,flag,curr_time)
-  if status is True:
-    for data_f in data_frame:
-      serializer = serializers.TH_PACA_15_Min_Serializer(data=data_f)
-      if serializer.is_valid():
-        serializer.save()
-      else:
-        response['TH_PACA_SERIALIZER'] = serializer.errors
-    response.update({'TH_PACA': True,'TH_PACA_STATUS': 'ALL DONE.'})    
-  elif status is False:
-    response.update({'TH_PACA': True,'TH_PACA_STATUS': data_frame})
-  # Update config File:
-  with open(flag_config, "w") as outfile:
-    json.dump(flag, outfile)
-  # TH_PACA ------------------------------------------------------------------
-
-  # TH_PACA_T2 ---------------------------------------------------------------
   # Workbook Path
   flag_config            = 'algo/config/th_paca_t2_flag.json'
   # Create Flag config for each company
@@ -194,7 +148,7 @@ def MODELS_RUNS_15_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_TH_PACA_T2.model(trend_data,trade_data,intervals,flag,curr_time)
+  data_frame, status = backbone_TH_PACA_T2.model(intervals, companies_symbol, flag, curr_time)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.TH_PACA_T2_15_Min_Serializer(data=data_f)
@@ -202,11 +156,10 @@ def MODELS_RUNS_15_MIN(self):
         serializer.save()
       else:
         response['TH_PACA_T2_SERIALIZER'] = serializer.errors
-    response.update({'TH_PACA_T2': True,'TH_PACA_T2_STATUS': 'ALL DONE.'})    
+    response.update({'TH_PACA_T2': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
-    response.update({'TH_PACA_T2': True,'TH_PACA_T2_STATUS': data_frame})
+    response.update({'TH_PACA_T2': True, 'STATUS': data_frame})
   # Update config File:
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)
-  # TH_PACA_T2 ---------------------------------------------------------------
   return response

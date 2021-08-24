@@ -33,6 +33,7 @@ def model(intervals,companies_symbol, flag, curr_time):
       # Initiating trades
       stock_name = None
       transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
+      return transactions, True
     elif len(flag['Entry']) == 1:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
@@ -43,6 +44,7 @@ def model(intervals,companies_symbol, flag, curr_time):
       # Initiating trades
       stock_name = flag['Entry'][0]
       transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
+      return transactions, True
     else:
       return 'ALL STOCKS ARE SQUARED OFF', False
 

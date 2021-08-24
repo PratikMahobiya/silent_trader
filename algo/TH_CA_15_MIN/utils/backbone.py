@@ -14,7 +14,7 @@ def model(intervals,companies_symbol, flag, curr_time):
   transactions = []
 
   # Regular Trades Execution
-  if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,20,00):
+  if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,15,00):
     # Convert dataframe to List of Companies
     comp_list   = companies_symbol.to_list()
     stock_list  = [stock for stock in comp_list if stock not in flag['Entry']]
@@ -32,11 +32,12 @@ def model(intervals,companies_symbol, flag, curr_time):
 
       # Initiating trades
       transactions = trade.trade_execution(trade_data_frame, intervals, flag, transactions, curr_time)
+      return transactions, True
     else:
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.', False
   # Square off
-  elif datetime.now().time() >= time(15,20,00) and datetime.now().time() < time(15,30,00):
+  elif datetime.now().time() >= time(15,15,00) and datetime.now().time() < time(15,30,00):
     if len(flag['Entry']) >= 2:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
@@ -47,7 +48,7 @@ def model(intervals,companies_symbol, flag, curr_time):
       # Initiating trades
       stock_name = None
       transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
-
+      return transactions, True
     elif len(flag['Entry']) == 1:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
@@ -58,8 +59,10 @@ def model(intervals,companies_symbol, flag, curr_time):
       # Initiating trades
       stock_name = flag['Entry'][0]
       transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
-
+      return transactions, True
     else:
       return 'ALL TRADES ARE ENDED.', False
 
-  return transactions, True
+  elif datetime.now().time() >= time(15,31,00):
+    return 'MARKET ENDED.', False
+  return 'MARKET NOT STARTED.', False
