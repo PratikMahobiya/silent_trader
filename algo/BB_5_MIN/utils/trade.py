@@ -21,9 +21,7 @@ def buys(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
         flag[stock]['buy'] = True
         flag['Entry'].append(stock)
         flag[stock]['stoploss'] = data_frame['Open'].iloc[-2][stock]
-        flag[stock]['lowerband'] = lb[-2]
-        flag[stock]['atr'] = atr[-2]
-        transactions.append({'symbol':stock,'indicate':'Entry','type':'BB','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'lowerband':flag[stock]['lowerband'],'upperband':None,'rsi':rsi[-2],'atr':flag[stock]['atr'],'difference':None,'profit':None})
+        transactions.append({'symbol':stock,'indicate':'Entry','type':'BB','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'difference':None,'profit':None})
 
 # SELL STOCK ; EXIT
 def sell(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, transactions):
@@ -37,10 +35,8 @@ def sell(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
         flag[stock]['buy']      = False
-        flag[stock]['upperband'] = ub[-2]
-        transactions.append({'symbol':stock,'indicate':'Exit','type':'Up_Cross','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'lowerband':None,'upperband':flag[stock]['upperband'],'rsi':None,'atr':None,'difference':diff,'profit':profit})
+        transactions.append({'symbol':stock,'indicate':'Exit','type':'Up_Cross','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'difference':diff,'profit':profit})
         flag['Entry'].remove(stock)
-        flag[stock]['lowerband'],flag[stock]['upperband'],flag[stock]['atr'] = 0,0,0
         flag[stock]['upper_val'],flag[stock]['selling_val']       = 0, 0
         flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
         flag[stock]['stoploss'] = 0
@@ -51,9 +47,8 @@ def sell(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
         flag[stock]['buy']      = False
-        transactions.append({'symbol':stock,'indicate':'Exit','type':'StopLoss','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'lowerband':None,'upperband':None,'rsi':None,'atr':None,'difference':diff,'profit':profit})
+        transactions.append({'symbol':stock,'indicate':'Exit','type':'StopLoss','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'difference':diff,'profit':profit})
         flag['Entry'].remove(stock)
-        flag[stock]['lowerband'],flag[stock]['upperband'],flag[stock]['atr'] = 0,0,0
         flag[stock]['upper_val'],flag[stock]['selling_val']       = 0, 0
         flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
         flag[stock]['stoploss'] = 0
@@ -70,9 +65,8 @@ def sell(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
             diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
             profit        = (diff/flag[stock]['buying_price']) * 100
             flag[stock]['buy']      = False
-            transactions.append({'symbol':stock,'indicate':'Exit','type':'RSI','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'lowerband':None,'upperband':flag[stock]['upperband'],'rsi':rsi[-2],'atr':None,'difference':diff,'profit':profit})
+            transactions.append({'symbol':stock,'indicate':'Exit','type':'RSI','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'difference':diff,'profit':profit})
             flag['Entry'].remove(stock)
-            flag[stock]['lowerband'],flag[stock]['upperband'],flag[stock]['atr'] = 0,0,0
             flag[stock]['upper_val'],flag[stock]['selling_val']       = 0, 0
             flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
             flag[stock]['stoploss'] = 0
@@ -86,9 +80,8 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
             diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
             profit        = (diff/flag[stock]['buying_price']) * 100
             flag[stock]['buy']      = False
-            transactions.append({'symbol':stock,'indicate':'SquareOff','type':'END_OF_DAY','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'lowerband':None,'upperband':None,'rsi':None,'atr':None,'difference':diff,'profit':profit})
+            transactions.append({'symbol':stock,'indicate':'SquareOff','type':'END_OF_DAY','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'difference':diff,'profit':profit})
             flag['Entry'].remove(stock)
-            flag[stock]['lowerband'],flag[stock]['upperband'],flag[stock]['atr'] = 0,0,0
             flag[stock]['upper_val'],flag[stock]['selling_val']       = 0, 0
             flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
             flag[stock]['stoploss'] = 0
@@ -98,9 +91,8 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time):
         diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
         profit        = (diff/flag[stock_name]['buying_price']) * 100
         flag[stock_name]['buy']      = False
-        transactions.append({'symbol':stock_name,'indicate':'SquareOff','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'stoploss':flag[stock_name]['stoploss'],'lowerband':None,'upperband':None,'rsi':None,'atr':None,'difference':diff,'profit':profit})
+        transactions.append({'symbol':stock_name,'indicate':'SquareOff','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'stoploss':flag[stock_name]['stoploss'],'difference':diff,'profit':profit})
         flag['Entry'].remove(stock_name)
-        flag[stock_name]['lowerband'],flag[stock_name]['upperband'],flag[stock_name]['atr'] = 0,0,0
         flag[stock_name]['upper_val'],flag[stock_name]['selling_val']       = 0, 0
         flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
         flag[stock_name]['stoploss'] = 0
