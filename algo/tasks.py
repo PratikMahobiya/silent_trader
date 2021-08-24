@@ -163,3 +163,17 @@ def TH_PACA_T2_RUNS_15_MIN(self):
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)
   return response
+
+@shared_task(bind=True,max_retries=3)
+def REMOVE_CONFIG_FILES(self):
+  directory = './algo/config'
+  files_in_directory = os.listdir(directory)
+  filtered_files = [file for file in files_in_directory if file.endswith(".json")]
+  for file in filtered_files:
+    try:
+      path_to_file = os.path.join(directory, file)
+      os.remove(path_to_file)
+    except Exception as e:
+      pass
+  files_in_directory = os.listdir(directory)
+  return {'success': True, 'Files_in_config':files_in_directory}

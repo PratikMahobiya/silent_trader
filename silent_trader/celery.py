@@ -19,15 +19,19 @@ app.conf.enable_utc = False
 app.conf.update(timezone = 'Asia/Kolkata')
 
 app.conf.beat_schedule = {
-    'BB_RUNS_IN_EVERY_5_MIN':{
+    'REMOVE_CONFIG_FILES':{
+        'task': 'algo.tasks.REMOVE_CONFIG_FILES',
+        'schedule': crontab(minute=0, hour=0, day_of_week='mon-fri'),
+    },
+    'BB_5_MIN':{
         'task': 'algo.tasks.BB_RUNS_5_MIN',
         'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
-    'TH_CA_RUNS_IN_EVERY_15_MIN':{
+    'TH_CA_15_MIN':{
         'task': 'algo.tasks.TH_CA_RUNS_15_MIN',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
-    'TH_PACA_T2_RUNS_IN_EVERY_15_MIN':{
+    'TH_PACA_T2_15_MIN':{
         'task': 'algo.tasks.TH_PACA_T2_RUNS_15_MIN',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
