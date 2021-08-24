@@ -15,7 +15,7 @@ def trade_execution(data_frame, intervals, flag, transactions, curr_time):
 def buys(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, transactions):
   # If Perv Price is less than LowerBand and Curr Price is Greater Than LowerBand, Curr RSI is less than 40 and Curr RSI is Greater Than Prev RSI, Diff of High and Low is in BtW (ATR and ATR*2)
   if rsi[-2] < intervals[3] and rsi[-2] > rsi[-3]:
-    if lb[-2] < data_frame['Close'].iloc[-2][stock] and lb[-2] > data_frame['Close'].iloc[-2][stock]:
+    if lb[-2] < data_frame['Close'].iloc[-2][stock] and lb[-3] > data_frame['Close'].iloc[-3][stock]:
       if (atr[-2] <= (data_frame['High'].iloc[-2][stock] - data_frame['Low'].iloc[-2][stock]) <= (atr[-2]*1.4)):
         flag[stock]['buying_price'] = data_frame['Close'].iloc[-2][stock]
         flag[stock]['buy'] = True
