@@ -16,7 +16,7 @@ def buys(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
   # If Perv Price is less than LowerBand and Curr Price is Greater Than LowerBand, Curr RSI is less than 40 and Curr RSI is Greater Than Prev RSI, Diff of High and Low is in BtW (ATR and ATR*2)
   if rsi[-1] < intervals[3] and rsi[-1] > rsi[-2]:
     if lb[-1] < data_frame['Close'].iloc[-1][stock] and lb[-2] > data_frame['Close'].iloc[-2][stock]:
-      if (atr[-1] <= (data_frame['High'].iloc[-1][stock] - data_frame['Low'].iloc[-1][stock]) <= (atr[-1]*1.4)):
+      if (atr[-1] <= (data_frame['High'].iloc[-1][stock] - data_frame['Low'].iloc[-1][stock]) <= (atr[-1]*2)):
         flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
         flag[stock]['buy'] = True
         flag['Entry'].append(stock)
