@@ -39,7 +39,7 @@ def BB_RUNS_5_MIN(self):
   '''
     -> intervals = [Time_period, Number_oF_Days,Upper_rsi, Lower_rsi, Bollinger_Band, RSI, ATR]
   '''
-  intervals      = ['5m','3d',60,40,20,8,14]
+  intervals      = ['5m','2d',60,40,20,8,14]
   curr_time      = datetime.now()
   '''
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
@@ -72,7 +72,7 @@ def TH_CA_RUNS_15_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15m','1mo',60,55,18,8,'30m','1mo',8,8,14]
+  intervals      = ['15m','5d',60,55,18,8,'30m','1mo',8,8,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
@@ -124,7 +124,7 @@ def TH_PACA_T2_RUNS_15_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15m','1mo',60,55,18,8,'30m','1mo',8,8,14]
+  intervals      = ['15m','5d',60,55,18,8,'30m','1mo',8,8,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
