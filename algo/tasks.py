@@ -142,7 +142,7 @@ def TH_PACA_T2_RUNS_15_MIN(self):
   response = {'TH_PACA_T2': False, 'STATUS': 'NONE'}
 
   # Companies List
-  company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
+  company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
   sleep(65)
