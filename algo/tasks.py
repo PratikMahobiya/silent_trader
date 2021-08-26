@@ -3,12 +3,37 @@ import json
 import pandas as pd
 from time import sleep
 from datetime import datetime
+from kiteconnect import KiteConnect
 
 from . import serializers
 from celery import shared_task
 from .BB_5_MIN.utils import backbone as backbone_BB_5
 from .TH_CA_15_MIN.utils import backbone as backbone_TH_CA
 from .TH_PACA_T2_15_MIN.utils import backbone as backbone_TH_PACA_T2
+
+def connect_to_kite_connection():
+  api_key = open('algo/config/api_key.txt','r').read()
+  access_token = open('algo/config/access_token.txt','r').read()
+  try:
+    kite = KiteConnect(api_key=api_key)
+    kite.set_access_token(access_token)
+  except Exception as  e:
+    pass
+  return kite
+
+@shared_task(bind=True,max_retries=3)
+def REMOVE_CONFIG_FILES(self):
+  directory = './algo/config'
+  files_in_directory = os.listdir(directory)
+  filtered_files = [file for file in files_in_directory if file.endswith(".json")]
+  for file in filtered_files:
+    try:
+      path_to_file = os.path.join(directory, file)
+      os.remove(path_to_file)
+    except Exception as e:
+      pass
+  files_in_directory = os.listdir(directory)
+  return {'success': True, 'Files_in_config':files_in_directory}
 
 @shared_task(bind=True,max_retries=3)
 def BB_RUNS_5_MIN(self):
@@ -121,6 +146,7 @@ def TH_PACA_T2_RUNS_15_MIN(self):
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
   sleep(65)
+  kite_conn_var = connect_to_kite_connection()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
@@ -130,7 +156,6 @@ def TH_PACA_T2_RUNS_15_MIN(self):
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-
   # Workbook Path
   flag_config            = 'algo/config/th_paca_t2_flag.json'
   # Create Flag config for each company
@@ -139,7 +164,7 @@ def TH_PACA_T2_RUNS_15_MIN(self):
     flag = {}
     flag['Entry'] = []
     for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0}
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'order_status':'None'}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
@@ -148,7 +173,7 @@ def TH_PACA_T2_RUNS_15_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_TH_PACA_T2.model(intervals, companies_symbol, flag, curr_time)
+  data_frame, status = backbone_TH_PACA_T2.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.TH_PACA_T2_15_Min_Serializer(data=data_f)
@@ -163,17 +188,3 @@ def TH_PACA_T2_RUNS_15_MIN(self):
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)
   return response
-
-@shared_task(bind=True,max_retries=3)
-def REMOVE_CONFIG_FILES(self):
-  directory = './algo/config'
-  files_in_directory = os.listdir(directory)
-  filtered_files = [file for file in files_in_directory if file.endswith(".json")]
-  for file in filtered_files:
-    try:
-      path_to_file = os.path.join(directory, file)
-      os.remove(path_to_file)
-    except Exception as e:
-      pass
-  files_in_directory = os.listdir(directory)
-  return {'success': True, 'Files_in_config':files_in_directory}
