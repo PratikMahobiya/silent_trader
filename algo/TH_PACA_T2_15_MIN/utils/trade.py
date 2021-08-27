@@ -42,7 +42,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
               if order_id != 0:
                 flag['Entry'].append(stock)
                 flag[stock]['buy'] = True
-                transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id']})
+                transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id']})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.1, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-2] > ema_max[-2]:
@@ -66,7 +66,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
                   if order_id != 0:
                     flag['Entry'].append(stock)
                     flag[stock]['buy'] = True
-                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id']})
+                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id']})
 
 # SELL STOCK ; EXIT
 def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_time, kite_conn_var):

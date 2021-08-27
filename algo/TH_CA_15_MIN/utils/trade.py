@@ -34,7 +34,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
               flag[stock]['stoploss'] = checking_stoploss(data_frame,stock) # data_frame['Low'].iloc[-2][stock]
               flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
               flag['Entry'].append(stock)
-              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
+              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.1, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-2] > ema_max[-2]:
@@ -50,7 +50,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
                   flag[stock]['stoploss'] = checking_stoploss(data_frame,stock) # data_frame['Low'].iloc[-2][stock]
                   flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
                   flag['Entry'].append(stock)
-                  transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
+                  transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
 
 # SELL STOCK ; EXIT
 def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_time):
