@@ -20,7 +20,7 @@ def place_cover_order(kite_conn_var,symbol,stoploss_val):
     error_status = e
   if order_id != 0:
     order_list = kite_conn_var.orders()
-    for i in len(order_list):
+    for i in range(len(order_list)):
       if order_list[i]['parent_order_id'] == order_id:
         exit_id = order_list[i]['order_id']
   return order_id, error_status, exit_id
