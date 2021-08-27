@@ -34,14 +34,15 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
               flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
               # Place Order in ZERODHA.
               # -------------------------------------------
-              order_id, error_status = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'],flag[stock]['target'])
+              order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'],flag[stock]['target'])
               flag[stock]['order_id'] = order_id
+              flag[stock]['exit_id'] = exit_id
               flag[stock]['order_status'] = error_status
               # -------------------------------------------
               if order_id != 0:
                 flag['Entry'].append(stock)
                 flag[stock]['buy'] = True
-                transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status']})
+                transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id']})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.1, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-2] > ema_max[-2]:
@@ -57,14 +58,15 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
                   flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
                   # Place Order in ZERODHA.
                   # -------------------------------------------
-                  order_id, error_status = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'],flag[stock]['target'])
+                  order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'],flag[stock]['target'])
                   flag[stock]['order_id'] = order_id
+                  flag[stock]['exit_id'] = exit_id
                   flag[stock]['order_status'] = error_status
                   # -------------------------------------------
                   if order_id != 0:
                     flag['Entry'].append(stock)
                     flag[stock]['buy'] = True
-                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status']})
+                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id']})
 
 # SELL STOCK ; EXIT
 def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_time, kite_conn_var):
@@ -75,17 +77,18 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
     profit        = (diff/flag[stock]['buying_price']) * 100
     # place an order for exit
     # -----------------------------------------------
-    order_id, error_status = zerodha_action.exit_cover_order(kite_conn_var,stock)
+    order_id, error_status = zerodha_action.exit_cover_order(kite_conn_var,flag[stock]['exit_id'])
     flag[stock]['order_id'] = order_id
     flag[stock]['order_status'] = error_status
     # -----------------------------------------------
     if order_id != 0:
       flag[stock]['buy']      = False
-      transactions.append({'symbol':stock,'indicate':'Exit','type':'TARGET_HIT','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':None,'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status']})
+      transactions.append({'symbol':stock,'indicate':'Exit','type':'TARGET_HIT','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':None,'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':None})
       flag['Entry'].remove(stock)
       flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
       flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
       flag[stock]['order_id'], flag[stock]['order_status'] = 0, 'None'
+      flag[stock]['exit_id'] = 0
   
   # if price hits StopLoss, Exit
   elif data_frame['Close'].iloc[-2][stock] <= flag[stock]['stoploss']:
@@ -94,17 +97,18 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
     profit        = (diff/flag[stock]['buying_price']) * 100
     # place an order for exit
     # -----------------------------------------------
-    order_id, error_status = zerodha_action.exit_cover_order(kite_conn_var,stock)
+    order_id, error_status = zerodha_action.exit_cover_order(kite_conn_var,flag[stock]['exit_id'])
     flag[stock]['order_id'] = order_id
     flag[stock]['order_status'] = error_status
     # -----------------------------------------------
     if order_id != 0:
       flag[stock]['buy']      = False
-      transactions.append({'symbol':stock,'indicate':'Exit','type':'StopLoss','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':None,'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status']})
+      transactions.append({'symbol':stock,'indicate':'Exit','type':'StopLoss','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':None,'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':None})
       flag['Entry'].remove(stock)
       flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
       flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
       flag[stock]['order_id'], flag[stock]['order_status'] = 0, 'None'
+      flag[stock]['exit_id'] = 0
 
 # SQUARE OFF, EXIT
 def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time, kite_conn_var):
@@ -116,17 +120,18 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time, 
       profit        = (diff/flag[stock]['buying_price']) * 100
       # place an order for exit
       # -----------------------------------------------
-      order_id, error_status = zerodha_action.exit_cover_order(kite_conn_var,stock)
+      order_id, error_status = zerodha_action.exit_cover_order(kite_conn_var,flag[stock]['exit_id'])
       flag[stock]['order_id'] = order_id
       flag[stock]['order_status'] = error_status
       # -----------------------------------------------
       if order_id != 0:
         flag[stock]['buy']      = False
-        transactions.append({'symbol':stock,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':None,'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status']})
+        transactions.append({'symbol':stock,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock]['selling_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':None,'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':None})
         flag['Entry'].remove(stock)
         flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
         flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
         flag[stock]['order_id'], flag[stock]['order_status'] = 0, 'None'
+        flag[stock]['exit_id'] = 0
   # for only one stock
   else:
     flag[stock_name]['selling_price'] = data_frame['Close'].iloc[-2]
@@ -134,15 +139,16 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time, 
     profit        = (diff/flag[stock_name]['buying_price']) * 100
     # place an order for exit
     # -----------------------------------------------
-    order_id, error_status = zerodha_action.exit_cover_order(kite_conn_var,stock_name)
+    order_id, error_status = zerodha_action.exit_cover_order(kite_conn_var,flag[stock_name]['exit_id'])
     flag[stock_name]['order_id'] = order_id
     flag[stock_name]['order_status'] = error_status
     # -----------------------------------------------
     if order_id != 0:
       flag[stock_name]['buy']      = False
-      transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'stoploss':flag[stock_name]['stoploss'],'target':flag[stock_name]['target'],'target_percent':None,'difference':diff,'profit':profit,'order_id':flag[stock_name]['order_id'],'order_status':flag[stock_name]['order_status']})
+      transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'stoploss':flag[stock_name]['stoploss'],'target':flag[stock_name]['target'],'target_percent':None,'difference':diff,'profit':profit,'order_id':flag[stock_name]['order_id'],'order_status':flag[stock_name]['order_status'],'exit_id':None})
       flag['Entry'].remove(stock_name)
       flag[stock_name]['stoploss'], flag[stock_name]['target'], flag[stock_name]['target_per'] = 0, 0, 0
       flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
       flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, 'None'
+      flag[stock_name]['exit_id'] = 0
   return transactions
