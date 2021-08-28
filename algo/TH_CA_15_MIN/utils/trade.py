@@ -1,5 +1,13 @@
 import talib
 
+def checking_stoploss(data_frame, stock):
+  per = ((data_frame['Close'].iloc[-2][stock]-data_frame['Low'].iloc[-2][stock])/data_frame['Close'].iloc[-2][stock])*100
+  if per > 0.3:
+    stoploss_val = data_frame['Close'].iloc[-2][stock] - (data_frame['Close'].iloc[-2][stock] * 0.003)
+  else:
+    stoploss_val = data_frame['Low'].iloc[-2][stock]
+  return stoploss_val
+
 def trade_execution(data_frame, intervals, flag, transactions, curr_time):
     for stock in data_frame['Close'].columns:
         ema_max     = talib.EMA(data_frame['Close'][stock], timeperiod=intervals[4])
@@ -22,7 +30,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
             if ((((ema_max[-2]-ema_min[-2])/ema_max[-2])*100) <= 0.2):
               flag[stock]['buying_price'] = data_frame['Close'].iloc[-2][stock]
               flag[stock]['buy'] = True
-              flag[stock]['stoploss'] = data_frame['Low'].iloc[-2][stock]
+              flag[stock]['stoploss'] = checking_stoploss(data_frame,stock) # data_frame['Low'].iloc[-2][stock]
               flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
               flag['Entry'].append(stock)
               transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
@@ -38,7 +46,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
                 if rsi[-2] > rsi[-3] and rsi[-2] > rsi[-4]:
                   flag[stock]['buying_price'] = data_frame['Close'].iloc[-2][stock]
                   flag[stock]['buy'] = True
-                  flag[stock]['stoploss'] = data_frame['Low'].iloc[-2][stock]
+                  flag[stock]['stoploss'] = checking_stoploss(data_frame,stock) # data_frame['Low'].iloc[-2][stock]
                   flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
                   flag['Entry'].append(stock)
                   transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None})
@@ -57,8 +65,8 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
     flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
   
   # if price hits StopLoss, Exit
-  elif data_frame['Close'].iloc[-2][stock] <= flag[stock]['stoploss']:
-    flag[stock]['selling_price'] = data_frame['Close'].iloc[-2][stock]
+  elif data_frame['Low'].iloc[-2][stock] <= flag[stock]['stoploss']:
+    flag[stock]['selling_price'] = flag[stock]['stoploss']
     diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
     profit        = (diff/flag[stock]['buying_price']) * 100
     flag[stock]['buy']      = False
