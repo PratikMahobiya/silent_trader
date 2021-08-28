@@ -164,7 +164,7 @@ def TH_PACA_T2_RUNS_15_MIN(self):
     flag = {}
     flag['Entry'] = []
     for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'order_status':'None','exit_id':0}
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'order_status':None,'exit_id':0}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config

@@ -87,7 +87,7 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
       flag['Entry'].remove(stock)
       flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
       flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
-      flag[stock]['order_id'], flag[stock]['order_status'] = 0, 'None'
+      flag[stock]['order_id'], flag[stock]['order_status'] = 0, None
       flag[stock]['exit_id'] = 0
   
   # if price hits StopLoss, Exit
@@ -100,7 +100,7 @@ def sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_tim
     flag['Entry'].remove(stock)
     flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
     flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
-    flag[stock]['order_id'], flag[stock]['order_status'] = 0, 'None'
+    flag[stock]['order_id'], flag[stock]['order_status'] = 0, None
     flag[stock]['exit_id'] = 0
 
 # SQUARE OFF, EXIT
@@ -117,7 +117,7 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time, 
         flag['Entry'].remove(stock)
         flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
         flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
-        flag[stock]['order_id'], flag[stock]['order_status'] = 0, 'None'
+        flag[stock]['order_id'], flag[stock]['order_status'] = 0, None
         flag[stock]['exit_id'] = 0
       else:
         flag[stock]['selling_price'] = data_frame['Close'].iloc[-2][stock]
@@ -135,7 +135,7 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time, 
           flag['Entry'].remove(stock)
           flag[stock]['stoploss'], flag[stock]['target'], flag[stock]['target_per'] = 0, 0, 0
           flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
-          flag[stock]['order_id'], flag[stock]['order_status'] = 0, 'None'
+          flag[stock]['order_id'], flag[stock]['order_status'] = 0, None
           flag[stock]['exit_id'] = 0
   # for only one stock
   else:
@@ -148,7 +148,7 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time, 
       flag['Entry'].remove(stock_name)
       flag[stock_name]['stoploss'], flag[stock_name]['target'], flag[stock_name]['target_per'] = 0, 0, 0
       flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
-      flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, 'None'
+      flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, None
       flag[stock_name]['exit_id'] = 0
     else:
       flag[stock_name]['selling_price'] = data_frame['Close'].iloc[-2]
@@ -166,6 +166,6 @@ def square_off(stock_name,data_frame, intervals, flag, transactions, curr_time, 
         flag['Entry'].remove(stock_name)
         flag[stock_name]['stoploss'], flag[stock_name]['target'], flag[stock_name]['target_per'] = 0, 0, 0
         flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
-        flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, 'None'
+        flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, None
         flag[stock_name]['exit_id'] = 0
   return transactions
