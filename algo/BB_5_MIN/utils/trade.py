@@ -44,8 +44,8 @@ def sell(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
         flag[stock]['stoploss'] = 0
 
     # When StopLoss Hits Exits
-    elif data_frame['Close'].iloc[-1][stock] <= flag[stock]['stoploss']:
-        flag[stock]['selling_price'] = data_frame['Close'].iloc[-1][stock]
+    elif data_frame['Low'].iloc[-1][stock] <= flag[stock]['stoploss']:
+        flag[stock]['selling_price'] = flag[stock]['stoploss']
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
         flag[stock]['buy']      = False
