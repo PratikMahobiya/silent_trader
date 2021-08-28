@@ -21,7 +21,7 @@ app.conf.update(timezone = 'Asia/Kolkata')
 app.conf.beat_schedule = {
     'REMOVE_CONFIG_FILES':{
         'task': 'algo.tasks.REMOVE_CONFIG_FILES',
-        'schedule': crontab(minute=0, hour=0, day_of_week='mon-fri'),
+        'schedule': crontab(minute=0, hour='23', day_of_week='mon-fri'),
     },
     'BB_5_MIN':{
         'task': 'algo.tasks.BB_RUNS_5_MIN',
