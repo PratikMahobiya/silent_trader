@@ -26,7 +26,7 @@ def connect_to_kite_connection():
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE'}
   kite_conn_var = connect_to_kite_connection()
-  transactions = check_ltp(kite_conn_var)
+  transactions = check_ltp.get_stock_ltp(kite_conn_var)
   if len(transactions) != 0:
     for trans in transactions:
       serializer = serializers.TH_CA_15_Min_Serializer(data=trans)
