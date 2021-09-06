@@ -26,6 +26,7 @@ class TH_CA_15_MIN(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
     target_percent          = models.FloatField(verbose_name='TARGET (%)',blank=True,null=True,default=None)
+    stoploss_percent        = models.FloatField(verbose_name='STOPLOSS (%)',blank=True,null=True,default=None)
     def __int__(self):
     	return self.id
     class Meta:
@@ -42,6 +43,7 @@ class TH_PACA_T2_15_MIN(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
     target_percent          = models.FloatField(verbose_name='TARGET (%)',blank=True,null=True,default=None)
+    stoploss_percent        = models.FloatField(verbose_name='STOPLOSS (%)',blank=True,null=True,default=None)
     order_id                = models.BigIntegerField(verbose_name='ORDER_ID',blank=True,null=True,default=None)
     exit_id                 = models.BigIntegerField(verbose_name='EXIT_ID',blank=True,null=True,default=None)
     order_status            = models.TextField(verbose_name='ORDER_STATUS',max_length=1000)
