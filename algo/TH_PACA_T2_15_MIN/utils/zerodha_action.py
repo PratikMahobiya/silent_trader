@@ -17,7 +17,7 @@ def place_cover_order(kite_conn_var,symbol,stoploss_val):
                                 )
     error_status = 'SUCCESSFULLY_PLACED'
   except Exception as e:
-    error_status = e
+    error_status = 'PROBLEM AT ZERODHA END.'
   if order_id != 0:
     order_list = kite_conn_var.orders()
     for i in range(len(order_list)):
