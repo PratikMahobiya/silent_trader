@@ -1,8 +1,8 @@
 from kiteconnect import KiteConnect
 
-api_key = open('algo/config/api_key.txt','r').read()
-api_secret = open('algo/config/api_secret.txt','r').read()
-access_token = open('algo/config/access_token.txt','r').read()
+api_key = open('config/api_key.txt','r').read()
+api_secret = open('config/api_secret.txt','r').read()
+access_token = open('config/access_token.txt','r').read()
 try:
     kite = KiteConnect(api_key=api_key)
 
@@ -15,7 +15,7 @@ try:
     data = kite.generate_session(token, api_secret=api_secret)
     kite.set_access_token(data["access_token"])
     print(data["access_token"])
-    with open('algo/config/access_token.txt','w') as at:
+    with open('config/access_token.txt','w') as at:
       at.write(data["access_token"])
 except Exception as  e:
     print(e)
