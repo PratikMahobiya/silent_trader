@@ -2,7 +2,7 @@ import os
 import json
 import pandas as pd
 from time import sleep
-from datetime import datetime
+from datetime import datetime, time
 from kiteconnect import KiteConnect
 
 from . import serializers
@@ -25,19 +25,24 @@ def connect_to_kite_connection():
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE'}
-  kite_conn_var = connect_to_kite_connection()
-  transactions = check_ltp.get_stock_ltp(kite_conn_var)
-  if len(transactions) != 0:
-    for trans in transactions:
-      serializer = serializers.TH_CA_15_Min_Serializer(data=trans)
-      if serializer.is_valid():
-        serializer.save()
-      else:
-        response['TH_CA_SERIALIZER'] = serializer.errors
-    response.update({'LTP': True, 'STATUS': 'DONE.'})
+  if datetime.now().time() >= time(9,18,00) and datetime.now().time() < time(15,25,00):
+    kite_conn_var = connect_to_kite_connection()
+    transactions = check_ltp.get_stock_ltp(kite_conn_var)
+    if len(transactions) != 0:
+      for trans in transactions:
+        serializer = serializers.TH_CA_15_Min_Serializer(data=trans)
+        if serializer.is_valid():
+          serializer.save()
+        else:
+          response['TH_CA_SERIALIZER'] = serializer.errors
+      response.update({'LTP': True, 'STATUS': 'DONE.'})
+    else:
+      transactions = 'NO CHANGE'
+      response.update({'LTP': True, 'STATUS': transactions})
+  elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
+    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.'})
   else:
-    transactions = 'NO CHANGE'
-    response.update({'LTP': True, 'STATUS': transactions})
+    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.'})
   return response
 
 @shared_task(bind=True,max_retries=3)

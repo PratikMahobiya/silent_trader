@@ -1,7 +1,7 @@
 import json
 
 from . import exit_action
-from datetime import datetime
+from datetime import datetime, time
 
 def get_stock_ltp(kite_conn_var):
   curr_time = datetime.now()
@@ -21,8 +21,12 @@ def get_stock_ltp(kite_conn_var):
     for stock_key in stocks_ltp:
       price = stocks_ltp[stock_key]['last_price']
       stock_name = stock_key.split(':')[-1]
-      if stock_name in flag_CA['Entry']:
-        exit_action.sell(stock_name, price, flag_CA, transactions, curr_time, kite_conn_var)
+      if datetime.now().time() >= time(9,18,00) and datetime.now().time() < time(15,15,00):
+        if stock_name in flag_CA['Entry']:
+          exit_action.sell(stock_name, price, flag_CA, transactions, curr_time, kite_conn_var)
+      elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,40,00):
+        if stock_name in flag_CA['Entry']:
+          exit_action.square_off(stock_name, price, flag_CA, transactions, curr_time, kite_conn_var)
 
   # Update config File:
   with open(flag_config_CA, "w") as outfile:
