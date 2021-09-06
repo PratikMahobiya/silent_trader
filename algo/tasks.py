@@ -40,7 +40,7 @@ def BB_RUNS_5_MIN(self):
   response = {'BB': False, 'STATUS': 'NONE'}
 
   # Companies List
-  company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
+  company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
   companies_symbol         = company_Sheet['SYMBOL']
   sleep(65)
 
@@ -90,7 +90,7 @@ def TH_CA_RUNS_15_MIN(self):
   response = {'TH_CA': False, 'STATUS': 'NONE'}
 
   # Companies List
-  company_Sheet          = pd.read_excel("algo/company/yf_stock_list.xlsx")
+  company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
   sleep(65)
