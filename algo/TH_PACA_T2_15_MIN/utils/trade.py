@@ -3,8 +3,8 @@ from . import zerodha_action
 
 def checking_stoploss(data_frame, stock):
   per = ((data_frame['Close'].iloc[-2][stock]-data_frame['Low'].iloc[-2][stock])/data_frame['Close'].iloc[-2][stock])*100
-  if per > 0.2:
-    stoploss_val = data_frame['Close'].iloc[-2][stock] - (data_frame['Close'].iloc[-2][stock] * 0.003)
+  if per > 0.3:
+    stoploss_val = data_frame['Close'].iloc[-2][stock] - (data_frame['Close'].iloc[-2][stock] * 0.002)
   else:
     stoploss_val = data_frame['Low'].iloc[-2][stock]
   return per, stoploss_val
