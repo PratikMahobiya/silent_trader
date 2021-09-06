@@ -7,7 +7,7 @@ def get_stock_ltp(kite_conn_var):
   curr_time = datetime.now()
   transactions = []
   # Workbook Path
-  flag_config_CA            = 'algo/config/th_ca_flag.json'
+  flag_config_CA            = 'config/th_ca_flag.json'
   with open(flag_config_CA, "r") as outfile:
     flag_CA = json.load(outfile)
 
