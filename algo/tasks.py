@@ -22,7 +22,8 @@ def connect_to_kite_connection():
     pass
   return kite
 
-def ltp_of_entries():
+@shared_task(bind=True,max_retries=3)
+def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE'}
   kite_conn_var = connect_to_kite_connection()
   transactions = check_ltp(kite_conn_var)
