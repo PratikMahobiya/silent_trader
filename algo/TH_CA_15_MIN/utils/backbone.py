@@ -4,12 +4,13 @@ from . import trade
 from . import get_data
 from . import trending_stocks
 
-def model(intervals,companies_symbol, flag, curr_time):
+def model(intervals,companies_symbol, flag, curr_time, kite_conn_var):
   '''
     intervals          = Intervals for Trading and Trend Analysis
     companies_symbol   = List of Companies with their Symbol
     flag_config        = flag config file
     curr_time          = time of execution
+    kite_conn_var      = to place orders in zerodha
   '''
   transactions = []
 
@@ -31,13 +32,13 @@ def model(intervals,companies_symbol, flag, curr_time):
       trade_data_frame = get_data.download_trade_data(trade_stock_list,intervals)
 
       # Initiating trades
-      transactions = trade.trade_execution(trade_data_frame, intervals, flag, transactions, curr_time)
+      transactions = trade.trade_execution(trade_data_frame, intervals, flag, transactions, curr_time, kite_conn_var)
       return transactions, True
     else:
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.', False
   # Square off
-  elif datetime.now().time() >= time(15,15,00) and datetime.now().time() < time(15,30,00):
+  elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,40,00):
     if len(flag['Entry']) >= 2:
       # Convert dataframe to List of Companies
       trade_stock_list  = flag['Entry']
@@ -47,7 +48,7 @@ def model(intervals,companies_symbol, flag, curr_time):
 
       # Initiating trades
       stock_name = None
-      transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
+      transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time, kite_conn_var)
       return transactions, True
     elif len(flag['Entry']) == 1:
       # Convert dataframe to List of Companies
@@ -58,7 +59,7 @@ def model(intervals,companies_symbol, flag, curr_time):
 
       # Initiating trades
       stock_name = flag['Entry'][0]
-      transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time)
+      transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time, kite_conn_var)
       return transactions, True
     else:
       return 'ALL TRADES ARE ENDED.', False

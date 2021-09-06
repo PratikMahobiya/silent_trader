@@ -112,6 +112,7 @@ def TH_CA_RUNS_15_MIN(self):
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
   sleep(65)
+  kite_conn_var = connect_to_kite_connection()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
@@ -130,7 +131,7 @@ def TH_CA_RUNS_15_MIN(self):
     flag = {}
     flag['Entry'] = []
     for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0}
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'order_status':None,'exit_id':0}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
@@ -139,7 +140,7 @@ def TH_CA_RUNS_15_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_TH_CA.model(intervals, companies_symbol, flag, curr_time)
+  data_frame, status = backbone_TH_CA.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.TH_CA_15_Min_Serializer(data=data_f)

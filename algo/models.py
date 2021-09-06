@@ -27,6 +27,9 @@ class TH_CA_15_MIN(models.Model):
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
     target_percent          = models.FloatField(verbose_name='TARGET (%)',blank=True,null=True,default=None)
     stoploss_percent        = models.FloatField(verbose_name='STOPLOSS (%)',blank=True,null=True,default=None)
+    order_id                = models.BigIntegerField(verbose_name='ORDER_ID',blank=True,null=True,default=None)
+    exit_id                 = models.BigIntegerField(verbose_name='EXIT_ID',blank=True,null=True,default=None)
+    order_status            = models.TextField(verbose_name='ORDER_STATUS',max_length=1000)
     def __int__(self):
     	return self.id
     class Meta:
