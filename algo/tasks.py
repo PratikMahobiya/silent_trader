@@ -28,11 +28,11 @@ def ltp_of_entries():
   transactions = check_ltp(kite_conn_var)
   if len(transactions) != 0:
     for trans in transactions:
-      serializer = serializers.TH_PACA_T2_15_Min_Serializer(data=trans)
+      serializer = serializers.TH_CA_15_Min_Serializer(data=trans)
       if serializer.is_valid():
         serializer.save()
       else:
-        response['TH_PACA_T2_SERIALIZER'] = serializer.errors
+        response['TH_CA_SERIALIZER'] = serializer.errors
     response.update({'LTP': True, 'STATUS': 'DONE.'})
   else:
     transactions = 'NO CHANGE'
