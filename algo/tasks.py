@@ -6,6 +6,7 @@ from datetime import datetime
 from kiteconnect import KiteConnect
 
 from . import serializers
+from . import check_ltp
 from celery import shared_task
 from .BB_5_MIN.utils import backbone as backbone_BB_5
 from .TH_CA_15_MIN.utils import backbone as backbone_TH_CA
@@ -20,6 +21,23 @@ def connect_to_kite_connection():
   except Exception as  e:
     pass
   return kite
+
+def ltp_of_entries():
+  response = {'LTP': False, 'STATUS': 'NONE'}
+  kite_conn_var = connect_to_kite_connection()
+  transactions = check_ltp(kite_conn_var)
+  if len(transactions) != 0:
+    for trans in transactions:
+      serializer = serializers.TH_PACA_T2_15_Min_Serializer(data=trans)
+      if serializer.is_valid():
+        serializer.save()
+      else:
+        response['TH_PACA_T2_SERIALIZER'] = serializer.errors
+    response.update({'LTP': True, 'STATUS': 'DONE.'})
+  else:
+    transactions = 'NO CHANGE'
+    response.update({'LTP': True, 'STATUS': transactions})
+  return response
 
 @shared_task(bind=True,max_retries=3)
 def REMOVE_CONFIG_FILES(self):
