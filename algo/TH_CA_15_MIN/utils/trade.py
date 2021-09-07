@@ -17,8 +17,8 @@ def trade_execution(data_frame, intervals, flag, transactions, curr_time, kite_c
         rsi         = talib.RSI(data_frame['Close'][stock], timeperiod=intervals[9])
         if flag[stock]['buy'] is False:
             buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions, curr_time, kite_conn_var)
-        else:
-            sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_time, kite_conn_var)
+        # else:
+        #     sell(stock, data_frame, ema_min, rsi, intervals,flag, transactions, curr_time, kite_conn_var)
     return transactions
 
 # BUYS STOCKS ; ENTRY
