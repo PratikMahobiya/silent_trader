@@ -27,8 +27,12 @@ def get_stock_ltp(kite_conn_var):
       elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,40,00):
         if stock_name in flag_CA['Entry']:
           exit_action.square_off(stock_name, price, flag_CA, transactions, curr_time, kite_conn_var)
+    # Update config File:
+    with open(flag_config_CA, "w") as outfile:
+      json.dump(flag_CA, outfile)
+    return transactions, stocks_ltp
 
   # Update config File:
   with open(flag_config_CA, "w") as outfile:
     json.dump(flag_CA, outfile)
-  return transactions
+  return transactions, active_stocks

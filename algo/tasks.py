@@ -24,10 +24,10 @@ def connect_to_kite_connection():
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
-  response = {'LTP': False, 'STATUS': 'NONE'}
+  response = {'LTP': False, 'STATUS': 'NONE','STOCKS':None}
   if datetime.now().time() >= time(9,18,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
-    transactions = check_ltp.get_stock_ltp(kite_conn_var)
+    transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
     if len(transactions) != 0:
       for trans in transactions:
         serializer = serializers.TH_CA_15_Min_Serializer(data=trans)
@@ -35,10 +35,10 @@ def ltp_of_entries(self):
           serializer.save()
         else:
           response['TH_CA_SERIALIZER'] = serializer.errors
-      response.update({'LTP': True, 'STATUS': 'DONE.'})
+      response.update({'LTP': True, 'STATUS': 'DONE.','STOCKS':stock})
     else:
       transactions = 'NO CHANGE'
-      response.update({'LTP': True, 'STATUS': transactions})
+      response.update({'LTP': True, 'STATUS': transactions,'STOCKS':stock})
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
     response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.'})
   else:
