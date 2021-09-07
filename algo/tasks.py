@@ -117,7 +117,7 @@ def TH_CA_RUNS_15_MIN(self):
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
-  sleep(65)
+  # sleep(65)
   kite_conn_var = connect_to_kite_connection()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
