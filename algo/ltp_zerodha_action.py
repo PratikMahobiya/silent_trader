@@ -8,5 +8,5 @@ def exit_cover_order(kite_conn_var,exit_id):
                                 variety=kite_conn_var.VARIETY_CO)
     error_status = 'SUCCESSFULLY_EXITED'
   except Exception as e:
-    error_status = e
+    error_status = 'PROBLEM AT ZERODHA END OR STOPLOSS HITTED.'
   return cancel_id, error_status
