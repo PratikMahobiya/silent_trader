@@ -35,10 +35,10 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.ltp_of_entries',
         'schedule': 3.0,
     },
-    # 'TH_PACA_T2_15_MIN':{
-    #     'task': 'algo.tasks.TH_PACA_T2_RUNS_15_MIN',
-    #     'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
-    # },
+    'TH_PACA_T2_15_MIN':{
+        'task': 'algo.tasks.TH_PACA_T2_RUNS_15_MIN',
+        'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
+    },
 }
 
 # Load task modules from all registered Django app configs.

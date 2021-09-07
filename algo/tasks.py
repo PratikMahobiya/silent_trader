@@ -25,7 +25,7 @@ def connect_to_kite_connection():
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','STOCKS':None}
-  if datetime.now().time() >= time(9,18,00) and datetime.now().time() < time(15,25,00):
+  if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
     transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
     if len(transactions) != 0:
@@ -40,9 +40,9 @@ def ltp_of_entries(self):
       transactions = 'NO CHANGE'
       response.update({'LTP': True, 'STATUS': transactions,'STOCKS':stock})
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
-    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.'})
+    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS': 'I APOLOGIZE MY MASTER.'})
   else:
-    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.'})
+    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.', 'STOCKS': 'SORRY.'})
   return response
 
 @shared_task(bind=True,max_retries=3)
@@ -117,7 +117,6 @@ def TH_CA_RUNS_15_MIN(self):
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
-  # sleep(65)
   kite_conn_var = connect_to_kite_connection()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
@@ -170,7 +169,6 @@ def TH_PACA_T2_RUNS_15_MIN(self):
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
   # Extract Symbols and Company Names from Dataframe
   companies_symbol = company_Sheet['SYMBOL']
-  sleep(65)
   kite_conn_var = connect_to_kite_connection()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]

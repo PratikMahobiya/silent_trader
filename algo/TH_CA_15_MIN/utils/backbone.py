@@ -37,32 +37,6 @@ def model(intervals,companies_symbol, flag, curr_time, kite_conn_var):
     else:
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.', False
-  # # Square off
-  # elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,40,00):
-  #   if len(flag['Entry']) >= 2:
-  #     # Convert dataframe to List of Companies
-  #     trade_stock_list  = flag['Entry']
-
-  #     # DownLoad data for Square Off Trades
-  #     trade_data_frame = get_data.download_trade_data(trade_stock_list,intervals)
-
-  #     # Initiating trades
-  #     stock_name = None
-  #     transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time, kite_conn_var)
-  #     return transactions, True
-  #   elif len(flag['Entry']) == 1:
-  #     # Convert dataframe to List of Companies
-  #     trade_stock_list  = flag['Entry']
-
-  #     # DownLoad data for Square Off Trades
-  #     trade_data_frame = get_data.download_trade_data(trade_stock_list,intervals)
-
-  #     # Initiating trades
-  #     stock_name = flag['Entry'][0]
-  #     transactions = trade.square_off(stock_name,trade_data_frame, intervals, flag, transactions, curr_time, kite_conn_var)
-  #     return transactions, True
-  #   else:
-  #     return 'ALL TRADES ARE ENDED.', False
 
   elif datetime.now().time() >= time(15,31,00):
     return 'MARKET ENDED.', False
