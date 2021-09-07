@@ -18,11 +18,11 @@ def buys(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
     if rsi[-1] > rsi[-2]:
       if lb[-1] < data_frame['Close'].iloc[-1][stock]:
         if lb[-2] > data_frame['Close'].iloc[-2][stock]:
-          if (atr[-1] <= (data_frame['High'].iloc[-1][stock] - data_frame['Low'].iloc[-1][stock]) <= (atr[-1]*1.4)):
+        #   if (atr[-1] <= (data_frame['High'].iloc[-1][stock] - data_frame['Low'].iloc[-1][stock]) <= (atr[-1]*1.4)):
             flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
             flag[stock]['buy'] = True
             flag['Entry'].append(stock)
-            flag[stock]['stoploss'] = data_frame['Open'].iloc[-1][stock]
+            flag[stock]['stoploss'] = data_frame['Low'].iloc[-1][stock]
             transactions.append({'symbol':stock,'indicate':'Entry','type':'BB','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'difference':None,'profit':None})
 
 # SELL STOCK ; EXIT
@@ -32,7 +32,7 @@ def sell(curr_time,stock, data_frame, rsi, ub, mb, lb, atr, intervals, flag, tra
     selling_chart = {0:tr, 1:tr, 2:tr+0.5, 3:tr+1.0, 4:tr+1.5, 5:tr+2.0, 6:tr+2.5, 7:tr+3.0, 8:tr+3.5, 9:tr+4.0}
 
     # If Price is Greater than UpperBand
-    if data_frame['High'].iloc[-1][stock] > mb[-1]:
+    if data_frame['High'].iloc[-1][stock] > ub[-1]:
         flag[stock]['selling_price'] = data_frame['High'].iloc[-1][stock]
         diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
         profit        = (diff/flag[stock]['buying_price']) * 100
