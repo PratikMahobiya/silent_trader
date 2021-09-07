@@ -20,7 +20,7 @@ def get_stock_ltp(kite_conn_var):
     stocks_ltp = kite_conn_var.ltp(active_stocks)
     for stock_key in stocks_ltp:
       price = stocks_ltp[stock_key]['last_price']
-      stock_name = stock_key.split(':')[-1]
+      stock_name = stock_key.split(':')[-1].split('.')[0]
       if datetime.now().time() >= time(9,18,00) and datetime.now().time() < time(15,15,00):
         if stock_name in flag_CA['Entry']:
           exit_action.sell(stock_name, price, flag_CA, transactions, curr_time, kite_conn_var)
