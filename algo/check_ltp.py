@@ -15,7 +15,7 @@ def get_stock_ltp(kite_conn_var):
   stock_list = flag_CA['Entry']
   active_stocks = []
   for stock in stock_list:
-    active_stocks.append('NSE:'+stock)
+    active_stocks.append('NSE:'+stock.split('.')[0])
   if len(active_stocks) != 0:
     stocks_ltp = kite_conn_var.ltp(active_stocks)
     for stock_key in stocks_ltp:
