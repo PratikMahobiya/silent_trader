@@ -1,19 +1,8 @@
 import talib
 from . import zerodha_action
 
-def checking_stoploss(data_frame, stock, ema_max, ema_min):
-  # per = ((data_frame['Close'].iloc[-1][stock]-data_frame['Low'].iloc[-1][stock])/data_frame['Close'].iloc[-1][stock])*100
-  # if per > 0.3:
-  #   stoploss_val = data_frame['Close'].iloc[-1][stock] - (data_frame['Close'].iloc[-1][stock] * 0.003)
-  #   per = 0.3
-  # else:
-  #   stoploss_val = data_frame['Low'].iloc[-1][stock]
-  
-  for i in range(len(data_frame['Close'][stock])):
-    if i != 0:
-      if (data_frame['Close'].iloc[-i][stock] < ema_min[-i]) or (data_frame['Close'].iloc[-i][stock] < ema_max[-i]):
-        break
-      stoploss_val = data_frame['Open'].iloc[-i][stock]
+def checking_stoploss(data_frame, stock, atr):
+  stoploss_val = data_frame['Close'].iloc[-1][stock] - (atr[-1]*0.3)
   per = ((data_frame['Close'].iloc[-1][stock] - stoploss_val)/data_frame['Close'].iloc[-1][stock])*100
   return per, stoploss_val
 
@@ -37,7 +26,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
           # if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
             if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
               flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
-              stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,ema_max,ema_min)
+              stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,atr)
               flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1] # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
               # Place Order in ZERODHA.
               # -------------------------------------------
@@ -62,7 +51,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
               if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
                 if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                   flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
-                  stoploss_per, flag[stock]['stoploss'] = checking_stoploss(data_frame,stock,ema_max,ema_min)
+                  stoploss_per, flag[stock]['stoploss'] = checking_stoploss(data_frame,stock,atr)
                   flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1] # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
                   # Place Order in ZERODHA.
                   # -------------------------------------------

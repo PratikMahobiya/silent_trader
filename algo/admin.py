@@ -17,8 +17,15 @@ class TH_CA_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol','date']
 
-@admin.register(models.TH_PACA_T2_15_MIN)
-class TH_PACA_T2_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
+@admin.register(models.CA_SLFEMA_15_MIN)
+class CA_SLFEMA_15_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','close','stoploss','target','difference','profit','target_percent','order_id','exit_id','order_status','stoploss_percent')
+    list_filter = ("date",)
+    list_per_page = 10
+    search_fields = ['symbol','date']
+
+@admin.register(models.CA_ATR_S30_15_MIN)
+class CA_ATR_S30_15_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','symbol','indicate','type','close','stoploss','target','difference','profit','target_percent','order_id','exit_id','order_status','stoploss_percent')
     list_filter = ("date",)
     list_per_page = 10

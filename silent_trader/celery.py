@@ -35,8 +35,12 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.ltp_of_entries',
         'schedule': 3.0,
     },
-    'TH_PACA_T2_15_MIN':{
-        'task': 'algo.tasks.TH_PACA_T2_RUNS_15_MIN',
+    'CA_SLFEMA_15_MIN':{
+        'task': 'algo.tasks.CA_SLFEMA_RUNS_15_MIN',
+        'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
+    },
+    'CA_ATR_S30_15_MIN':{
+        'task': 'algo.tasks.CA_ATR_S30_RUNS_15_MIN',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
 }

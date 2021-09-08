@@ -11,7 +11,12 @@ class TH_CA_15_Min_Serializer(serializers.ModelSerializer):
 		model 	= models.TH_CA_15_MIN
 		fields 	= ('date','symbol','indicate','type','close','stoploss','target','difference','profit','target_percent','order_id','exit_id','order_status','stoploss_percent')
 
-class TH_PACA_T2_15_Min_Serializer(serializers.ModelSerializer):
+class CA_SLFEMA_15_MIN_Serializer(serializers.ModelSerializer):
 	class Meta:
-		model 	= models.TH_PACA_T2_15_MIN
+		model 	= models.CA_SLFEMA_15_MIN
+		fields 	= ('date','symbol','indicate','type','close','stoploss','target','difference','profit','target_percent','order_id','exit_id','order_status','stoploss_percent')
+
+class CA_ATR_S30_15_MIN_Serializer(serializers.ModelSerializer):
+	class Meta:
+		model 	= models.CA_ATR_S30_15_MIN
 		fields 	= ('date','symbol','indicate','type','close','stoploss','target','difference','profit','target_percent','order_id','exit_id','order_status','stoploss_percent')
