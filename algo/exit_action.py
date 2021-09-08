@@ -24,7 +24,7 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
   
   # if price hits StopLoss, Exit
   elif price <= flag[stock]['stoploss']:
-    flag[stock]['selling_price'] = flag[stock]['stoploss']
+    flag[stock]['selling_price'] = price
     diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
     profit        = (diff/flag[stock]['buying_price']) * 100
     flag[stock]['buy']      = False
@@ -39,7 +39,7 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
 # SQUARE OFF, EXIT
 def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
   if price <= flag[stock_name]['stoploss']:
-    flag[stock_name]['selling_price'] = flag[stock_name]['stoploss']
+    flag[stock_name]['selling_price'] = price
     diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
     profit        = (diff/flag[stock_name]['buying_price']) * 100
     flag[stock_name]['buy']      = False

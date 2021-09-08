@@ -88,7 +88,7 @@ def BB_RUNS_5_MIN(self):
   '''
     -> intervals = [Time_period, Number_oF_Days,Upper_rsi, Lower_rsi, Bollinger_Band, RSI, ATR]
   '''
-  intervals      = ['5m','2d',60,20,20,50,14]
+  intervals      = ['5m','2d',60,30,20,50,14]
   curr_time      = datetime.now()
   '''
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
