@@ -15,22 +15,23 @@ def trade_execution(data_frame, intervals, flag, transactions, curr_time, kite_c
         ema_max     = talib.EMA(data_frame['Close'][stock], timeperiod=intervals[4])
         ema_min     = talib.EMA(data_frame['Close'][stock], timeperiod=intervals[5])
         rsi         = talib.RSI(data_frame['Close'][stock], timeperiod=intervals[9])
+        atr         = talib.ATR(data_frame['High'][stock],data_frame['Low'][stock],data_frame['Close'][stock], timeperiod=intervals[10])
         if flag[stock]['buy'] is False:
-            buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions, curr_time, kite_conn_var)
+            buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transactions, curr_time, kite_conn_var)
     return transactions
 
 # BUYS STOCKS ; ENTRY
-def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions , curr_time, kite_conn_var):
+def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transactions , curr_time, kite_conn_var):
   # Difference btw ema-max-min is less or equal to 0.1 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
     if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
       if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
         if data_frame['Close'].iloc[-2][stock] > ema_min[-2]:
-          if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
+          # if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
             if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
               flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
               stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock)
-              flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+              flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1] # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
               # Place Order in ZERODHA.
               # -------------------------------------------
               order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'])
@@ -49,12 +50,12 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, intervals, flag, transactions
       if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
         if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
           if data_frame['Close'].iloc[-2][stock] > ema_min[-2]:
-            if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
+            # if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
               if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
                 if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                   flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
                   stoploss_per, flag[stock]['stoploss'] = checking_stoploss(data_frame,stock)
-                  flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+                  flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1] # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
                   # Place Order in ZERODHA.
                   # -------------------------------------------
                   order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'])
