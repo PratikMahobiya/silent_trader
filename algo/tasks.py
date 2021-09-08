@@ -7,6 +7,7 @@ from kiteconnect import KiteConnect
 
 from . import serializers
 from . import check_ltp
+from . import check_ltp_slfema
 from celery import shared_task
 from .BB_5_MIN.utils import backbone as backbone_BB_5
 from .TH_CA_15_MIN.utils import backbone as backbone_TH_CA
@@ -24,9 +25,11 @@ def connect_to_kite_connection():
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
-  response = {'LTP': False, 'STATUS': 'NONE','STOCKS':None}
+  response = {'LTP': False, 'STATUS': 'NONE','STOCKS':None,'LTP_SLFEMA': False, 'STATUS_SLFEMA': 'NONE','STOCKS_SLFEMA':None}
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
+
+    # LTP CA
     transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
     if len(transactions) != 0:
       for trans in transactions:
@@ -39,10 +42,24 @@ def ltp_of_entries(self):
     else:
       transactions = 'NO CHANGE'
       response.update({'LTP': True, 'STATUS': transactions,'STOCKS':stock})
+    
+    # LTP SLFEMA
+    transactions, stock = check_ltp_slfema.get_stock_ltp(kite_conn_var)
+    if len(transactions) != 0:
+      for trans in transactions:
+        serializer = serializers.TH_PACA_T2_15_Min_Serializer(data=trans)
+        if serializer.is_valid():
+          serializer.save()
+        else:
+          response['TH_PACA_SERIALIZER'] = serializer.errors
+      response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': 'DONE.','STOCKS_SLFEMA':stock})
+    else:
+      transactions = 'NO CHANGE'
+      response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': transactions,'STOCKS_SLFEMA':stock})
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
-    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS': 'I APOLOGIZE MY MASTER.'})
+    response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS_SLFEMA': 'I APOLOGIZE MY MASTER.'})
   else:
-    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.', 'STOCKS': 'SORRY.'})
+    response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': 'MARKET IS CLOSED.', 'STOCKS_SLFEMA': 'SORRY.'})
   return response
 
 @shared_task(bind=True,max_retries=3)
