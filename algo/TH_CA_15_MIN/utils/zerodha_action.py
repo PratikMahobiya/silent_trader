@@ -13,7 +13,7 @@ def place_cover_order(kite_conn_var,symbol,stoploss_val):
                                 order_type=kite_conn_var.ORDER_TYPE_MARKET,
                                 product=kite_conn_var.PRODUCT_CO,
                                 validity=kite_conn_var.VALIDITY_DAY,
-                                trigger_price=round(stoploss_val,1)
+                                trigger_price=stoploss_val
                                 )
     error_status = 'SUCCESSFULLY_PLACED'
   except Exception as e:
