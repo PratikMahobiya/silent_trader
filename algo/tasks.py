@@ -233,7 +233,7 @@ def CA_SLFEMA_RUNS_15_MIN(self):
   data_frame, status = backbone_CA_SLFEMA.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.CA_SLFEMA_15_Min_Serializer(data=data_f)
+      serializer = serializers.CA_SLFEMA_15_MIN_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
       else:
@@ -284,7 +284,7 @@ def CA_ATR_S30_RUNS_15_MIN(self):
   data_frame, status = backbone_CA_ATR_S30.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.CA_ATR_S30_15_Min_Serializer(data=data_f)
+      serializer = serializers.CA_ATR_S30_15_MIN_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
       else:
