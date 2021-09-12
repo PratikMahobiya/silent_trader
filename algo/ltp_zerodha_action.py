@@ -4,15 +4,16 @@ def place_regular_sell_order(kite_conn_var,symbol,flag):
   order_id = 0
   error_status = 'NOT_PLACED'
   try:
-    order_id = kite_conn_var.place_order(tradingsymbol=symbol.split('.')[0],
-                                exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
-                                quantity=flag[symbol]['quantity'],
-                                variety=kite_conn_var.VARIETY_REGULAR,
-                                order_type=kite_conn_var.ORDER_TYPE_MARKET,
-                                product=kite_conn_var.PRODUCT_MIS,
-                                validity=kite_conn_var.VALIDITY_DAY,
-                                )
+    if flag[symbol]['order_id'] != 0:
+      order_id = kite_conn_var.place_order(tradingsymbol=symbol.split('.')[0],
+                                  exchange=kite_conn_var.EXCHANGE_NSE,
+                                  transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
+                                  quantity=flag[symbol]['quantity'],
+                                  variety=kite_conn_var.VARIETY_REGULAR,
+                                  order_type=kite_conn_var.ORDER_TYPE_MARKET,
+                                  product=kite_conn_var.PRODUCT_MIS,
+                                  validity=kite_conn_var.VALIDITY_DAY,
+                                  )
     error_status = 'SUCCESSFULLY_PLACED'
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END.'

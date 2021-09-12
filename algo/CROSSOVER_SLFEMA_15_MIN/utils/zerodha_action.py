@@ -20,7 +20,6 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
     #                             product=kite_conn_var.PRODUCT_MIS,
     #                             validity=kite_conn_var.VALIDITY_DAY,
     #                             )
-    order_id = 1
     flag[symbol]['quantity'] = quantity
     flag[symbol]['buying_price'] = stocks_ltp
     error_status = 'NOT_ACTIVE'

@@ -34,13 +34,12 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
             flag[stock]['order_id'] = order_id
             flag[stock]['order_status'] = error_status
             # -------------------------------------------
-            if order_id != 0:
-              flag['Entry'].append(stock)
-              flag[stock]['buy'] = True
-              stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,flag,ema_max,ema_min)
-              flag[stock]['target_1'] = flag[stock]['buying_price'] + flag[stock]['atr_1']
-              flag[stock]['target_2'] = flag[stock]['buying_price'] + flag[stock]['atr_2']
-              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+            flag['Entry'].append(stock)
+            flag[stock]['buy'] = True
+            stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,flag,ema_max,ema_min)
+            flag[stock]['target_1'] = flag[stock]['buying_price'] + flag[stock]['atr_1']
+            flag[stock]['target_2'] = flag[stock]['buying_price'] + flag[stock]['atr_2']
+            transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.1, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -57,11 +56,10 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
                   flag[stock]['order_id'] = order_id
                   flag[stock]['order_status'] = error_status
                   # -------------------------------------------
-                  if order_id != 0:
-                    flag['Entry'].append(stock)
-                    flag[stock]['buy'] = True
-                    flag[stock]['target_1'] = flag[stock]['buying_price'] + flag[stock]['atr_1']
-                    flag[stock]['target_2'] = flag[stock]['buying_price'] + flag[stock]['atr_2']
-                    stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,flag,ema_max,ema_min)
-                    flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1]
-                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+                  flag['Entry'].append(stock)
+                  flag[stock]['buy'] = True
+                  flag[stock]['target_1'] = flag[stock]['buying_price'] + flag[stock]['atr_1']
+                  flag[stock]['target_2'] = flag[stock]['buying_price'] + flag[stock]['atr_2']
+                  stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,flag,ema_max,ema_min)
+                  flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1]
+                  transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
