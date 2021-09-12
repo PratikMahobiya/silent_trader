@@ -35,7 +35,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
               flag[stock]['buy'] = True
               stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(flag[stock]['buying_price'], atr[-1])
               flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1]
-              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.1, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -57,4 +57,4 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
                     flag[stock]['buy'] = True
                     stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(flag[stock]['buying_price'], atr[-1])
                     flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1]
-                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})

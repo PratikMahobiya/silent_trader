@@ -171,7 +171,7 @@ def CROSS_OVER_ATR_ATR30_RUNS_15_MIN(self):
     flag['Entry'] = []
     flag['Trend'] = []
     for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'order_id':0,'order_status':None}
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'quantity':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
