@@ -60,6 +60,7 @@ class CA_ATR_S30_15_MIN(models.Model):
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
     date                    = models.DateTimeField()
     close    				= models.FloatField(verbose_name='PRICE')
+    quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     stoploss   				= models.FloatField(verbose_name='STOPLOSS')
     target   				= models.FloatField(verbose_name='TARGET_PRICE',blank=True,null=True,default=None)
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)

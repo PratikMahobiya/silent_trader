@@ -1,9 +1,13 @@
 import talib
 from . import zerodha_action
 
-def checking_stoploss(data_frame, stock, atr):
-  stoploss_val = data_frame['Close'].iloc[-1][stock] - (atr[-1]*0.3)
-  per = ((data_frame['Close'].iloc[-1][stock] - stoploss_val)/data_frame['Close'].iloc[-1][stock])*100
+def checking_stoploss(data_frame, stock):
+  per = ((data_frame['Close'].iloc[-1][stock]-data_frame['Low'].iloc[-1][stock])/data_frame['Close'].iloc[-1][stock])*100
+  if per > 0.3:
+    stoploss_val = data_frame['Close'].iloc[-1][stock] - (data_frame['Close'].iloc[-1][stock] * 0.003)
+    per = 0.3
+  else:
+    stoploss_val = data_frame['Low'].iloc[-1][stock]
   return round(per,2), stoploss_val
 
 def trade_execution(data_frame, intervals, flag, transactions, curr_time, kite_conn_var):
@@ -23,23 +27,21 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
     if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
       if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
         if data_frame['Close'].iloc[-2][stock] > ema_min[-2]:
-          # if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
+          if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
             if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
               flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
-              stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,atr)
-              flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1] # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+              stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock)
+              flag[stock]['target'] = flag[stock]['buying_price']*(flag[stock]['target_per']/100)
               # Place Order in ZERODHA.
               # -------------------------------------------
-              # order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'])
-              order_id, error_status, exit_id = 1, 'SUCCESSFULLY_PLACED', 1
+              order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'],flag)
               flag[stock]['order_id'] = order_id
               flag[stock]['exit_id'] = exit_id
               flag[stock]['order_status'] = error_status
               # -------------------------------------------
-              if order_id != 0:
-                flag['Entry'].append(stock)
-                flag[stock]['buy'] = True
-                transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id'],'stoploss_percent':stoploss_per})
+              flag['Entry'].append(stock)
+              flag[stock]['buy'] = True
+              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id'],'stoploss_percent':stoploss_per})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.1, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -47,21 +49,19 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
       if data_frame['Close'].iloc[-1][stock] > ema_min[-1]:
         if data_frame['Close'].iloc[-1][stock] > ema_max[-1]:
           if data_frame['Close'].iloc[-2][stock] > ema_min[-2]:
-            # if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
+            if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
               if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
                 if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                   flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
-                  stoploss_per, flag[stock]['stoploss'] = checking_stoploss(data_frame,stock,atr)
-                  flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1] # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+                  stoploss_per, flag[stock]['stoploss'] = checking_stoploss(data_frame,stock)
+                  flag[stock]['target'] = flag[stock]['buying_price']*(flag[stock]['target_per']/100)
                   # Place Order in ZERODHA.
                   # -------------------------------------------
-                  # order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'])
-                  order_id, error_status, exit_id = 1, 'SUCCESSFULLY_PLACED', 1
+                  order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'],flag)
                   flag[stock]['order_id'] = order_id
                   flag[stock]['exit_id'] = exit_id
                   flag[stock]['order_status'] = error_status
                   # -------------------------------------------
-                  if order_id != 0:
-                    flag['Entry'].append(stock)
-                    flag[stock]['buy'] = True
-                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id'],'stoploss_percent':stoploss_per})
+                  flag['Entry'].append(stock)
+                  flag[stock]['buy'] = True
+                  transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'target_percent':flag[stock]['target_per'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'exit_id':flag[stock]['exit_id'],'stoploss_percent':stoploss_per})

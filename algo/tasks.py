@@ -191,6 +191,7 @@ def CROSS_OVER_ATR_ATR30_RUNS_15_MIN(self):
     response.update({'CRS': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
     response.update({'CRS': True, 'STATUS': data_frame})
+  response['Trending Stocks'] = flag['Trend']
   # Update config File:
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)
@@ -221,6 +222,7 @@ def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
     # print("Created Flag Config File For all STOCKS.")
     flag = {}
     flag['Entry'] = []
+    flag['Trend'] = []
     for symb in companies_symbol:
       flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target_1':0,'target_2':0,'atr_1':0,'atr_2':0,'target_1_flag':False,'quantity':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
@@ -242,6 +244,7 @@ def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
     response.update({'CRS_SLFEMA': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
     response.update({'CRS_SLFEMA': True, 'STATUS': data_frame})
+  response['Trending Stocks'] = flag['Trend']
   # Update config File:
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)
@@ -273,7 +276,7 @@ def CA_ATR_S30_RUNS_15_MIN(self):
     flag = {}
     flag['Entry'] = []
     for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'order_status':None,'exit_id':0}
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'quantity':0,'order_status':None,'exit_id':0}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
@@ -293,6 +296,7 @@ def CA_ATR_S30_RUNS_15_MIN(self):
     response.update({'CA_ATR_S30': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
     response.update({'CA_ATR_S30': True, 'STATUS': data_frame})
+  response['Trending Stocks'] = flag['Trend']
   # Update config File:
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)
