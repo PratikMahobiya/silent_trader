@@ -11,7 +11,7 @@ from . import check_ltp_slfema
 from . import check_ltp_ca_atr_s30
 from celery import shared_task
 from .BB_5_MIN.utils import backbone as backbone_BB_5
-from .TH_CA_15_MIN.utils import backbone as backbone_TH_CA
+from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
 from .CA_SLFEMA_15_MIN.utils import backbone as backbone_CA_SLFEMA
 from .CA_ATR_S30_15_MIN.utils import backbone as backbone_CA_ATR_S30
 
@@ -31,15 +31,15 @@ def ltp_of_entries(self):
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
 
-    # LTP CA
+    # LTP CRS
     transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
     if len(transactions) != 0:
       for trans in transactions:
-        serializer = serializers.TH_CA_15_Min_Serializer(data=trans)
+        serializer = serializers.CROSSOVER_15_Min_Serializer(data=trans)
         if serializer.is_valid():
           serializer.save()
         else:
-          response['TH_CA_SERIALIZER'] = serializer.errors
+          response['CRS_SERIALIZER'] = serializer.errors
       response.update({'LTP': True, 'STATUS': 'DONE.','STOCKS':stock})
     else:
       transactions = 'NO CHANGE'
@@ -144,8 +144,8 @@ def BB_RUNS_5_MIN(self):
   return response
 
 @shared_task(bind=True,max_retries=3)
-def TH_CA_RUNS_15_MIN(self):
-  response = {'TH_CA': False, 'STATUS': 'NONE'}
+def CROSS_OVER_ATR_ATR30_RUNS_15_MIN(self):
+  response = {'CRS': False, 'STATUS': 'NONE'}
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
@@ -163,7 +163,7 @@ def TH_CA_RUNS_15_MIN(self):
   '''
 
   # Workbook Path
-  flag_config            = 'algo/config/th_ca_flag.json'
+  flag_config            = 'algo/config/crs_flag.json'
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
@@ -171,7 +171,7 @@ def TH_CA_RUNS_15_MIN(self):
     flag['Entry'] = []
     flag['Trend'] = []
     for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'order_status':None,'exit_id':0}
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
@@ -180,17 +180,17 @@ def TH_CA_RUNS_15_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_TH_CA.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
+  data_frame, status = backbone_CRS.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.TH_CA_15_Min_Serializer(data=data_f)
+      serializer = serializers.CROSSOVER_15_Min_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
       else:
-        response['TH_CA_SERIALIZER'] = serializer.errors
-    response.update({'TH_CA': True, 'STATUS': 'ALL DONE.'})
+        response['CRS_SERIALIZER'] = serializer.errors
+    response.update({'CRS': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
-    response.update({'TH_CA': True, 'STATUS': data_frame})
+    response.update({'CRS': True, 'STATUS': data_frame})
   # Update config File:
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)

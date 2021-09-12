@@ -10,9 +10,9 @@ class BB_5_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol','date']
 
-@admin.register(models.TH_CA_15_MIN)
-class TH_CA_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','symbol','indicate','type','close','stoploss','target','difference','profit','target_percent','order_id','exit_id','order_status','stoploss_percent')
+@admin.register(models.CROSSOVER_15_MIN)
+class CROSSOVER_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','close','stoploss','target','stoploss_percent','difference','profit','order_id','order_status')
     list_filter = ("date",)
     list_per_page = 10
     search_fields = ['symbol','date']

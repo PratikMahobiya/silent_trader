@@ -27,8 +27,8 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.BB_RUNS_5_MIN',
         'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
-    'TH_CA_15_MIN':{
-        'task': 'algo.tasks.TH_CA_RUNS_15_MIN',
+    'CRS_15_MIN':{
+        'task': 'algo.tasks.CROSS_OVER_ATR_ATR30_RUNS_15_MIN',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
     'LTD_3_SEC':{

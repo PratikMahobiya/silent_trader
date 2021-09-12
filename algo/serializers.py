@@ -6,10 +6,10 @@ class BB_5_Min_Serializer(serializers.ModelSerializer):
 		model 	= models.BB_5_MIN
 		fields 	= ('date','symbol','indicate','type','close','stoploss','difference','profit')
 
-class TH_CA_15_Min_Serializer(serializers.ModelSerializer):
+class CROSSOVER_15_Min_Serializer(serializers.ModelSerializer):
 	class Meta:
-		model 	= models.TH_CA_15_MIN
-		fields 	= ('date','symbol','indicate','type','close','stoploss','target','difference','profit','target_percent','order_id','exit_id','order_status','stoploss_percent')
+		model 	= models.CROSSOVER_15_MIN
+		fields 	= ('date','symbol','indicate','type','close','stoploss','target','difference','profit','stoploss_percent','order_id','order_status')
 
 class CA_SLFEMA_15_MIN_Serializer(serializers.ModelSerializer):
 	class Meta:
