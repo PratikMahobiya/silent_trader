@@ -169,6 +169,7 @@ def TH_CA_RUNS_15_MIN(self):
     # print("Created Flag Config File For all STOCKS.")
     flag = {}
     flag['Entry'] = []
+    flag['Trend'] = []
     for symb in companies_symbol:
       flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'order_status':None,'exit_id':0}
     with open(flag_config, "w") as outfile:
