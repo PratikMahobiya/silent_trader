@@ -5,7 +5,7 @@ def target_percentile(stock,data_open, data_close, intervals, flag):
   for open,close in zip(data_open[-intervals[10]:],data_close[-intervals[10]:]):
     temp_.append(abs(((open-close)/open)*100))
   target_percent = sum(temp_)/len(temp_)
-  flag[stock]['target_per'] = target_percent
+  flag[stock]['target_per'] = round(target_percent,2)
 
 def trending(data_frame,intervals,flag):
   trend = []

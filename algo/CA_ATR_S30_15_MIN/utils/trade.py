@@ -4,7 +4,7 @@ from . import zerodha_action
 def checking_stoploss(data_frame, stock, atr):
   stoploss_val = data_frame['Close'].iloc[-1][stock] - (atr[-1]*0.3)
   per = ((data_frame['Close'].iloc[-1][stock] - stoploss_val)/data_frame['Close'].iloc[-1][stock])*100
-  return round(per,1), round(stoploss_val,1)
+  return round(per,2), stoploss_val
 
 def trade_execution(data_frame, intervals, flag, transactions, curr_time, kite_conn_var):
     for stock in data_frame['Close'].columns:
@@ -25,9 +25,9 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
         if data_frame['Close'].iloc[-2][stock] > ema_min[-2]:
           # if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
             if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
-              flag[stock]['buying_price'] = round(data_frame['Close'].iloc[-1][stock],1)
+              flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
               stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,atr)
-              flag[stock]['target'] = round((flag[stock]['buying_price'] + atr[-1]),1) # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+              flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1] # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
               # Place Order in ZERODHA.
               # -------------------------------------------
               # order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'])
@@ -50,9 +50,9 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
             # if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
               if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
                 if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
-                  flag[stock]['buying_price'] = round(data_frame['Close'].iloc[-1][stock],1)
+                  flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
                   stoploss_per, flag[stock]['stoploss'] = checking_stoploss(data_frame,stock,atr)
-                  flag[stock]['target'] = round((flag[stock]['buying_price'] + atr[-1]),1) # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+                  flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1] # flag[stock]['buying_price']*(flag[stock]['target_per']/100)
                   # Place Order in ZERODHA.
                   # -------------------------------------------
                   # order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'])
