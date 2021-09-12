@@ -12,7 +12,7 @@ from . import check_ltp_ca_atr_s30
 from celery import shared_task
 from .BB_5_MIN.utils import backbone as backbone_BB_5
 from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
-from .CA_SLFEMA_15_MIN.utils import backbone as backbone_CA_SLFEMA
+from .CROSSOVER_SLFEMA_15_MIN.utils import backbone as backbone_CRS_SLFEMA
 from .CA_ATR_S30_15_MIN.utils import backbone as backbone_CA_ATR_S30
 
 def connect_to_kite_connection():
@@ -49,11 +49,11 @@ def ltp_of_entries(self):
     transactions, stock = check_ltp_slfema.get_stock_ltp(kite_conn_var)
     if len(transactions) != 0:
       for trans in transactions:
-        serializer = serializers.CA_SLFEMA_15_MIN_Serializer(data=trans)
+        serializer = serializers.CROSSOVER_SLFEMA_15_MIN_Serializer(data=trans)
         if serializer.is_valid():
           serializer.save()
         else:
-          response['CA_SLFEMA_SERIALIZER'] = serializer.errors
+          response['CRS_SLFEMA_SERIALIZER'] = serializer.errors
       response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': 'DONE.','STOCKS_SLFEMA':stock})
     else:
       transactions = 'NO CHANGE'
@@ -197,8 +197,8 @@ def CROSS_OVER_ATR_ATR30_RUNS_15_MIN(self):
   return response
 
 @shared_task(bind=True,max_retries=3)
-def CA_SLFEMA_RUNS_15_MIN(self):
-  response = {'CA_SLFEMA': False, 'STATUS': 'NONE'}
+def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
+  response = {'CRS_SLFEMA': False, 'STATUS': 'NONE'}
 
   # Companies List
   company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
@@ -206,7 +206,7 @@ def CA_SLFEMA_RUNS_15_MIN(self):
   companies_symbol = company_Sheet['SYMBOL']
   kite_conn_var = connect_to_kite_connection()
   '''
-    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
+    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, ATR_Time_Period]
   '''
   intervals      = ['15m','5d',60,55,18,8,'30m','1mo',8,8,14]
   curr_time      = datetime.now()
@@ -215,14 +215,14 @@ def CA_SLFEMA_RUNS_15_MIN(self):
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
   # Workbook Path
-  flag_config            = 'algo/config/ca_slfema_flag.json'
+  flag_config            = 'algo/config/crs_slfema_flag.json'
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
     flag = {}
     flag['Entry'] = []
     for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'target_per':0,'order_id':0,'order_status':None,'exit_id':0}
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target_1':0,'target_2':0,'atr_1':0,'atr_2':0,'target_1_flag':False,'quantity':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
@@ -231,17 +231,17 @@ def CA_SLFEMA_RUNS_15_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_CA_SLFEMA.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
+  data_frame, status = backbone_CRS_SLFEMA.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.CA_SLFEMA_15_MIN_Serializer(data=data_f)
+      serializer = serializers.CROSSOVER_SLFEMA_15_MIN_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
       else:
-        response['CA_SLFEMA_SERIALIZER'] = serializer.errors
-    response.update({'CA_SLFEMA': True, 'STATUS': 'ALL DONE.'})
+        response['CRS_SLFEMA_SERIALIZER'] = serializer.errors
+    response.update({'CRS_SLFEMA': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
-    response.update({'CA_SLFEMA': True, 'STATUS': data_frame})
+    response.update({'CRS_SLFEMA': True, 'STATUS': data_frame})
   # Update config File:
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)

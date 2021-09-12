@@ -17,9 +17,9 @@ class CROSSOVER_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol','date']
 
-@admin.register(models.CA_SLFEMA_15_MIN)
-class CA_SLFEMA_15_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','symbol','indicate','type','close','stoploss','target','difference','profit','target_percent','order_id','exit_id','order_status','stoploss_percent')
+@admin.register(models.CROSSOVER_SLFEMA_15_MIN)
+class CROSSOVER_SLFEMA_15_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','close','quantity','stoploss','target_1','target_2','difference','profit','stoploss_percent','order_id','order_status')
     list_filter = ("date",)
     list_per_page = 10
     search_fields = ['symbol','date']
