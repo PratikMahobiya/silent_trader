@@ -13,12 +13,12 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
   if price >= target:
     if flag[stock]['target_1_flag'] is not True:
       flag[stock]['target_1_flag'] = True
-      flag[stock]['stoploss'] = price - (flag[stock]['atr_1']*0.5)
+      flag[stock]['stoploss'] = round((price - (flag[stock]['atr_1']*0.5)),2)
     else:
       flag[stock]['selling_price'] = price
       diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
-      profit        = ((diff/flag[stock]['buying_price']) * 100) * flag[stock]['quantity']
-      diff          = diff * flag[stock]['quantity']
+      profit        = round((((diff/flag[stock]['buying_price']) * 100) * flag[stock]['quantity']),2)
+      diff          = round((diff * flag[stock]['quantity']),2)
       # place an order for exit
       # -----------------------------------------------
       order_id, error_status = ltp_zerodha_action_slfema.place_regular_sell_order(kite_conn_var,stock,flag)
@@ -38,8 +38,8 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
   elif price <= flag[stock]['stoploss']:
     flag[stock]['selling_price'] = price
     diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
-    profit        = ((diff/flag[stock]['buying_price']) * 100) * flag[stock]['quantity']
-    diff          = diff * flag[stock]['quantity']
+    profit        = round((((diff/flag[stock]['buying_price']) * 100) * flag[stock]['quantity']),2)
+    diff          = round((diff * flag[stock]['quantity']),2)
     # place an order for exit
     # -----------------------------------------------
     order_id, error_status = ltp_zerodha_action_slfema.place_regular_sell_order(kite_conn_var,stock,flag)
@@ -63,8 +63,8 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
 def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
   flag[stock_name]['selling_price'] = price
   diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
-  profit        = ((diff/flag[stock_name]['buying_price']) * 100) * flag[stock_name]['quantity']
-  diff          = diff * flag[stock_name]['quantity']
+  profit        = round((((diff/flag[stock_name]['buying_price']) * 100) * flag[stock_name]['quantity']),2)
+  diff          = round((diff * flag[stock_name]['quantity']),2)
   # place an order for exit
   # -----------------------------------------------
   order_id, error_status = ltp_zerodha_action_slfema.place_regular_sell_order(kite_conn_var,stock_name,flag)

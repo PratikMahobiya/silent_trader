@@ -1,3 +1,4 @@
+from time import sleep
 
 def place_regular_buy_order(kite_conn_var,symbol,flag):
   # Place an order
@@ -21,6 +22,7 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
     #                             product=kite_conn_var.PRODUCT_MIS,
     #                             validity=kite_conn_var.VALIDITY_DAY,
     #                             )
+    sleep(0.3)
     flag[symbol]['quantity'] = quantity
     flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol.split('.')[0]]['last_price']
     error_status = 'NOT_ACTIVE'
