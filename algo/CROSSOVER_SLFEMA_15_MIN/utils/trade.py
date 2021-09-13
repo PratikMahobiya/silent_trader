@@ -50,17 +50,16 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
           if data_frame['Close'].iloc[-2][stock] > ema_min[-2]:
             if data_frame['Close'].iloc[-2][stock] > ema_max[-2]:
               if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
-                if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
-                  # Place Order in ZERODHA.
-                  # -------------------------------------------
-                  order_id, error_status = zerodha_action.place_regular_buy_order(kite_conn_var,stock,flag)
-                  flag[stock]['order_id'] = order_id
-                  flag[stock]['order_status'] = error_status
-                  # -------------------------------------------
-                  flag['Entry'].append(stock)
-                  flag[stock]['buy'] = True
-                  flag[stock]['atr_1'] = atr[-1]
-                  stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,flag,ema_max,ema_min)
-                  flag[stock]['target_1'] = round((flag[stock]['buying_price'] + flag[stock]['atr_1']),2)
-                  flag[stock]['target_2'] = round((flag[stock]['buying_price'] + flag[stock]['atr_2']),2)
-                  transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+                # Place Order in ZERODHA.
+                # -------------------------------------------
+                order_id, error_status = zerodha_action.place_regular_buy_order(kite_conn_var,stock,flag)
+                flag[stock]['order_id'] = order_id
+                flag[stock]['order_status'] = error_status
+                # -------------------------------------------
+                flag['Entry'].append(stock)
+                flag[stock]['buy'] = True
+                flag[stock]['atr_1'] = atr[-1]
+                stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,flag,ema_max,ema_min)
+                flag[stock]['target_1'] = round((flag[stock]['buying_price'] + flag[stock]['atr_1']),2)
+                flag[stock]['target_2'] = round((flag[stock]['buying_price'] + flag[stock]['atr_2']),2)
+                transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
