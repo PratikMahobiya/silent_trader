@@ -1,3 +1,4 @@
+from time import sleep
 
 def place_cover_order(kite_conn_var,symbol,stoploss_val,flag):
   # Place an order
@@ -23,7 +24,9 @@ def place_cover_order(kite_conn_var,symbol,stoploss_val,flag):
     #                             validity=kite_conn_var.VALIDITY_DAY,
     #                             trigger_price=round(stoploss_val,1)
     #                             )
+    sleep(0.3)
     flag[symbol]['quantity'] = quantity
+    flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol.split('.')[0]]['last_price']
     error_status = 'SUCCESSFULLY_PLACED'
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END.'

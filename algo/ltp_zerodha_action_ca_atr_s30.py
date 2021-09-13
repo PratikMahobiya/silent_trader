@@ -1,3 +1,5 @@
+from time import sleep
+
 def exit_cover_order(kite_conn_var,symbol,flag):
   # Place an order for exit
   cancel_id = 0
@@ -6,6 +8,7 @@ def exit_cover_order(kite_conn_var,symbol,flag):
     if flag[symbol]['order_id'] != 0:
       cancel_id = kite_conn_var.cancel_order(order_id=flag[symbol]['exit_id'],
                                   variety=kite_conn_var.VARIETY_CO)
+    sleep(0.3)
     error_status = 'SUCCESSFULLY_EXITED'
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END OR STOPLOSS HITTED.'
