@@ -16,8 +16,8 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
       flag[stock]['stoploss'] = price - (flag[stock]['atr_1']*0.5)
     else:
       flag[stock]['selling_price'] = price
-      diff          = round((flag[stock]['selling_price'] - flag[stock]['buying_price']),2)
-      profit        = round(((diff/flag[stock]['buying_price']) * 100),2) * flag[stock]['quantity']
+      diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
+      profit        = ((diff/flag[stock]['buying_price']) * 100) * flag[stock]['quantity']
       diff          = diff * flag[stock]['quantity']
       # place an order for exit
       # -----------------------------------------------
@@ -37,8 +37,8 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
   # if price hits StopLoss, Exit
   elif price <= flag[stock]['stoploss']:
     flag[stock]['selling_price'] = price
-    diff          = round((flag[stock]['selling_price'] - flag[stock]['buying_price']),2)
-    profit        = round(((diff/flag[stock]['buying_price']) * 100),2) * flag[stock]['quantity']
+    diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
+    profit        = ((diff/flag[stock]['buying_price']) * 100) * flag[stock]['quantity']
     diff          = diff * flag[stock]['quantity']
     # place an order for exit
     # -----------------------------------------------
@@ -62,8 +62,8 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
 # SQUARE OFF, EXIT
 def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
   flag[stock_name]['selling_price'] = price
-  diff          = round((flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']),2)
-  profit        = round(((diff/flag[stock_name]['buying_price']) * 100),2) * flag[stock_name]['quantity']
+  diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
+  profit        = ((diff/flag[stock_name]['buying_price']) * 100) * flag[stock_name]['quantity']
   diff          = diff * flag[stock_name]['quantity']
   # place an order for exit
   # -----------------------------------------------
