@@ -32,46 +32,55 @@ def ltp_of_entries(self):
     kite_conn_var = connect_to_kite_connection()
 
     # LTP CRS
-    transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
-    if len(transactions) != 0:
-      for trans in transactions:
-        serializer = serializers.CROSSOVER_15_Min_Serializer(data=trans)
-        if serializer.is_valid():
-          serializer.save()
-        else:
-          response['CRS_SERIALIZER'] = serializer.errors
-      response.update({'LTP': True, 'STATUS': 'DONE.','STOCKS':stock})
-    else:
-      transactions = 'NO CHANGE'
-      response.update({'LTP': True, 'STATUS': transactions,'STOCKS':stock})
+    try:
+      transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
+      if len(transactions) != 0:
+        for trans in transactions:
+          serializer = serializers.CROSSOVER_15_Min_Serializer(data=trans)
+          if serializer.is_valid():
+            serializer.save()
+          else:
+            response['CRS_SERIALIZER'] = serializer.errors
+        response.update({'LTP': True, 'STATUS': 'DONE.','STOCKS':stock})
+      else:
+        transactions = 'NO CHANGE'
+        response.update({'LTP': True, 'STATUS': transactions,'STOCKS':stock})
+    except Exception as e:
+      pass
     
     # LTP SLFEMA
-    transactions, stock = check_ltp_slfema.get_stock_ltp(kite_conn_var)
-    if len(transactions) != 0:
-      for trans in transactions:
-        serializer = serializers.CROSSOVER_SLFEMA_15_MIN_Serializer(data=trans)
-        if serializer.is_valid():
-          serializer.save()
-        else:
-          response['CRS_SLFEMA_SERIALIZER'] = serializer.errors
-      response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': 'DONE.','STOCKS_SLFEMA':stock})
-    else:
-      transactions = 'NO CHANGE'
-      response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': transactions,'STOCKS_SLFEMA':stock})
+    try:
+      transactions, stock = check_ltp_slfema.get_stock_ltp(kite_conn_var)
+      if len(transactions) != 0:
+        for trans in transactions:
+          serializer = serializers.CROSSOVER_SLFEMA_15_MIN_Serializer(data=trans)
+          if serializer.is_valid():
+            serializer.save()
+          else:
+            response['CRS_SLFEMA_SERIALIZER'] = serializer.errors
+        response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': 'DONE.','STOCKS_SLFEMA':stock})
+      else:
+        transactions = 'NO CHANGE'
+        response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': transactions,'STOCKS_SLFEMA':stock})
+    except Exception as e:
+      pass
 
     # LTP CA_ATR_S30
-    transactions, stock = check_ltp_ca_atr_s30.get_stock_ltp(kite_conn_var)
-    if len(transactions) != 0:
-      for trans in transactions:
-        serializer = serializers.CA_ATR_S30_15_MIN_Serializer(data=trans)
-        if serializer.is_valid():
-          serializer.save()
-        else:
-          response['CA_ATR_S30_SERIALIZER'] = serializer.errors
-      response.update({'LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': 'DONE.','STOCKS_CA_ATR_S30':stock})
-    else:
-      transactions = 'NO CHANGE'
-      response.update({'LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': transactions,'STOCKS_CA_ATR_S30':stock})
+    try:
+      transactions, stock = check_ltp_ca_atr_s30.get_stock_ltp(kite_conn_var)
+      if len(transactions) != 0:
+        for trans in transactions:
+          serializer = serializers.CA_ATR_S30_15_MIN_Serializer(data=trans)
+          if serializer.is_valid():
+            serializer.save()
+          else:
+            response['CA_ATR_S30_SERIALIZER'] = serializer.errors
+        response.update({'LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': 'DONE.','STOCKS_CA_ATR_S30':stock})
+      else:
+        transactions = 'NO CHANGE'
+        response.update({'LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': transactions,'STOCKS_CA_ATR_S30':stock})
+    except Exception as e:
+      pass
 
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
     response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS': 'I APOLOGIZE MY MASTER.','LTP_SLFEMA': True, 'STATUS_SLFEMA': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS_SLFEMA': 'I APOLOGIZE MY MASTER.','LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS_CA_ATR_S30': 'I APOLOGIZE MY MASTER.'})
