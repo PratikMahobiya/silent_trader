@@ -31,7 +31,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
             if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
               flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
               stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock)
-              flag[stock]['target'] = flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+              flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
               # Place Order in ZERODHA.
               # -------------------------------------------
               order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'],flag)
@@ -54,7 +54,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
                 if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                   flag[stock]['buying_price'] = data_frame['Close'].iloc[-1][stock]
                   stoploss_per, flag[stock]['stoploss'] = checking_stoploss(data_frame,stock)
-                  flag[stock]['target'] = flag[stock]['buying_price']*(flag[stock]['target_per']/100)
+                  flag[stock]['target'] = flag[stock]['buying_price'] + flag[stock]['buying_price']*(flag[stock]['target_per']/100)
                   # Place Order in ZERODHA.
                   # -------------------------------------------
                   order_id, error_status, exit_id = zerodha_action.place_cover_order(kite_conn_var,stock,flag[stock]['stoploss'],flag)
