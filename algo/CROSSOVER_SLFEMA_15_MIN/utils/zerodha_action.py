@@ -4,11 +4,12 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
   order_id = 0
   error_status = 'NOT_PLACED'
   try:
-    stocks_ltp = kite_conn_var.ltp(symbol.split('.')[0])
+    stocks_ltp = kite_conn_var.ltp('NSE:'+symbol.split('.')[0])
+    quantity = 1
     while True:
-      quantity = 1
-      price = stocks_ltp[symbol.split('.')[0]]['last_price'] * quantity
+      price = stocks_ltp['NSE:'+symbol.split('.')[0]]['last_price'] * quantity
       if price >= 2000:
+        quantity = quantity - 1
         break
       quantity += 1
     # order_id = kite_conn_var.place_order(tradingsymbol=symbol.split('.')[0],
