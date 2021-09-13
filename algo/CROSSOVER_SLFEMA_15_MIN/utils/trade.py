@@ -7,8 +7,7 @@ def checking_stoploss(data_frame, stock, flag, ema_max, ema_min):
       if (data_frame['Close'].iloc[-i][stock] < ema_min[-i]) or (data_frame['Close'].iloc[-i][stock] < ema_max[-i]):
         break
       stoploss_val = data_frame['Open'].iloc[-i][stock]
-  buy_price = data_frame['Close'].iloc[-1][stock]
-  per = ((buy_price - stoploss_val)/buy_price)*100
+  per = ((flag[stock]['buying_price'] - stoploss_val)/flag[stock]['buying_price'])*100
   return round(per,2), stoploss_val
 
 def trade_execution(data_frame, intervals, flag, transactions, curr_time, kite_conn_var):

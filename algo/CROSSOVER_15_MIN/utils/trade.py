@@ -1,8 +1,8 @@
 import talib
 from . import zerodha_action
 
-def checking_stoploss(stock,data_frame, atr):
-  price = data_frame['Close'].iloc[-1][stock]
+def checking_stoploss(stock,flag, atr):
+  price = flag[stock]['buying_price']
   stoploss_val = price - atr[-1]*0.3
   per = ((price-stoploss_val)/price)*100
   return round(per,2), stoploss_val
@@ -33,7 +33,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
             # -------------------------------------------
             flag['Entry'].append(stock)
             flag[stock]['buy'] = True
-            stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(stock,data_frame,atr)
+            stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(stock,flag,atr)
             flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1]
             transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
 
@@ -54,6 +54,6 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
                   # -------------------------------------------
                   flag['Entry'].append(stock)
                   flag[stock]['buy'] = True
-                  stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(stock,data_frame,atr)
+                  stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(stock,flag,atr)
                   flag[stock]['target'] = flag[stock]['buying_price'] + atr[-1]
                   transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
