@@ -27,10 +27,10 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.ltp_of_entries',
         'schedule': 3.0,
     },
-    'BB_5_MIN':{
-        'task': 'algo.tasks.BB_RUNS_5_MIN',
-        'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
-    },
+    # 'BB_5_MIN':{
+    #     'task': 'algo.tasks.BB_RUNS_5_MIN',
+    #     'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
+    # },
     'CRS_15_MIN':{
         'task': 'algo.tasks.CROSS_OVER_RUNS_15_MIN',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
@@ -39,9 +39,9 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
-    'CA_ATR_S30_15_MIN':{
-        'task': 'algo.tasks.CA_ATR_S30_RUNS_15_MIN',
-        'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
+    'CA_ATR_S30_5_MIN':{
+        'task': 'algo.tasks.CA_ATR_S30_RUNS_5_MIN',
+        'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
 }
 
