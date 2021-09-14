@@ -15,6 +15,115 @@ from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
 from .CROSSOVER_SLFEMA_15_MIN.utils import backbone as backbone_CRS_SLFEMA
 from .CA_ATR_S30_15_MIN.utils import backbone as backbone_CA_ATR_S30
 
+def get_stocks():
+  stock_dict = {
+    'AUROPHARMA':70401,
+    'AARTIIND':1793,
+    'ADANIENT':6401,
+    'ADANIPORTS':3861249,
+    'AMBUJACEM':325121,
+    'APLLTD':6483969,
+    'APOLLOTYRE':41729,
+    'ASHOKLEY':54273,
+    'AXISBANK':1510401,
+    'BEL' :98049,
+    'BERGEPAINT' :103425,
+    'BHARATFORG' :108033,
+    'BHEL' :112129,
+    'BIOCON' :2911489,
+    'CADILAHC' :2029825,
+    'CHOLAFIN' :175361,
+    'COALINDIA' :5215745,
+    'CONCOR' :1215745,
+    'CUMMINSIND' :486657,
+    'BANKBARODA' :1195009,
+    'CANBK' :2763265,
+    'COLPAL' :3876097,
+    'DLF' :	3771393,
+    'FEDERALBNK' :261889,
+    'ESCORTS' :245249,
+    'GAIL' :1207553,
+    'GODREJCP' :2585345,
+    'GODREJPROP':4576001,
+    'GRANULES':3039233,
+    'HCLTECH' :1850625,
+    'HDFCBANK':341249,
+    'HINDALCO':348929,
+    'HINDPETRO':359937,
+    'ICICIBANK':1270529,
+    'INDUSTOWER':7458561,
+    'IOC':415745,
+    'ITC':424961,
+    'JINDALSTEL':1723649,
+    'JSWSTEEL':3001089,
+    'KOTAKBANK':492033,
+    'LT':2939649,
+    'M&M':519937,
+    'M&MFIN':3400961,
+    'MANAPPURAM':4879617,
+    'MCDOWELL-N':2674433,
+    'MFSL':548353,
+    'MOTHERSUMI':1076225,
+    'NAM-INDIA':91393,
+    'NTPC':2977281,
+    'ONGC':633601,
+    'PETRONET':2905857,
+    'PVR':3365633,
+    'SAIL':758529,
+    'SBIN':779521,
+    'SUNPHARMA':857857,
+    'SUNTV':3431425,
+    'TATACHEM':871681,
+    'TATAMOTORS':884737,
+    'TATAPOWER':877057,
+    'TECHM':3465729,
+    'UBL':4278529,
+    'WIPRO':969473,
+    'BANDHANBNK' :579329,
+    'BATAINDIA' :94977,
+    'BHARTIARTL' :2714625,
+    'HDFCLIFE' :119553,
+    'CUB' :1459457,
+    'IDFCFIRSTB' :2863105,
+    'IGL' :2883073,
+    'INDUSINDBK' :1346049,
+    'LUPIN' :2672641,
+    'MARICO' :1041153,
+    'LICHSGFIN' :511233,
+    'NATIONALUM' :1629185,
+    'MUTHOOTFIN' :6054401,
+    'NMDC' :3924993,
+    'RAMCOCEM' :523009,
+    'SBILIFE' :5582849,
+    'TATASTEEL' :895745,
+    'TITAN' :897537,
+    'TVSMOTOR' :2170625,
+    'CIPLA' :177665,
+    'HAVELLS' :2513665,
+    'INFY' :408065,
+    'ZEEL' :975873,
+    'PNB' :2730497,
+    'POWERGRID' :3834113,
+    'TORNTPOWER' :3529217,
+    'VEDL' :784129,
+    'GMRINFRA':3463169,
+    'VOLTAS':951809,
+    'BPCL':134657,
+    'DABUR':197633,
+    'IBULHSGFIN':7712001,
+    'ABFRL':7707649,
+    'INDHOTEL':387073,
+    'ADANIGREEN':912129,
+    'ADANITRANS':2615553,
+    'GRASIM':315393,
+    'ICICIGI':5573121,
+    'ICICIPRULI':4774913,
+    'SBICARD':4600577,
+    'TATACONSUM':878593,
+    'UPL':2889473
+  }
+  return stock_dict
+
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
   access_token = open('algo/config/access_token.txt','r').read()
@@ -153,18 +262,18 @@ def BB_RUNS_5_MIN(self):
   return response
 
 @shared_task(bind=True,max_retries=3)
-def CROSS_OVER_ATR_ATR30_RUNS_15_MIN(self):
+def CROSS_OVER_RUNS_15_MIN(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
 
-  # Companies List
-  company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
-  # Extract Symbols and Company Names from Dataframe
-  companies_symbol = company_Sheet['SYMBOL']
-  kite_conn_var = connect_to_kite_connection()
+  # Stock List in dict
+  stock_dict          = get_stocks()
+  # Extract Symbols in list
+  stock_symbol        = stock_dict.keys()
+  kite_conn_var       = connect_to_kite_connection()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15m','5d',60,55,18,8,'30m','1mo',8,8,14]
+  intervals      = ['15minute',5,60,55,18,8,'30minute',30,8,8,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
@@ -179,7 +288,7 @@ def CROSS_OVER_ATR_ATR30_RUNS_15_MIN(self):
     flag = {}
     flag['Entry'] = []
     flag['Trend'] = []
-    for symb in companies_symbol:
+    for symb in stock_symbol:
       flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'quantity':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
@@ -189,7 +298,7 @@ def CROSS_OVER_ATR_ATR30_RUNS_15_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_CRS.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
+  data_frame, status = backbone_CRS.model(intervals, stock_dict, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.CROSSOVER_15_Min_Serializer(data=data_f)
