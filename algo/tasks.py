@@ -279,7 +279,6 @@ def CROSS_OVER_RUNS_15_MIN(self):
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-
   # Workbook Path
   flag_config            = 'algo/config/crs_flag.json'
   # Create Flag config for each company
@@ -319,15 +318,15 @@ def CROSS_OVER_RUNS_15_MIN(self):
 def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
   response = {'CRS_SLFEMA': False, 'STATUS': 'NONE'}
 
-  # Companies List
-  company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
-  # Extract Symbols and Company Names from Dataframe
-  companies_symbol = company_Sheet['SYMBOL']
-  kite_conn_var = connect_to_kite_connection()
+  # Stock List in dict
+  stock_dict          = get_stocks()
+  # Extract Symbols in list
+  stock_symbol        = stock_dict.keys()
+  kite_conn_var       = connect_to_kite_connection()
   '''
-    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, ATR_Time_Period]
+    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15m','5d',60,55,18,8,'30m','1mo',8,8,14]
+  intervals      = ['15minute',5,60,55,18,8,'30minute',30,8,8,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
@@ -341,8 +340,8 @@ def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
     flag = {}
     flag['Entry'] = []
     flag['Trend'] = []
-    for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target_1':0,'target_2':0,'atr_1':0,'atr_2':0,'target_1_flag':False,'quantity':0,'order_id':0,'order_status':None}
+    for symb in stock_symbol:
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target_05':0,'target_075':0,'target_1':0,'target_2':0,'atr_1':0,'atr_2':0,'target_05_flag':False,'target_075_flag':False,'target_1_flag':False,'quantity':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
@@ -351,7 +350,7 @@ def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_CRS_SLFEMA.model(intervals, companies_symbol, flag, curr_time,kite_conn_var)
+  data_frame, status = backbone_CRS_SLFEMA.model(intervals, stock_dict, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
       serializer = serializers.CROSSOVER_SLFEMA_15_MIN_Serializer(data=data_f)

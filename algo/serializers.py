@@ -14,7 +14,7 @@ class CROSSOVER_15_Min_Serializer(serializers.ModelSerializer):
 class CROSSOVER_SLFEMA_15_MIN_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_SLFEMA_15_MIN
-		fields 	= ('date','symbol','indicate','type','close','quantity','stoploss','target_1','target_2','difference','profit','stoploss_percent','order_id','order_status')
+		fields 	= ('date','symbol','indicate','type','close','quantity','stoploss','target_05','target_075','target_1','target_2','difference','profit','stoploss_percent','order_id','order_status')
 
 class CA_ATR_S30_15_MIN_Serializer(serializers.ModelSerializer):
 	class Meta:

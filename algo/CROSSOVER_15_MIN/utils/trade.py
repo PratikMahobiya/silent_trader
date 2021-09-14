@@ -45,7 +45,9 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
             if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
               if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
-                if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
+                if atr[-1] < atr[-2] and atr[-2] < atr[-3] and atr[-1] < atr[-3]:
+                  pass
+                else:
                   # Place Order in ZERODHA.
                   # -------------------------------------------
                   order_id, error_status = zerodha_action.place_regular_buy_order(kite_conn_var,stock,flag)

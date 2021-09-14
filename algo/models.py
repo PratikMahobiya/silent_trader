@@ -42,6 +42,8 @@ class CROSSOVER_SLFEMA_15_MIN(models.Model):
     close    				= models.FloatField(verbose_name='PRICE')
     quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     stoploss   				= models.FloatField(verbose_name='STOPLOSS')
+    target_05  				= models.FloatField(verbose_name='TARGET_05',blank=True,null=True,default=None)
+    target_075 				= models.FloatField(verbose_name='TARGET_075',blank=True,null=True,default=None)
     target_1   				= models.FloatField(verbose_name='TARGET_1',blank=True,null=True,default=None)
     target_2   				= models.FloatField(verbose_name='TARGET_2',blank=True,null=True,default=None)
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
