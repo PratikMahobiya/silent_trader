@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from time import sleep
 import pandas as pd
 
 def download_trend_data(for_trend_dict,intervals,kite_conn_var):
@@ -14,6 +15,7 @@ def download_trend_data(for_trend_dict,intervals,kite_conn_var):
     df_list.append(data_frame)
     df_key.append(stock_name)
   merged_data_frame = pd.concat(df_list,axis=1,keys=df_key).tz_localize(None)
+  sleep(0.3)
   return merged_data_frame
 
 def download_trade_data(for_trade_dict,intervals,kite_conn_var):
@@ -29,4 +31,5 @@ def download_trade_data(for_trade_dict,intervals,kite_conn_var):
     df_list.append(data_frame)
     df_key.append(stock_name)
   merged_data_frame = pd.concat(df_list,axis=1,keys=df_key).tz_localize(None)
+  sleep(0.3)
   return merged_data_frame
