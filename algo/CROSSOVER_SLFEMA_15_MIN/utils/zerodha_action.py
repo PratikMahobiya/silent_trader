@@ -24,7 +24,7 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
     #                             validity=kite_conn_var.VALIDITY_DAY,
     #                             price=stocks_ltp['NSE:'+symbol]['last_price'],
     #                             )
-    flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol]['last_price']
+    # flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol]['last_price']
     flag[symbol]['quantity'] = quantity
     error_status = 'SUCCESSFULLY_PLACED'
   except Exception as e:

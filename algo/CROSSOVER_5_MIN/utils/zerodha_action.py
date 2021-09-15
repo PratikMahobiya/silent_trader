@@ -25,7 +25,7 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
     #                             price=stocks_ltp['NSE:'+symbol]['last_price'],
     #                             )
     order_id = 1
-    flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol]['last_price']
+    # flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol]['last_price']
     flag[symbol]['quantity'] = quantity
     error_status = 'NOT ACTIVE'
   except Exception as e:

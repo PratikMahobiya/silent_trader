@@ -31,6 +31,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
             if atr[-1] < atr[-2] and atr[-2] < atr[-3] and atr[-1] < atr[-3]:
               pass
             else:
+              flag[stock]['buying_price'] = data_frame[stock]['Close'].iloc[-2]
               # Place Order in ZERODHA.
               # -------------------------------------------
               order_id, error_status = zerodha_action.place_regular_buy_order(kite_conn_var,stock,flag)
@@ -57,6 +58,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
               if atr[-1] < atr[-2] and atr[-2] < atr[-3] and atr[-1] < atr[-3]:
                 pass
               else:
+                flag[stock]['buying_price'] = data_frame[stock]['Close'].iloc[-2]
                 # Place Order in ZERODHA.
                 # -------------------------------------------
                 order_id, error_status = zerodha_action.place_regular_buy_order(kite_conn_var,stock,flag)
