@@ -24,9 +24,9 @@ def generate_acc_token(request):
       with open('./algo/config/t_token.txt','w') as at:
         at.write(data["access_token"])
       ltp = kite.ltp(['NSE:SBIN'])
-      context = {'success':True,'access_token': data["access_token"], 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
+      context = {'access_token': data["access_token"], 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
     except Exception as  e:
-      context = {'success':False,'status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}
+      context = {'status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}
     return render(request, 'success.html', context)
   else:
     context = {'success':False,'status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}

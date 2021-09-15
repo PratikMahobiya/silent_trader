@@ -44,21 +44,25 @@
 							</div>
 						</div>
 						<div class="bottom-content">
-							<input type='text' name="request_token" class="input-form" placeholder="Enter token you copied."
+							form action="generate_token/" method="post">
+								{% csrf_token %}
+								<p><b>To get request token? </b><a href="{{ kite_url }}" target="_blank">Click Here</a></p>
+								<input type='text' name="request_token" id="request_token" class="input-form" placeholder="Enter token you copied."
 										required="required" />
-              {% if success == False %}
-                <div class="w3l-copy-right text-center">
-                  <p>{{ status }}</p>
-                </div>
-              {% endif %}
-              {% if success == True %}
-                <div class="w3l-copy-right text-center">
-                  <p>-:TOKEN:-</p>
-                  <p><i><b>{{ access_token }}</b></i></p>
-                  <p>SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
-                  <p><b>{{ status }}</b></p>
-                </div>
-              {% endif %}
+								<button type="submit" class="loginhny-btn btn">Generate</button>
+								{% if success %}
+									<div class="w3l-copy-right text-center">
+										<p>{{ status }}</p>
+									</div>
+								{% else %}
+									<div class="w3l-copy-right text-center">
+										<p>-:TOKEN:-</p>
+										<p><i><b>{{ access_token }}</b></i></p>
+										<p>SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
+										<p><b>{{ status }}</b></p>
+									</div>
+								{% endif %}
+							</form>
 						</div>
 					</div>
 				</div>

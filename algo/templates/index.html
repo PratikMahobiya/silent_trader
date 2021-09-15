@@ -46,7 +46,7 @@
 							<form action="generate_token/" method="post">
 								{% csrf_token %}
 								<p><b>To get request token? </b><a href="{{ kite_url }}" target="_blank">Click Here</a></p>
-								<input type='text' name="request_token" class="input-form" placeholder="Enter token you copied."
+								<input type='text' name="request_token" id="request_token" class="input-form" placeholder="Enter token you copied."
 										required="required" />
 								<button type="submit" class="loginhny-btn btn">Generate</button>
 							</form>
