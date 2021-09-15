@@ -1,6 +1,14 @@
 from django.db import models
 
 # Create your models here.
+class ZERODHA_KEYS(models.Model):
+    access_token 					= models.CharField(max_length=100, verbose_name='access_token')
+    api_key                         = models.CharField(max_length=100, verbose_name='api_key')
+    api_secret                      = models.CharField(max_length=100, verbose_name='api_secret')
+    def __int__(self):
+    	return self.id
+    class Meta:
+        db_table = 'ZERODHA_KEYS'
 class BB_5_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')

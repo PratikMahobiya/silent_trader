@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from . import models
 
+class ZERODHA_KEYS_Serializer(serializers.ModelSerializer):
+	class Meta:
+		model 	= models.ZERODHA_KEYS
+		fields 	= ('access_token','api_key','api_secret')
+
 class BB_5_Min_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.BB_5_MIN
