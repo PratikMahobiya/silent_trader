@@ -15,13 +15,14 @@ def Index(request):
 def generate_acc_token(request):
   api_key = open('./algo/config/api_key.txt','r').read()
   api_secret = open('./algo/config/api_secret.txt','r').read()
+  access_token = open('config/access_token.txt','r').read()
   if request.method == 'POST':
     request_token 		= request.POST.get('request_token','')
     # try:
     kite = KiteConnect(api_key=api_key)
     data = kite.generate_session(request_token, api_secret=api_secret)
     kite.set_access_token(data["access_token"])
-    with open('./algo/config/t_token.txt','w') as at:
+    with open('./algo/config/access_token.txt','w') as at:
       at.write(data["access_token"])
     ltp = kite.ltp(['NSE:SBIN'])
     context = {'access_token': data["access_token"], 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
