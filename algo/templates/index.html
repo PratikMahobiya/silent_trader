@@ -31,10 +31,9 @@
 			<div class="wrapper">
 				<h1>Trade Bros</h1>
 				<!-- if logo is image enable this    -->
-					<a class="logo" href="index.html">
+					<!-- <a class="logo" href="index.html">
 					  <img src="{% static 'images/HAP_logo200x200.png' %}" alt="HAP Brothers" title="HAP Brothers" style="height:35px;" />
-					</a> 
-				
+					</a>  -->
 				<div class="d-grid forms23-grids">
 					<div class="form23">
 						<div class="main-bg">
@@ -44,10 +43,10 @@
 							</div>
 						</div>
 						<div class="bottom-content">
-							<form action="generate_token" method="post">
+							<form action="generate_token/" method="post">
 								{% csrf_token %}
 								<p><b>To get request token? </b><a href="{{ kite_url }}" target="_blank">Click Here</a></p>
-								<input type='text' name="request_token" class="input-form" placeholder="Enter TOKEN you copied."
+								<input type='text' name="request_token" class="input-form" placeholder="Enter token you copied."
 										required="required" />
 								<button type="submit" class="loginhny-btn btn">Generate</button>
 							</form>
