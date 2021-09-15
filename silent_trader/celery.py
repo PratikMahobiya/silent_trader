@@ -39,8 +39,8 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
-    'CA_ATR_S30_5_MIN':{
-        'task': 'algo.tasks.CA_ATR_S30_RUNS_5_MIN',
+    'CRS_5_MIN':{
+        'task': 'algo.tasks.CROSSOVER_ATR_ATR30_RUNS_5_MIN',
         'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
 }

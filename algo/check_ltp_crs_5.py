@@ -1,6 +1,6 @@
 import json
 
-from . import exit_action_ca_atr_s30
+from . import exit_action_crs_5
 from datetime import datetime, time
 
 def get_stock_ltp(kite_conn_var):
@@ -24,10 +24,10 @@ def get_stock_ltp(kite_conn_var):
       try:
         if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,14,30):
           if stock_name in flag['Entry']:
-            exit_action_ca_atr_s30.sell(stock_name, price, flag, transactions, curr_time, kite_conn_var)
+            exit_action_crs_5.sell(stock_name, price, flag, transactions, curr_time, kite_conn_var)
         elif datetime.now().time() >= time(15,14,30) and datetime.now().time() <= time(15,30,00):
           if stock_name in flag['Entry']:
-            exit_action_ca_atr_s30.square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var)
+            exit_action_crs_5.square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var)
       except Exception as e:
         pass
     # Update config File:

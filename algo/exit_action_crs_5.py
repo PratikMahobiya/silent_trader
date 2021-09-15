@@ -1,4 +1,4 @@
-from . import ltp_zerodha_action_ca_atr_s30
+from . import ltp_zerodha_action_crs_5
 
 # SELL STOCK ; EXIT
 def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
@@ -7,7 +7,7 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
     if flag[stock]['order_id'] != 0:
       # place an order for exit
       # -----------------------------------------------
-      order_id, error_status = ltp_zerodha_action_ca_atr_s30.place_regular_sell_order(kite_conn_var,stock,flag)
+      order_id, error_status = ltp_zerodha_action_crs_5.place_regular_sell_order(kite_conn_var,stock,flag)
       flag[stock]['order_id'] = order_id
       flag[stock]['order_status'] = error_status
       # -----------------------------------------------
@@ -28,7 +28,7 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
     if flag[stock]['order_id'] != 0:
       # place an order for exit
       # -----------------------------------------------
-      order_id, error_status = ltp_zerodha_action_ca_atr_s30.place_regular_sell_order(kite_conn_var,stock,flag)
+      order_id, error_status = ltp_zerodha_action_crs_5.place_regular_sell_order(kite_conn_var,stock,flag)
       flag[stock]['order_id'] = order_id
       flag[stock]['order_status'] = error_status
       # -----------------------------------------------
@@ -50,7 +50,7 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
   if flag[stock_name]['order_id'] != 0:
     # place an order for exit
     # -----------------------------------------------
-    order_id, error_status = ltp_zerodha_action_ca_atr_s30.place_regular_sell_order(kite_conn_var,stock_name,flag)
+    order_id, error_status = ltp_zerodha_action_crs_5.place_regular_sell_order(kite_conn_var,stock_name,flag)
     flag[stock_name]['order_id'] = order_id
     flag[stock_name]['order_status'] = error_status
     # -----------------------------------------------
@@ -68,7 +68,7 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
   else:
     # place an order for exit
     # -----------------------------------------------
-    order_id, error_status = ltp_zerodha_action_ca_atr_s30.exit_order(kite_conn_var,stock_name,flag)
+    order_id, error_status = ltp_zerodha_action_crs_5.exit_order(kite_conn_var,stock_name,flag)
     flag[stock_name]['order_id'] = order_id
     flag[stock_name]['order_status'] = error_status
     # -----------------------------------------------

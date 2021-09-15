@@ -56,7 +56,7 @@ class CROSSOVER_SLFEMA_15_MIN(models.Model):
     class Meta:
         db_table = 'CROSSOVER_SLFEMA_15_MIN'
 
-class CA_ATR_S30_5_MIN(models.Model):
+class CROSSOVER_5_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
@@ -73,4 +73,4 @@ class CA_ATR_S30_5_MIN(models.Model):
     def __int__(self):
     	return self.id
     class Meta:
-        db_table = 'CA_ATR_S30_5_MIN'
+        db_table = 'CROSSOVER_5_MIN'

@@ -8,12 +8,12 @@ from kiteconnect import KiteConnect
 from . import serializers
 from . import check_ltp
 from . import check_ltp_slfema
-from . import check_ltp_ca_atr_s30
+from . import check_ltp_crs_5
 from celery import shared_task
 from .BB_5_MIN.utils import backbone as backbone_BB_5
 from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
 from .CROSSOVER_SLFEMA_15_MIN.utils import backbone as backbone_CRS_SLFEMA
-from .CA_ATR_S30_15_MIN.utils import backbone as backbone_CA_ATR_S30
+from .CROSSOVER_5_MIN.utils import backbone as backbone_CRS_5_MIN
 
 def get_stocks():
   stock_dict = {
@@ -174,12 +174,12 @@ def ltp_of_entries(self):
     except Exception as e:
       pass
 
-    # LTP CA_ATR_S30
+    # LTP CRS_5MIN
     try:
-      transactions, stock = check_ltp_ca_atr_s30.get_stock_ltp(kite_conn_var)
+      transactions, stock = check_ltp_crs_5.get_stock_ltp(kite_conn_var)
       if len(transactions) != 0:
         for trans in transactions:
-          serializer = serializers.CA_ATR_S30_5_MIN_Serializer(data=trans)
+          serializer = serializers.CROSSOVER_5_MIN_Serializer(data=trans)
           if serializer.is_valid():
             serializer.save()
           else:
@@ -368,8 +368,8 @@ def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
   return response
 
 @shared_task(bind=True,max_retries=3)
-def CA_ATR_S30_RUNS_5_MIN(self):
-  response = {'CA_ATR_S30': False, 'STATUS': 'NONE'}
+def CROSSOVER_ATR_ATR30_RUNS_5_MIN(self):
+  response = {'CRS_5MIN': False, 'STATUS': 'NONE'}
 
   # Stock List in dict
   stock_dict          = get_stocks()
@@ -386,7 +386,7 @@ def CA_ATR_S30_RUNS_5_MIN(self):
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
   # Workbook Path
-  flag_config            = 'algo/config/ca_atr_s30_flag.json'
+  flag_config            = 'algo/config/crs_5_min_flag.json'
   # Create Flag config for each company
   if not os.path.exists(flag_config):
     # print("Created Flag Config File For all STOCKS.")
@@ -403,17 +403,17 @@ def CA_ATR_S30_RUNS_5_MIN(self):
     with open(flag_config, "r") as outfile:
       flag = json.load(outfile)
 
-  data_frame, status = backbone_CA_ATR_S30.model(intervals, stock_dict, flag, curr_time,kite_conn_var)
+  data_frame, status = backbone_CRS_5_MIN.model(intervals, stock_dict, flag, curr_time,kite_conn_var)
   if status is True:
     for data_f in data_frame:
-      serializer = serializers.CA_ATR_S30_5_MIN_Serializer(data=data_f)
+      serializer = serializers.CROSSOVER_5_MIN_Serializer(data=data_f)
       if serializer.is_valid():
         serializer.save()
       else:
         response['TH_PACA_T2_SERIALIZER'] = serializer.errors
-    response.update({'CA_ATR_S30': True, 'STATUS': 'ALL DONE.'})
+    response.update({'CRS_5MIN': True, 'STATUS': 'ALL DONE.'})
   elif status is False:
-    response.update({'CA_ATR_S30': True, 'STATUS': data_frame})
+    response.update({'CRS_5MIN': True, 'STATUS': data_frame})
   response['Trending Stocks'] = flag['Trend']
   # Update config File:
   with open(flag_config, "w") as outfile:
