@@ -8,7 +8,7 @@ from import_export.admin import ExportActionMixin
 class ZERODHA_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('access_token','api_key','api_secret')
     list_per_page = 10
-    readonly_fields = ('access_token')
+    readonly_fields = ('access_token','api_key','api_secret')
 
 @admin.register(models.BB_5_MIN)
 class BB_5_Min_Admin(ExportActionMixin,admin.ModelAdmin):
