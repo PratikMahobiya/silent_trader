@@ -45,19 +45,19 @@
 						</div>
 						<div class="bottom-content">
 							<form action="#" method="post">
+                {% csrf_token %}
 								{% if success %}
                     <p><b>Error</b></p>
 										<p>{{ status }}</p>
-                    <button type="submit" class="loginhny-btn btn" onclick="index">HOME</button>
-								{% else %}
+                    {% else %}
                     <p>You have SUCCESSFULLY create a TOKEN</p>
 										<p>-:TOKEN:-</p>
 										<p><i><b>{{ access_token }}</b></i></p>
 										<p>SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
 										<p><b>{{ status }}</b></p>
-                    <button type="submit" class="loginhny-btn btn" onclick="index">HOME</button>
-								{% endif %}
-							</form>
+                    {% endif %}
+                  </form>
+                <button type="submit" class="loginhny-btn btn" onclick="index">HOME</button>
 						</div>
 					</div>
 				</div>
