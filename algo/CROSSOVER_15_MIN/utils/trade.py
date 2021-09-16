@@ -3,7 +3,7 @@ from . import zerodha_action
 
 def checking_stoploss(stock,flag, atr):
   price = flag[stock]['buying_price']
-  stoploss_val = price - atr[-1]*0.7
+  stoploss_val = price - atr[-1]*0.3
   per = ((price-stoploss_val)/price)*100
   return round(per,2), round(stoploss_val,2)
 
