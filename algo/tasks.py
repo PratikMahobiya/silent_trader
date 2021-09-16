@@ -96,7 +96,6 @@ def get_stocks():
     'RAMCOCEM' :523009,
     'SBILIFE' :5582849,
     'TATASTEEL' :895745,
-    'TITAN' :897537,
     'TVSMOTOR' :2170625,
     'CIPLA' :177665,
     'HAVELLS' :2513665,
