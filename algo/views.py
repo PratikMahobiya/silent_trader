@@ -28,10 +28,10 @@ def generate_acc_token(request):
       ltp = kite.ltp(['NSE:SBIN'])
       context = {'access_token': data["access_token"], 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
     except Exception as  e:
-      context = {'status':'TOKEN EXPIRED. PLEASE RECREATE.'}
+      context = {'success':'ERROR','status':e}
     return render(request, 'success.html', context)
   else:
-    context = {'success':False,'status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}
+    context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':'WORNG METHOD APPLID.'}
     return render(request, 'success.html', context)
 
 def check(request):
@@ -43,5 +43,5 @@ def check(request):
     ltp = kite.ltp(['NSE:SBIN'])
     context = {'access_token': access_token, 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
   except Exception as  e:
-    context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}
+    context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':e}
   return render(request, 'check.html', context)

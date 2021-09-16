@@ -45,8 +45,9 @@
 						</div>
 						<div class="bottom-content">
 							<form action="#" method="post">
-								{% if success %}
+								{% if success == 'ERROR' %}
 										<p>{{ status }}</p>
+										<p>{{ error }}</p>
 								{% else %}
 										<p>-:TOKEN:-</p>
 										<p><i><b>{{ access_token }}</b></i></p>
