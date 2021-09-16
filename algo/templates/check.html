@@ -40,22 +40,22 @@
 						<div class="main-bg">
 							<h6 class="sec-one">Trade Bros</h6>
 							<div class="speci-login first-look">
-								<img src="{% static 'images/HAP_logo200x200.png' %}" alt="" class="img-responsive">
+								<img src="{% static 'images/HAP_logo24x24.png' %}" alt="" class="img-responsive">
 							</div>
 						</div>
 						<div class="bottom-content">
-							<form action="index/" method="post">
+							<form action="#" method="post">
 								{% if success %}
                     <p><b>Error</b></p>
 										<p>{{ status }}</p>
-                    <button type="submit" class="loginhny-btn btn">HOME</button>
+                    <button type="submit" class="loginhny-btn btn" onclick="index">HOME</button>
 								{% else %}
                     <p>You have SUCCESSFULLY create a TOKEN</p>
 										<p>-:TOKEN:-</p>
 										<p><i><b>{{ access_token }}</b></i></p>
 										<p>SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
 										<p><b>{{ status }}</b></p>
-                    <button type="submit" class="loginhny-btn btn">HOME</button>
+                    <button type="submit" class="loginhny-btn btn" onclick="index">HOME</button>
 								{% endif %}
 							</form>
 						</div>
