@@ -16,7 +16,7 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
       quantity += 1
     order_id = kite_conn_var.place_order(tradingsymbol=symbol,
                                 exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_BUY,
+                                transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
                                 quantity=quantity,
                                 variety=kite_conn_var.VARIETY_REGULAR,
                                 order_type=kite_conn_var.ORDER_TYPE_LIMIT,
