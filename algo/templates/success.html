@@ -44,7 +44,7 @@
 							</div>
 						</div>
 						<div class="bottom-content">
-							<form action="check/" method="post">
+							<form action="{% url 'check' %}" method="post">
 								<button type="submit" class="loginhny-btn btn">Check</button>
 								{% if success %}
 										<p>{{ status }}</p>
