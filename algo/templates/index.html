@@ -43,7 +43,7 @@
 							</div>
 						</div>
 						<div class="bottom-content">
-							<form action="generate_token/" method="post">
+							<form action="http://139.59.54.145/generate_token/" method="post">
 								{% csrf_token %}
 								<p><b>To get request token? </b><a href="{{ kite_url }}" target="_blank">Click Here</a></p>
 								<input type='text' name="request_token" id="request_token" class="input-form" placeholder="Enter token you copied."
