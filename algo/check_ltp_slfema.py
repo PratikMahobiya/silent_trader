@@ -33,7 +33,10 @@ def get_stock_ltp(kite_conn_var):
     # Update config File:
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
-    return transactions, stocks_ltp
+    active_stocks_ltp = []
+    for i in stocks_ltp:
+      active_stocks_ltp.append(i.split(':')[-1])
+    return transactions, active_stocks_ltp
 
   # Update config File:
   with open(flag_config, "w") as outfile:
