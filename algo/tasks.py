@@ -139,22 +139,6 @@ def ltp_of_entries(self):
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
 
-    # LTP CRS
-    try:
-      transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
-      if len(transactions) != 0:
-        for trans in transactions:
-          serializer = serializers.CROSSOVER_15_Min_Serializer(data=trans)
-          if serializer.is_valid():
-            serializer.save()
-          else:
-            response['CRS_SERIALIZER'] = serializer.errors
-        response.update({'LTP': True, 'STATUS': 'DONE.','STOCKS':stock})
-      else:
-        transactions = 'NO CHANGE'
-        response.update({'LTP': True, 'STATUS': transactions,'STOCKS':stock})
-    except Exception as e:
-      pass
     
     # LTP SLFEMA
     try:
@@ -170,6 +154,23 @@ def ltp_of_entries(self):
       else:
         transactions = 'NO CHANGE'
         response.update({'LTP_SLFEMA': True, 'STATUS_SLFEMA': transactions,'STOCKS_SLFEMA':stock})
+    except Exception as e:
+      pass
+
+    # LTP CRS
+    try:
+      transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
+      if len(transactions) != 0:
+        for trans in transactions:
+          serializer = serializers.CROSSOVER_15_Min_Serializer(data=trans)
+          if serializer.is_valid():
+            serializer.save()
+          else:
+            response['CRS_SERIALIZER'] = serializer.errors
+        response.update({'LTP': True, 'STATUS': 'DONE.','STOCKS':stock})
+      else:
+        transactions = 'NO CHANGE'
+        response.update({'LTP': True, 'STATUS': transactions,'STOCKS':stock})
     except Exception as e:
       pass
 
@@ -340,7 +341,7 @@ def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
     flag['Entry'] = []
     flag['Trend'] = []
     for symb in stock_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target_05':0,'target_075':0,'target_1':0,'target_2':0,'atr_1':0,'atr_2':0,'target_05_flag':False,'target_075_flag':False,'target_1_flag':False,'quantity':0,'order_id':0,'order_status':None}
+      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target_06':0,'target_09':0,'target_1':0,'target_2':0,'atr_1':0,'atr_2':0,'target_06_flag':False,'target_09_flag':False,'target_1_flag':False,'quantity':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
