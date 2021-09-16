@@ -135,11 +135,10 @@ def connect_to_kite_connection():
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
-  response = {'LTP': False, 'STATUS': 'NONE','STOCKS':None,'LTP_SLFEMA': False, 'STATUS_SLFEMA': 'NONE','STOCKS_SLFEMA':None,'LTP_CA_ATR_S30': False, 'STATUS_CA_ATR_S30': 'NONE','STOCKS_CA_ATR_S30':None}
+  response = {'LTP': False, 'STATUS': 'NONE','STOCKS':None,'LTP_SLFEMA': False, 'STATUS_SLFEMA': 'NONE','STOCKS_SLFEMA':None,'LTP_CRS_5_MIN': False, 'STATUS_CRS_5_MIN': 'NONE','STOCKS_CRS_5_MIN':None}
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
 
-    
     # LTP SLFEMA
     try:
       transactions, stock = check_ltp_slfema.get_stock_ltp(kite_conn_var)
@@ -183,18 +182,18 @@ def ltp_of_entries(self):
           if serializer.is_valid():
             serializer.save()
           else:
-            response['CA_ATR_S30_SERIALIZER'] = serializer.errors
-        response.update({'LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': 'DONE.','STOCKS_CA_ATR_S30':stock})
+            response['CRS_5_MIN_SERIALIZER'] = serializer.errors
+        response.update({'LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'DONE.','STOCKS_CRS_5_MIN':stock})
       else:
         transactions = 'NO CHANGE'
-        response.update({'LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': transactions,'STOCKS_CA_ATR_S30':stock})
+        response.update({'LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': transactions,'STOCKS_CRS_5_MIN':stock})
     except Exception as e:
       pass
 
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
-    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS': 'I APOLOGIZE MY MASTER.','LTP_SLFEMA': True, 'STATUS_SLFEMA': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS_SLFEMA': 'I APOLOGIZE MY MASTER.','LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS_CA_ATR_S30': 'I APOLOGIZE MY MASTER.'})
+    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS': 'I APOLOGIZE MY MASTER.','LTP_SLFEMA': True, 'STATUS_SLFEMA': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS_SLFEMA': 'I APOLOGIZE MY MASTER.','LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS_CRS_5_MIN': 'I APOLOGIZE MY MASTER.'})
   else:
-    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.', 'STOCKS': 'SORRY.','LTP': True, 'STATUS_SLFEMA': 'MARKET IS CLOSED.', 'STOCKS_SLFEMA': 'SORRY.','LTP_CA_ATR_S30': True, 'STATUS_CA_ATR_S30': 'MARKET IS CLOSED.', 'STOCKS_CA_ATR_S30': 'SORRY.'})
+    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.', 'STOCKS': 'SORRY.','LTP': True, 'STATUS_SLFEMA': 'MARKET IS CLOSED.', 'STOCKS_SLFEMA': 'SORRY.','LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'MARKET IS CLOSED.', 'STOCKS_CRS_5_MIN': 'SORRY.'})
   return response
 
 @shared_task(bind=True,max_retries=3)
@@ -368,7 +367,7 @@ def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
   return response
 
 @shared_task(bind=True,max_retries=3)
-def CROSSOVER_ATR_ATR30_RUNS_5_MIN(self):
+def CROSS_OVER_RUNS_5_MIN(self):
   response = {'CRS_5MIN': False, 'STATUS': 'NONE'}
 
   # Stock List in dict

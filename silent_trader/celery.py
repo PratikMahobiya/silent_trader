@@ -40,7 +40,7 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
     'CRS_5_MIN':{
-        'task': 'algo.tasks.CROSSOVER_ATR_ATR30_RUNS_5_MIN',
+        'task': 'algo.tasks.CROSS_OVER_RUNS_5_MIN',
         'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
 }
