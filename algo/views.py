@@ -27,7 +27,7 @@ def generate_acc_token(request):
       ltp = kite.ltp(['NSE:SBIN'])
       context = {'access_token': data["access_token"], 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
     except Exception as  e:
-      context = {'status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}
+      context = {'status':'TOKEN EXPIRED. PLEASE RECREATE.'}
     return render(request, 'success.html', context)
   else:
     context = {'success':False,'status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}
