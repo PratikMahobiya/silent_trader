@@ -2,7 +2,7 @@
 <html lang="zxx">
 {% load static %}
 <head>
-	<title>Trade Bros</title>
+	<title>HAP Brothers</title>
 	<!-- Meta tag Keywords -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="UTF-8" />
@@ -38,14 +38,13 @@
 				<div class="d-grid forms23-grids">
 					<div class="form23">
 						<div class="main-bg">
-							<h6 class="sec-one">John Doe</h6>
+							<h6 class="sec-one">Trade Bros</h6>
 							<div class="speci-login first-look">
 								<img src="{% static 'images/user.png' %}" alt="" class="img-responsive">
 							</div>
 						</div>
 						<div class="bottom-content">
 							<form action="generate_token/" method="post">
-								{% csrf_token %}
 								<p><b>To get request token? </b><a href="{{ kite_url }}" target="_blank">Click Here</a></p>
 								<input type='text' name="request_token" id="request_token" class="input-form" placeholder="Enter token you copied."
 										required="required" />
