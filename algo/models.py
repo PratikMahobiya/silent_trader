@@ -9,6 +9,7 @@ class ZERODHA_KEYS(models.Model):
     	return self.id
     class Meta:
         db_table = 'ZERODHA_KEYS'
+
 class BB_5_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')

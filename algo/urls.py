@@ -5,5 +5,7 @@ from . import views
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
 	path('', views.Index, name='index'),
-	path('generate_token/', views.generate_acc_token, name='index'),
+	path('index/', views.Index, name='index'),
+	path('check/', views.check, name='check'),
+	path('generate_token/', views.generate_acc_token, name='generate_token'),
 ]

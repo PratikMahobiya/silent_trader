@@ -1,10 +1,12 @@
 import os
 import json
+from django.db import models
 import pandas as pd
 from time import sleep
 from datetime import datetime, time
 from kiteconnect import KiteConnect
 
+from . import models
 from . import serializers
 from . import check_ltp
 from . import check_ltp_slfema
@@ -125,7 +127,8 @@ def get_stocks():
 
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
-  access_token = open('algo/config/access_token.txt','r').read()
+  # access_token = open('algo/config/access_token.txt','r').read()
+  access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
   try:
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)

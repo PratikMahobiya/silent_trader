@@ -44,15 +44,18 @@
 							</div>
 						</div>
 						<div class="bottom-content">
-							<form action="check/" method="post">
-								<button type="submit" class="loginhny-btn btn">Check</button>
+							<form action="index/" method="post">
 								{% if success %}
+                    <p><b>Error</b></p>
 										<p>{{ status }}</p>
+                    <button type="submit" class="loginhny-btn btn">HOME</button>
 								{% else %}
+                    <p>You have SUCCESSFULLY create a TOKEN</p>
 										<p>-:TOKEN:-</p>
 										<p><i><b>{{ access_token }}</b></i></p>
 										<p>SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
 										<p><b>{{ status }}</b></p>
+                    <button type="submit" class="loginhny-btn btn">HOME</button>
 								{% endif %}
 							</form>
 						</div>
