@@ -22,6 +22,7 @@ def generate_acc_token(request):
       kite = KiteConnect(api_key=api_key)
       data = kite.generate_session(request_token, api_secret=api_secret)
       kite.set_access_token(data["access_token"])
+      models.ZERODHA_KEYS.objects.all().delete()
       access_token_obj = models.ZERODHA_KEYS(api_key=api_key, api_secret=api_secret,access_token=data["access_token"])
       access_token_obj.save()
       ltp = kite.ltp(['NSE:SBIN'])
@@ -42,5 +43,5 @@ def check(request):
     ltp = kite.ltp(['NSE:SBIN'])
     context = {'access_token': access_token, 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
   except Exception as  e:
-    context = {'status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}
+    context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...'}
   return render(request, 'check.html', context)
