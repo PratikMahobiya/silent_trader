@@ -48,14 +48,16 @@
 								{% if success == 'ERROR' %}
 										<p>{{ status }}</p>
 										<p>{{ error }}</p>
+										<a href="http://139.59.54.145/index/"><button type="submit" class="loginhny-btn btn">HOME</button></a>
 								{% else %}
+										<p><b>You have SUCCESSFULLY create a TOKEN</b></p>
 										<p>-:TOKEN:-</p>
 										<p><i><b>{{ access_token }}</b></i></p>
 										<p>SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
 										<p><b>{{ status }}</b></p>
+										<a href="http://139.59.54.145/check/"><button type="submit" class="loginhny-btn btn">CHECK</button></a>
 								{% endif %}
 							</form>
-							<a href="http://139.59.54.145/check/"><button type="submit" class="loginhny-btn btn">CHECK</button></a>
 						</div>
 					</div>
 				</div>
