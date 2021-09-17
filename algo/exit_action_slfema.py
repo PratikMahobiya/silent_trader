@@ -39,7 +39,7 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
       profit        = round((((diff/flag[stock]['buying_price']) * 100)),2)
       diff          = round((diff * flag[stock]['quantity']),2)
       flag[stock]['buy']      = False
-      transactions.append({'symbol':stock,'indicate':'Exit','type':'TARGET_2','date':curr_time,'close':flag[stock]['selling_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_06':flag[stock]['target_06'],'target_09':flag[stock]['target_09'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':None})
+      transactions.append({'symbol':stock,'indicate':'Exit','type':'TARGET_2','date':curr_time,'close':flag[stock]['selling_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_05':flag[stock]['target_06'],'target_075':flag[stock]['target_09'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':None})
       flag['Entry'].remove(stock)
       flag[stock]['stoploss'], flag[stock]['target_1'], flag[stock]['target_1'] = 0, 0, 0
       flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
@@ -73,7 +73,7 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
       sell_type = 'T05_SL'
     elif flag[stock]['target_06_flag'] is True and flag[stock]['target_09_flag'] is True and flag[stock]['target_1_flag'] is True:
       sell_type = 'T075_SL'
-    transactions.append({'symbol':stock,'indicate':'Exit','type':sell_type,'date':curr_time,'close':flag[stock]['selling_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_06':flag[stock]['target_06'],'target_09':flag[stock]['target_09'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':None})
+    transactions.append({'symbol':stock,'indicate':'Exit','type':sell_type,'date':curr_time,'close':flag[stock]['selling_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_05':flag[stock]['target_06'],'target_075':flag[stock]['target_09'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':None})
     flag['Entry'].remove(stock)
     flag[stock]['stoploss'], flag[stock]['target_1'], flag[stock]['target_1'] = 0, 0, 0
     flag[stock]['selling_price'], flag[stock]['buying_price']  = 0, 0
@@ -100,7 +100,7 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
       profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
       diff          = round((diff * flag[stock_name]['quantity']),2)
       flag[stock_name]['buy']      = False
-      transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'quantity':flag[stock_name]['quantity'],'stoploss':flag[stock_name]['stoploss'],'target_06':flag[stock_name]['target_06'],'target_09':flag[stock_name]['target_09'],'target_1':flag[stock_name]['target_1'],'target_2':flag[stock_name]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock_name]['order_id'],'order_status':flag[stock_name]['order_status'],'stoploss_percent':None})
+      transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'quantity':flag[stock_name]['quantity'],'stoploss':flag[stock_name]['stoploss'],'target_05':flag[stock_name]['target_06'],'target_075':flag[stock_name]['target_09'],'target_1':flag[stock_name]['target_1'],'target_2':flag[stock_name]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock_name]['order_id'],'order_status':flag[stock_name]['order_status'],'stoploss_percent':None})
       flag['Entry'].remove(stock_name)
       flag[stock_name]['stoploss'], flag[stock_name]['target_1'], flag[stock_name]['target_1'] = 0, 0, 0
       flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
@@ -121,7 +121,7 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
       profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
       diff          = round((diff * flag[stock_name]['quantity']),2)
       flag[stock_name]['buy']      = False
-      transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'quantity':flag[stock_name]['quantity'],'stoploss':flag[stock_name]['stoploss'],'target_06':flag[stock_name]['target_06'],'target_09':flag[stock_name]['target_09'],'target_1':flag[stock_name]['target_1'],'target_2':flag[stock_name]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock_name]['order_id'],'order_status':flag[stock_name]['order_status'],'stoploss_percent':None})
+      transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'quantity':flag[stock_name]['quantity'],'stoploss':flag[stock_name]['stoploss'],'target_05':flag[stock_name]['target_06'],'target_075':flag[stock_name]['target_09'],'target_1':flag[stock_name]['target_1'],'target_2':flag[stock_name]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock_name]['order_id'],'order_status':flag[stock_name]['order_status'],'stoploss_percent':None})
       flag['Entry'].remove(stock_name)
       flag[stock_name]['stoploss'], flag[stock_name]['target_1'], flag[stock_name]['target_1'] = 0, 0, 0
       flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
@@ -142,7 +142,7 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
     profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
     diff          = round((diff * flag[stock_name]['quantity']),2)
     flag[stock_name]['buy']      = False
-    transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'quantity':flag[stock_name]['quantity'],'stoploss':flag[stock_name]['stoploss'],'target_06':flag[stock_name]['target_06'],'target_09':flag[stock_name]['target_09'],'target_1':flag[stock_name]['target_1'],'target_2':flag[stock_name]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock_name]['order_id'],'order_status':flag[stock_name]['order_status'],'stoploss_percent':None})
+    transactions.append({'symbol':stock_name,'indicate':'Square_Off','type':'END_OF_DAY','date':curr_time,'close':flag[stock_name]['selling_price'],'quantity':flag[stock_name]['quantity'],'stoploss':flag[stock_name]['stoploss'],'target_05':flag[stock_name]['target_06'],'target_075':flag[stock_name]['target_09'],'target_1':flag[stock_name]['target_1'],'target_2':flag[stock_name]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock_name]['order_id'],'order_status':flag[stock_name]['order_status'],'stoploss_percent':None})
     flag['Entry'].remove(stock_name)
     flag[stock_name]['stoploss'], flag[stock_name]['target_1'], flag[stock_name]['target_1'] = 0, 0, 0
     flag[stock_name]['selling_price'], flag[stock_name]['buying_price']  = 0, 0
