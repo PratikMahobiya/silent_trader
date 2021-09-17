@@ -38,12 +38,6 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
       diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
       profit        = round((((diff/flag[stock]['buying_price']) * 100)),2)
       diff          = round((diff * flag[stock]['quantity']),2)
-      # place an order for exit
-      # -----------------------------------------------
-      order_id, error_status = ltp_zerodha_action_slfema.place_regular_sell_order(kite_conn_var,stock,flag)
-      flag[stock]['order_id'] = order_id
-      flag[stock]['order_status'] = error_status
-      # -----------------------------------------------
       flag[stock]['buy']      = False
       transactions.append({'symbol':stock,'indicate':'Exit','type':'TARGET_2','date':curr_time,'close':flag[stock]['selling_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_06':flag[stock]['target_06'],'target_09':flag[stock]['target_09'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':None})
       flag['Entry'].remove(stock)
@@ -70,12 +64,6 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
     diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
     profit        = round((((diff/flag[stock]['buying_price']) * 100)),2)
     diff          = round((diff * flag[stock]['quantity']),2)
-    # place an order for exit
-    # -----------------------------------------------
-    order_id, error_status = ltp_zerodha_action_slfema.place_regular_sell_order(kite_conn_var,stock,flag)
-    flag[stock]['order_id'] = order_id
-    flag[stock]['order_status'] = error_status
-    # -----------------------------------------------
     flag[stock]['buy']      = False
     if flag[stock]['target_06_flag'] is False and flag[stock]['target_09_flag'] is False and flag[stock]['target_1_flag'] is False:
       sell_type = 'StopLoss'
@@ -149,10 +137,6 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
     flag[stock_name]['order_id'] = order_id
     flag[stock_name]['order_status'] = error_status
     # -----------------------------------------------
-    flag[stock_name]['selling_price'] = flag[stock_name]['buying_price']
-    diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
-    profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
-    diff          = round((diff * flag[stock_name]['quantity']),2)
     flag[stock_name]['selling_price'] = price
     diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
     profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
