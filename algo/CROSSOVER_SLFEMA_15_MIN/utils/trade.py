@@ -38,11 +38,11 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
             flag[stock]['buy'] = True
             flag[stock]['atr_1'] = atr[-1]
             stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,flag,ema_max,ema_min)
-            flag[stock]['target_05'] = round((flag[stock]['buying_price'] + (flag[stock]['atr_1']*0.6)),2)
-            flag[stock]['target_075'] = round((flag[stock]['buying_price'] + (flag[stock]['atr_1']*0.8)),2)
+            flag[stock]['target_06'] = round((flag[stock]['buying_price'] + (flag[stock]['atr_1']*0.6)),2)
+            flag[stock]['target_09'] = round((flag[stock]['buying_price'] + (flag[stock]['atr_1']*0.8)),2)
             flag[stock]['target_1'] = round((flag[stock]['buying_price'] + flag[stock]['atr_1']),2)
             flag[stock]['target_2'] = round((flag[stock]['buying_price'] + flag[stock]['atr_2']),2)
-            transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_05':flag[stock]['target_05'],'target_075':flag[stock]['target_075'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+            transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_06':flag[stock]['target_06'],'target_09':flag[stock]['target_09'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -67,7 +67,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
                     flag[stock]['atr_1'] = atr[-1]
                     stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame,stock,flag,ema_max,ema_min)
                     flag[stock]['target_06'] = round((flag[stock]['buying_price'] + (flag[stock]['atr_1']*0.6)),2)
-                    flag[stock]['target_08'] = round((flag[stock]['buying_price'] + (flag[stock]['atr_1']*0.9)),2)
+                    flag[stock]['target_09'] = round((flag[stock]['buying_price'] + (flag[stock]['atr_1']*0.9)),2)
                     flag[stock]['target_1'] = round((flag[stock]['buying_price'] + flag[stock]['atr_1']),2)
                     flag[stock]['target_2'] = round((flag[stock]['buying_price'] + flag[stock]['atr_2']),2)
-                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_05':flag[stock]['target_05'],'target_075':flag[stock]['target_075'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+                    transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target_06':flag[stock]['target_06'],'target_09':flag[stock]['target_09'],'target_1':flag[stock]['target_1'],'target_2':flag[stock]['target_2'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
