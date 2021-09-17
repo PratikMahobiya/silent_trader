@@ -51,8 +51,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
             if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-              if data_frame[stock]['Close'].iloc[-2] > data_frame[stock['Open']].iloc[-2]:
-                if data_frame[stock]['Close'].iloc[-3] > data_frame[stock['Open']].iloc[-3]:
+              if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Open'].iloc[-2]:
+                if data_frame[stock]['Close'].iloc[-3] > data_frame[stock]['Open'].iloc[-3]:
                   if atr[-1] < atr[-2] and atr[-2] < atr[-3] and atr[-1] < atr[-3]:
                     pass
                   else:
