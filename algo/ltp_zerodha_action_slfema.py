@@ -16,7 +16,7 @@ def place_regular_sell_order(kite_conn_var,symbol,flag):
                                   validity=kite_conn_var.VALIDITY_DAY,
                                   )
     sleep(0.3)
-    error_status = 'SUCCESSFULLY_PLACED'
+    error_status = 'NOT ACTIVE'
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END.'
   return order_id, error_status
@@ -29,7 +29,7 @@ def exit_order(kite_conn_var,symbol,flag):
     if flag[symbol]['order_id'] != 0:
       cancel_id = kite_conn_var.cancel_order(order_id=flag[symbol]['order_id'],
                                   variety=kite_conn_var.VARIETY_REGULAR)
-    error_status = 'CANCELLED'
+    error_status = 'NOT ACTIVE'
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END OR STOPLOSS HITTED.'
   return cancel_id, error_status

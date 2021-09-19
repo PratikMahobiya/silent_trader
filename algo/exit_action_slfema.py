@@ -131,12 +131,6 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
       flag[stock_name]['target_06_flag'], flag[stock_name]['target_09_flag'] = False, False
       flag[stock_name]['target_1_flag'] = False
   else:
-    # place an order for exit
-    # -----------------------------------------------
-    order_id, error_status = ltp_zerodha_action_slfema.exit_order(kite_conn_var,stock_name,flag)
-    flag[stock_name]['order_id'] = order_id
-    flag[stock_name]['order_status'] = error_status
-    # -----------------------------------------------
     flag[stock_name]['selling_price'] = price
     diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
     profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)

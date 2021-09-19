@@ -22,12 +22,20 @@ def model(intervals,stock_dict, flag, curr_time, kite_conn_var):
       if stock not in flag['Entry']:
         for_trend_stocks[stock] = stock_dict[stock]
 
-    # DownLoad data for trend analysis
-    data_frame = get_data.download_trend_data(for_trend_stocks,intervals,kite_conn_var)
+    if (15 <= datetime.now().time().minute < 30) or (45 <= datetime.now().time().minute < 59):
+      # DownLoad data for trend analysis
+      data_frame = get_data.download_trend_data(for_trend_stocks,intervals,kite_conn_var)
 
-    # Get the list of Trending Stocks
-    trending_stocks_list  = trending_stocks.trending(data_frame,for_trend_stocks,intervals, flag)
-    trade_stock_list      = flag['Entry'] + trending_stocks_list
+      # Get the list of Trending Stocks
+      trending_stocks_list  = trending_stocks.trending(data_frame,for_trend_stocks,intervals, flag)
+    else:
+      trending_stocks_list  = flag['Trend']
+
+    trade_stock_list = []
+    for stock in trending_stocks_list:
+      if stock not in flag['Entry']:
+        trade_stock_list.append(stock)
+
     for_trade_stocks  = {}
     for stock in stock_dict.keys():
       if stock in trade_stock_list:

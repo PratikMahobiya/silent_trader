@@ -1,5 +1,21 @@
 from . import ltp_zerodha_action
 
+# place a sell order for exit
+def place_ord(kite_conn_var,stock,flag):
+  # -----------------------------------------------
+  order_id, error_status = ltp_zerodha_action.place_regular_sell_order(kite_conn_var,stock,flag)
+  flag[stock]['order_id'] = order_id
+  flag[stock]['order_status'] = error_status
+  # -----------------------------------------------
+
+# place a cancel order for exit
+def cancel_ord(kite_conn_var,stock_name,flag):
+  # -----------------------------------------------
+  order_id, error_status = ltp_zerodha_action.exit_order(kite_conn_var,stock_name,flag)
+  flag[stock_name]['order_id'] = order_id
+  flag[stock_name]['order_status'] = error_status
+  # -----------------------------------------------
+
 # SELL STOCK ; EXIT
 def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
   # Exit when Target Hits
@@ -7,12 +23,9 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
     if flag[stock]['order_id'] != 0:
       ord_det = kite_conn_var.order_history(order_id=flag[stock]['order_id'])
       if ord_det[-1]['status'] == 'COMPLETE':
-        # place an order for exit
-        # -----------------------------------------------
-        order_id, error_status = ltp_zerodha_action.place_regular_sell_order(kite_conn_var,stock,flag)
-        flag[stock]['order_id'] = order_id
-        flag[stock]['order_status'] = error_status
-        # -----------------------------------------------
+        # CALL PLACE ORDER ----
+        place_ord(kite_conn_var,stock,flag)
+        # ---------------------
     flag[stock]['selling_price'] = price
     diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
     profit        = round((((diff/flag[stock]['buying_price']) * 100)),2)
@@ -30,12 +43,9 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
     if flag[stock]['order_id'] != 0:
       ord_det = kite_conn_var.order_history(order_id=flag[stock]['order_id'])
       if ord_det[-1]['status'] == 'COMPLETE':
-        # place an order for exit
-        # -----------------------------------------------
-        order_id, error_status = ltp_zerodha_action.place_regular_sell_order(kite_conn_var,stock,flag)
-        flag[stock]['order_id'] = order_id
-        flag[stock]['order_status'] = error_status
-        # -----------------------------------------------
+        # CALL PLACE ORDER ----
+        place_ord(kite_conn_var,stock,flag)
+        # ---------------------
     flag[stock]['selling_price'] = price
     diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
     profit        = round((((diff/flag[stock]['buying_price']) * 100)),2)
@@ -54,12 +64,9 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
   if flag[stock_name]['order_id'] != 0:
     ord_det = kite_conn_var.order_history(order_id=flag[stock_name]['order_id'])
     if ord_det[-1]['status'] == 'COMPLETE':
-      # place an order for exit
-      # -----------------------------------------------
-      order_id, error_status = ltp_zerodha_action.place_regular_sell_order(kite_conn_var,stock_name,flag)
-      flag[stock_name]['order_id'] = order_id
-      flag[stock_name]['order_status'] = error_status
-      # -----------------------------------------------
+      # CALL PLACE ORDER ----
+      place_ord(kite_conn_var,stock_name,flag)
+      # ---------------------
       flag[stock_name]['selling_price'] = price
       diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
       profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
@@ -72,13 +79,10 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
       flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, None
       flag[stock_name]['quantity'] = 0
     else:
-      # place an order for exit
-      # -----------------------------------------------
-      order_id, error_status = ltp_zerodha_action.exit_order(kite_conn_var,stock_name,flag)
-      flag[stock_name]['order_id'] = order_id
-      flag[stock_name]['order_status'] = error_status
-      # -----------------------------------------------
-      flag[stock_name]['selling_price'] = flag[stock_name]['buying_price']
+      # CALL CANCEL ORDER ----
+      cancel_ord(kite_conn_var,stock_name,flag)
+      # ----------------------
+      flag[stock_name]['selling_price'] = price
       diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
       profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
       diff          = round((diff * flag[stock_name]['quantity']),2)
@@ -90,13 +94,9 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
       flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, None
       flag[stock_name]['quantity'] = 0
   else:
-    # place an order for exit
-    # -----------------------------------------------
-    order_id, error_status = ltp_zerodha_action.exit_order(kite_conn_var,stock_name,flag)
-    flag[stock_name]['order_id'] = order_id
-    flag[stock_name]['order_status'] = error_status
-    # -----------------------------------------------
-    flag[stock_name]['selling_price'] = flag[stock_name]['buying_price']
+    flag[stock_name]['order_id'] = '0'
+    flag[stock_name]['order_status'] = 'NOT PLACED'
+    flag[stock_name]['selling_price'] = price
     diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
     profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
     diff          = round((diff * flag[stock_name]['quantity']),2)
