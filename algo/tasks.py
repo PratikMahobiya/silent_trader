@@ -137,13 +137,13 @@ def connect_to_kite_connection():
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
-  response = {'LTP': False, 'STATUS': 'NONE','STOCKS':None,'LTP_CRS_5_MIN': False, 'STATUS_CRS_5_MIN': 'NONE','STOCKS_CRS_5_MIN':None}
+  response = {'LTP': False, 'STATUS': 'NONE','OUT_TREND_STOCKS':None,'IN_TREND_ENTRY_STOCK':None,'LTP_CRS_5_MIN': False, 'STATUS_CRS_5_MIN': 'NONE','STOCKS_CRS_5_MIN':None}
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
     
     # LTP CRS
     try:
-      transactions, stock = check_ltp.get_stock_ltp(kite_conn_var)
+      transactions, out_trend_stock, in_trend_entry_stock = check_ltp.get_stock_ltp(kite_conn_var)
       if len(transactions) != 0:
         for trans in transactions:
           serializer = serializers.CROSSOVER_15_Min_Serializer(data=trans)
@@ -151,10 +151,10 @@ def ltp_of_entries(self):
             serializer.save()
           else:
             response['CRS_SERIALIZER'] = serializer.errors
-        response.update({'LTP': True, 'STATUS': 'DONE.','STOCKS':stock})
+        response.update({'LTP': True, 'STATUS': 'DONE.','OUT_TREND_STOCKS':out_trend_stock,'IN_TREND_ENTRY_STOCK':in_trend_entry_stock})
       else:
         transactions = 'NO CHANGE'
-        response.update({'LTP': True, 'STATUS': transactions,'STOCKS':stock})
+        response.update({'LTP': True, 'STATUS': transactions,'OUT_TREND_STOCKS':out_trend_stock,'IN_TREND_ENTRY_STOCK':in_trend_entry_stock})
     except Exception as e:
       pass
 
@@ -176,9 +176,9 @@ def ltp_of_entries(self):
       pass
 
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
-    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS': 'I APOLOGIZE MY MASTER.','LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'ALL STOCKS ARE SQUARED OFF.', 'STOCKS_CRS_5_MIN': 'I APOLOGIZE MY MASTER.'})
+    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.','LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
   else:
-    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.', 'STOCKS': 'SORRY.','LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'MARKET IS CLOSED.', 'STOCKS_CRS_5_MIN': 'SORRY.'})
+    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'MARKET IS CLOSED.'})
   return response
 
 @shared_task(bind=True,max_retries=3)
@@ -257,7 +257,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15minute',5,60,55,18,8,'30minute',30,14,8,14]
+  intervals      = ['15minute',5,60,55,18,8,'30minute',30,14,14,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
@@ -272,7 +272,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
     flag['Entry'] = []
     flag['Trend'] = []
     for symb in stock_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'quantity':0,'order_id':0,'order_status':None}
+      flag[symb] = {'buy':False,'trend':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'quantity':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config

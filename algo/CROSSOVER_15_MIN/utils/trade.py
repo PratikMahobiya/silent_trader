@@ -1,6 +1,14 @@
 import talib
 from . import zerodha_action
 
+def place_ord(kite_conn_var,stock,flag):
+  # Place Order in ZERODHA.
+  # -------------------------------------------
+  order_id, error_status = zerodha_action.place_regular_buy_order(kite_conn_var,stock,flag)
+  flag[stock]['order_id'] = order_id
+  flag[stock]['order_status'] = error_status
+  # -------------------------------------------
+
 def checking_stoploss(price, atr):
   stoploss_val = price - atr[-1]*0.3
   per = ((price-stoploss_val)/price)*100
@@ -26,11 +34,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
           if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
             if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
               # Place Order in ZERODHA.
-              # -------------------------------------------
-              order_id, error_status = zerodha_action.place_regular_buy_order(kite_conn_var,stock,flag)
-              flag[stock]['order_id'] = order_id
-              flag[stock]['order_status'] = error_status
-              # -------------------------------------------
+              place_ord(kite_conn_var,stock,flag)
+              # -----------------------
               flag['Entry'].append(stock)
               flag[stock]['buy'] = True
               stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
@@ -47,11 +52,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
               if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
                 if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                   # Place Order in ZERODHA.
-                  # -------------------------------------------
-                  order_id, error_status = zerodha_action.place_regular_buy_order(kite_conn_var,stock,flag)
-                  flag[stock]['order_id'] = order_id
-                  flag[stock]['order_status'] = error_status
-                  # -------------------------------------------
+                  place_ord(kite_conn_var,stock,flag)
+                  # ----------------------
                   flag['Entry'].append(stock)
                   flag[stock]['buy'] = True
                   stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
