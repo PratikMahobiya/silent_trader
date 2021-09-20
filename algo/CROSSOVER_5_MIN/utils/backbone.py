@@ -1,5 +1,4 @@
 from datetime import datetime, time
-
 from . import trade
 from . import get_data
 from . import trending_stocks
@@ -16,32 +15,22 @@ def model(intervals,stock_dict, flag, curr_time, kite_conn_var):
 
   # Regular Trades Execution
   if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,15,00):
-    # Convert dataframe to List of Companies
-    for_trend_stocks_30  = {}
-    for stock in stock_dict.keys():
-      if stock not in flag['Entry']:
-        for_trend_stocks_30[stock] = stock_dict[stock]
+    # Trend Update i every 15 and 45 interval
+    if (15 <= datetime.now().time().minute < 30) or (45 <= datetime.now().time().minute < 59):
+      # DownLoad data for trend analysis
+      data_frame = get_data.download_trend_data(stock_dict,intervals,kite_conn_var)
 
-    # DownLoad data for trend analysis 30 MIN
-    data_frame = get_data.download_trend_data(for_trend_stocks_30,intervals,kite_conn_var)
+      # Get the list of Trending Stocks
+      trending_stocks_list  = trending_stocks.trending(data_frame,stock_dict,intervals, flag)
+    else:
+      trending_stocks_list  = flag['Trend']
 
-    # Get the list of Trending Stocks 30 MIN
-    trending_stocks_list_30  = trending_stocks.trending_30(data_frame,for_trend_stocks_30,intervals, flag)
-    for_trend_stocks_15      = {}
-    for stock in trending_stocks_list_30:
-      for_trend_stocks_15[stock] = stock_dict[stock]
-
-    # DownLoad data for trend analysis 15 MIN
-    data_frame = get_data.download_trend_data(for_trend_stocks_15,intervals,kite_conn_var)
-
-    # Get the list of Trending Stocks 15 MIN
-    trending_stocks_list_15  = trending_stocks.trending_15(data_frame,for_trend_stocks_15,intervals, flag)
     for_trade_stocks  = {}
-    for stock in stock_dict.keys():
-      if stock in trending_stocks_list_15:
-        for_trade_stocks[stock] = stock_dict[stock]
+    for stock in trending_stocks_list:
+      # if stock not in flag['Entry']:
+      for_trade_stocks[stock] = stock_dict[stock]
     
-    if len(trending_stocks_list_15) != 0:
+    if len(for_trade_stocks) != 0:
       # DownLoad data for initiating Trades
       trade_data_frame = get_data.download_trade_data(for_trade_stocks,intervals,kite_conn_var)
 

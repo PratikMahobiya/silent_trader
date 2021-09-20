@@ -24,10 +24,9 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
     #                             validity=kite_conn_var.VALIDITY_DAY,
     #                             price=stocks_ltp['NSE:'+symbol]['last_price'],
     #                             )
-    order_id = 1
-    # flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol]['last_price']
+    flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol]['last_price']
     flag[symbol]['quantity'] = quantity
-    error_status = 'NOT ACTIVE'
+    error_status = 'NOT ACTIVE ENTRY'
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END.'
   return order_id, error_status

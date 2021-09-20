@@ -28,7 +28,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, flag, transactions,
 
 # UPDATE STOPLOSS
 def updatestoploss(stock, data_frame, atr, flag):
-  if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Open'].iloc[-2]:
+  if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Close'].iloc[-3]:
     _ ,flag[stock]['stoploss'] = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
     flag[stock]['count']    += 1
   return 0

@@ -11,9 +11,7 @@ from . import serializers
 from . import check_ltp
 from . import check_ltp_crs_5
 from celery import shared_task
-from .BB_5_MIN.utils import backbone as backbone_BB_5
 from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
-from .CROSSOVER_SLFEMA_15_MIN.utils import backbone as backbone_CRS_SLFEMA
 from .CROSSOVER_5_MIN.utils import backbone as backbone_CRS_5_MIN
 
 def get_stocks():
@@ -137,7 +135,7 @@ def connect_to_kite_connection():
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
-  response = {'LTP': False, 'STATUS': 'NONE','OUT_TREND_STOCKS':None,'IN_TREND_ENTRY_STOCK':None,'LTP_CRS_5_MIN': False, 'STATUS_CRS_5_MIN': 'NONE','STOCKS_CRS_5_MIN':None}
+  response = {'LTP': False, 'STATUS': 'NONE','OUT_TREND':None,'IN_TREND_ENTRY_STOCK':None,'LTP_5_MIN': False, 'STATUS_5_MIN': 'NONE','OUT_TREND_5_MIN':None,'IN_TREND_ENTRY_STOCK_5_MIN':None}
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
     
@@ -160,7 +158,7 @@ def ltp_of_entries(self):
 
     # LTP CRS_5MIN
     try:
-      transactions, stock = check_ltp_crs_5.get_stock_ltp(kite_conn_var)
+      transactions, out_trend_stock, in_trend_entry_stock = check_ltp_crs_5.get_stock_ltp(kite_conn_var)
       if len(transactions) != 0:
         for trans in transactions:
           serializer = serializers.CROSSOVER_5_MIN_Serializer(data=trans)
@@ -168,17 +166,17 @@ def ltp_of_entries(self):
             serializer.save()
           else:
             response['CRS_5_MIN_SERIALIZER'] = serializer.errors
-        response.update({'LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'DONE.','STOCKS_CRS_5_MIN':stock})
+        response.update({'LTP_5_MIN': True, 'STATUS_5_MIN': 'DONE.','OUT_TREND_5_MIN':out_trend_stock,'IN_TREND_ENTRY_STOCK_5_MIN':in_trend_entry_stock})
       else:
         transactions = 'NO CHANGE'
-        response.update({'LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': transactions,'STOCKS_CRS_5_MIN':stock})
+        response.update({'LTP_5_MIN': True, 'STATUS_5_MIN': transactions,'OUT_TREND_5_MIN':out_trend_stock,'IN_TREND_ENTRY_STOCK_5_MIN':in_trend_entry_stock})
     except Exception as e:
       pass
 
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
-    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.','LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
+    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.','LTP_5_MIN': True, 'STATUS_5_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
   else:
-    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_CRS_5_MIN': True, 'STATUS_CRS_5_MIN': 'MARKET IS CLOSED.'})
+    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_5_MIN': True, 'STATUS_5_MIN': 'MARKET IS CLOSED.'})
   return response
 
 @shared_task(bind=True,max_retries=3)
@@ -194,56 +192,6 @@ def REMOVE_CONFIG_FILES(self):
       pass
   files_in_directory = os.listdir(directory)
   return {'success': True, 'Files_in_config':files_in_directory}
-
-@shared_task(bind=True,max_retries=3)
-def BB_RUNS_5_MIN(self):
-  response = {'BB': False, 'STATUS': 'NONE'}
-
-  # Companies List
-  company_Sheet          = pd.read_excel("algo/company/yf_stock_list_lowprice.xlsx")
-  companies_symbol         = company_Sheet['SYMBOL']
-  sleep(65)
-
-  # Workbook Path
-  flag_config            = 'algo/config/bb_flag.json'
-  # Create Flag config for each company
-  if not os.path.exists(flag_config):
-    # print("Created Flag Config File For all STOCKS.")
-    flag = {}
-    flag['Entry'] = []
-    for symb in companies_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'selling_val':0,'upper_val':0}
-    with open(flag_config, "w") as outfile:
-      json.dump(flag, outfile)
-  # Load The Last Updated Flag Config
-  else:
-    # print("Loaded Flag Config File For all Stocks.")
-    with open(flag_config, "r") as outfile:
-      flag = json.load(outfile)
-
-  '''
-    -> intervals = [Time_period, Number_oF_Days,Upper_rsi, Lower_rsi, Bollinger_Band, RSI, ATR]
-  '''
-  intervals      = ['5m','2d',60,30,20,8,14]
-  curr_time      = datetime.now()
-  '''
-    ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
-  '''
-  data_frame, status = backbone_BB_5.model(intervals, companies_symbol, flag, curr_time)
-  if status is True:
-    for data_f in data_frame:
-      serializer = serializers.BB_5_Min_Serializer(data=data_f)
-      if serializer.is_valid():
-        serializer.save()
-      else:
-        response['BB_SERIALIZER'] = serializer.errors
-    response.update({'BB': True, 'STATUS': 'ALL DONE.'})
-  elif status is False:
-    response.update({'BB': True, 'STATUS': data_frame})
-  # Update config File:
-  with open(flag_config, "w") as outfile:
-    json.dump(flag, outfile)
-  return response
 
 @shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_15_MIN(self):
@@ -299,59 +247,6 @@ def CROSS_OVER_RUNS_15_MIN(self):
   return response
 
 @shared_task(bind=True,max_retries=3)
-def CROSS_OVER_ATR_SLFEMA_RUNS_15_MIN(self):
-  response = {'CRS_SLFEMA': False, 'STATUS': 'NONE'}
-
-  # Stock List in dict
-  stock_dict          = get_stocks()
-  # Extract Symbols in list
-  stock_symbol        = stock_dict.keys()
-  kite_conn_var       = connect_to_kite_connection()
-  '''
-    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
-  '''
-  intervals      = ['15minute',5,60,55,18,8,'30minute',30,8,8,14]
-  curr_time      = datetime.now()
-  '''
-  -> Intervals:-
-    ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
-  '''
-  # Workbook Path
-  flag_config            = 'algo/config/crs_slfema_flag.json'
-  # Create Flag config for each company
-  if not os.path.exists(flag_config):
-    # print("Created Flag Config File For all STOCKS.")
-    flag = {}
-    flag['Entry'] = []
-    flag['Trend'] = []
-    for symb in stock_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target_06':0,'target_09':0,'target_1':0,'target_2':0,'atr_1':0,'atr_2':0,'target_06_flag':False,'target_09_flag':False,'target_1_flag':False,'quantity':0,'order_id':0,'order_status':None}
-    with open(flag_config, "w") as outfile:
-      json.dump(flag, outfile)
-  # Load The Last Updated Flag Config
-  else:
-    # print("Loaded Flag Config File For all Stocks.")
-    with open(flag_config, "r") as outfile:
-      flag = json.load(outfile)
-
-  data_frame, status = backbone_CRS_SLFEMA.model(intervals, stock_dict, flag, curr_time,kite_conn_var)
-  if status is True:
-    for data_f in data_frame:
-      serializer = serializers.CROSSOVER_SLFEMA_15_MIN_Serializer(data=data_f)
-      if serializer.is_valid():
-        serializer.save()
-      else:
-        response['CRS_SLFEMA_SERIALIZER'] = serializer.errors
-    response.update({'CRS_SLFEMA': True, 'STATUS': 'ALL DONE.'})
-  elif status is False:
-    response.update({'CRS_SLFEMA': True, 'STATUS': data_frame})
-  response['Trending Stocks'] = flag['Trend']
-  # Update config File:
-  with open(flag_config, "w") as outfile:
-    json.dump(flag, outfile)
-  return response
-
-@shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_5_MIN(self):
   response = {'CRS_5MIN': False, 'STATUS': 'NONE'}
 
@@ -363,7 +258,7 @@ def CROSS_OVER_RUNS_5_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['5minute',5,60,55,21,10,'30minute',30,8,8,14]
+  intervals      = ['5minute',5,60,55,21,10,'30minute',30,14,14,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
@@ -378,7 +273,7 @@ def CROSS_OVER_RUNS_5_MIN(self):
     flag['Entry'] = []
     flag['Trend'] = []
     for symb in stock_symbol:
-      flag[symb] = {'buy':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'quantity':0,'order_id':0,'order_status':None}
+      flag[symb] = {'buy':False,'trend':False,'buying_price':0,'selling_price':0,'stoploss':0,'quantity':0,'count':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
