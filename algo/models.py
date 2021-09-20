@@ -32,7 +32,6 @@ class CROSSOVER_15_MIN(models.Model):
     close    				= models.FloatField(verbose_name='PRICE')
     quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     stoploss   				= models.FloatField(verbose_name='STOPLOSS')
-    target   				= models.FloatField(verbose_name='TARGET_PRICE',blank=True,null=True,default=None)
     stoploss_percent        = models.FloatField(verbose_name='STOPLOSS (%)',blank=True,null=True,default=None)
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)

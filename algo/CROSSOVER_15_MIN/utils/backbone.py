@@ -27,8 +27,8 @@ def model(intervals,stock_dict, flag, curr_time, kite_conn_var):
 
     for_trade_stocks  = {}
     for stock in trending_stocks_list:
-      if stock not in flag['Entry']:
-        for_trade_stocks[stock] = stock_dict[stock]
+      # if stock not in flag['Entry']:
+      for_trade_stocks[stock] = stock_dict[stock]
     
     if len(for_trade_stocks) != 0:
       # DownLoad data for initiating Trades

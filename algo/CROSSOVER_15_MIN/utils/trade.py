@@ -21,8 +21,17 @@ def trade_execution(data_frame, for_trade_stocks, intervals, flag, transactions,
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[9])
     atr         = talib.ATR(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[10])
     if flag[stock]['buy'] is False:
-        buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transactions, curr_time, kite_conn_var)
+      buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transactions, curr_time, kite_conn_var)
+    else:
+      updatestoploss(stock, data_frame, atr, flag)
   return transactions
+
+# UPDATE STOPLOSS
+def updatestoploss(stock, data_frame, atr, flag):
+  if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Open'].iloc[-2]:
+    _ ,flag[stock]['stoploss'] = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
+    flag[stock]['count']    += 1
+  return 0
 
 # BUYS STOCKS ; ENTRY
 def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transactions , curr_time, kite_conn_var):
@@ -38,9 +47,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
               # -----------------------
               flag['Entry'].append(stock)
               flag[stock]['buy'] = True
-              stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
-              flag[stock]['target'] = round((data_frame[stock]['Close'].iloc[-2] + atr[-1]*0.7),2)
-              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+              stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(flag[stock]['buying_price'],atr)
+              transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -57,5 +65,4 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
                   flag['Entry'].append(stock)
                   flag[stock]['buy'] = True
                   stoploss_per, flag[stock]['stoploss'] =  checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
-                  flag[stock]['target'] = round((data_frame[stock]['Close'].iloc[-2] + atr[-1]*0.7),2)
-                  transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
+                  transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})

@@ -272,7 +272,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
     flag['Entry'] = []
     flag['Trend'] = []
     for symb in stock_symbol:
-      flag[symb] = {'buy':False,'trend':False,'buying_price':0,'selling_price':0,'stoploss':0,'target':0,'quantity':0,'order_id':0,'order_status':None}
+      flag[symb] = {'buy':False,'trend':False,'buying_price':0,'selling_price':0,'stoploss':0,'quantity':0,'count':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
