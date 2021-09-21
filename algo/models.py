@@ -16,13 +16,14 @@ class CROSSOVER_15_MIN(models.Model):
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
     date                    = models.DateTimeField()
     close    				= models.FloatField(verbose_name='PRICE')
-    quantity                = models.BigIntegerField(verbose_name='QUANTITY')
+    target   				= models.FloatField(verbose_name='TARGET')
     stoploss   				= models.FloatField(verbose_name='STOPLOSS')
-    stoploss_percent        = models.FloatField(verbose_name='STOPLOSS (%)',blank=True,null=True,default=None)
-    difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
     order_id                = models.BigIntegerField(verbose_name='ORDER_ID',blank=True,null=True,default=None)
     order_status            = models.TextField(verbose_name='ORDER_STATUS',max_length=1000)
+    stoploss_percent        = models.FloatField(verbose_name='STOPLOSS (%)',blank=True,null=True,default=None)
+    difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
+    quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     def __int__(self):
     	return self.id
     class Meta:
@@ -34,13 +35,14 @@ class CROSSOVER_5_MIN(models.Model):
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
     date                    = models.DateTimeField()
     close    				= models.FloatField(verbose_name='PRICE')
-    quantity                = models.BigIntegerField(verbose_name='QUANTITY')
+    target   				= models.FloatField(verbose_name='TARGET')
     stoploss   				= models.FloatField(verbose_name='STOPLOSS')
-    stoploss_percent        = models.FloatField(verbose_name='STOPLOSS (%)',blank=True,null=True,default=None)
-    difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
     order_id                = models.BigIntegerField(verbose_name='ORDER_ID',blank=True,null=True,default=None)
     order_status            = models.TextField(verbose_name='ORDER_STATUS',max_length=1000)
+    stoploss_percent        = models.FloatField(verbose_name='STOPLOSS (%)',blank=True,null=True,default=None)
+    difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
+    quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     def __int__(self):
     	return self.id
     class Meta:

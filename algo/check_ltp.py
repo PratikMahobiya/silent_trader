@@ -15,11 +15,7 @@ def get_stock_ltp(kite_conn_var):
   stock_list = flag['Entry']
   active_stocks = []
   for stock in stock_list:
-    if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,15,00):
-      if flag[stock]['trend'] == False:
-        active_stocks.append('NSE:'+stock)
-    else:
-      active_stocks.append('NSE:'+stock)
+    active_stocks.append('NSE:'+stock)
   if len(active_stocks) != 0:
     stocks_ltp = kite_conn_var.ltp(active_stocks)
     for stock_key in stocks_ltp:
@@ -35,8 +31,9 @@ def get_stock_ltp(kite_conn_var):
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
     active_stocks_ltp = []
-    for i in stocks_ltp:
-      active_stocks_ltp.append(i.split(':')[-1])
+    for i in stock_list:
+      if flag[i]['trend'] == False:
+        active_stocks_ltp.append(i.split(':')[-1])
     return transactions, active_stocks_ltp, stock_list
 
   # Update config File:
