@@ -36,8 +36,8 @@ def generate_acc_token(request):
 
 def check(request):
   api_key = open('./algo/config/api_key.txt','r').read()
-  access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
   try:
+    access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)
     ltp = kite.ltp(['NSE:SBIN'])
