@@ -55,7 +55,6 @@ def get_stocks():
     'ITC':424961,
     'JINDALSTEL':1723649,
     'JSWSTEEL':3001089,
-    'KOTAKBANK':492033,
     'LT':2939649,
     'M&M':519937,
     'M&MFIN':3400961,
