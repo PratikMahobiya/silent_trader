@@ -10,7 +10,7 @@ def trending(data_frame,for_trend_stocks,intervals,flag):
       trend.append(stock)
       flag['Trend'].append(stock)
       flag[stock]['trend'] = True
-      if data_frame[stock]['Open'].iloc[:-1] > data_frame[stock]['Close'].iloc[:-1]:
+      if data_frame[stock]['Open'].iloc[-2] > data_frame[stock]['Close'].iloc[-2]:
         flag[stock]['trend'] = False
     else:
       flag[stock]['trend'] = False
