@@ -1,4 +1,3 @@
-from time import sleep
 
 def place_regular_sell_order(kite_conn_var,symbol,flag):
   # Place an order
@@ -15,7 +14,6 @@ def place_regular_sell_order(kite_conn_var,symbol,flag):
                                   product=kite_conn_var.PRODUCT_MIS,
                                   validity=kite_conn_var.VALIDITY_DAY,
                                   )
-    sleep(0.3)
     error_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END.'
