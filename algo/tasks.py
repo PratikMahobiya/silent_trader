@@ -139,21 +139,18 @@ def ltp_of_entries(self):
     kite_conn_var = connect_to_kite_connection()
     
     # LTP CRS
-    try:
-      transactions, out_trend_stock, in_trend_entry_stock = check_ltp.get_stock_ltp(kite_conn_var)
-      if len(transactions) != 0:
-        for trans in transactions:
-          serializer = serializers.CROSSOVER_15_Min_Serializer(data=trans)
-          if serializer.is_valid():
-            serializer.save()
-          else:
-            response['CRS_SERIALIZER'] = serializer.errors
-        response.update({'LTP': True, 'STATUS': 'DONE.','OUT_TREND_STOCKS':out_trend_stock,'IN_TREND_ENTRY_STOCK':in_trend_entry_stock})
-      else:
-        transactions = 'NO CHANGE'
-        response.update({'LTP': True, 'STATUS': transactions,'OUT_TREND_STOCKS':out_trend_stock,'IN_TREND_ENTRY_STOCK':in_trend_entry_stock})
-    except Exception as e:
-      pass
+    transactions, out_trend_stock, in_trend_entry_stock = check_ltp.get_stock_ltp(kite_conn_var)
+    if len(transactions) != 0:
+      for trans in transactions:
+        serializer = serializers.CROSSOVER_15_Min_Serializer(data=trans)
+        if serializer.is_valid():
+          serializer.save()
+        else:
+          response['CRS_SERIALIZER'] = serializer.errors
+      response.update({'LTP': True, 'STATUS': 'DONE.','OUT_TREND':out_trend_stock,'IN_TREND_ENTRY_STOCK':in_trend_entry_stock})
+    else:
+      transactions = 'NO CHANGE'
+      response.update({'LTP': True, 'STATUS': transactions,'OUT_TREND':out_trend_stock,'IN_TREND_ENTRY_STOCK':in_trend_entry_stock})
 
     # LTP CRS_5MIN
     try:
