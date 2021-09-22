@@ -21,12 +21,15 @@ def get_stock_ltp(kite_conn_var):
     for stock_key in stocks_ltp:
       price = stocks_ltp[stock_key]['last_price']
       stock_name = stock_key.split(':')[-1]
-      if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,15,00):
-        if stock_name in flag['Entry']:
-          exit_action.sell(stock_name, price, flag, transactions, curr_time, kite_conn_var)
-      elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,30,00):
-        if stock_name in flag['Entry']:
-          exit_action.square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var)
+      try:
+        if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,15,00):
+          if stock_name in flag['Entry']:
+            exit_action.sell(stock_name, price, flag, transactions, curr_time, kite_conn_var)
+        elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,30,00):
+          if stock_name in flag['Entry']:
+            exit_action.square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var)
+      except Exception as e:
+        pass
     # Update config File:
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
