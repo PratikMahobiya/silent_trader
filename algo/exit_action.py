@@ -77,15 +77,16 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
 # SQUARE OFF, EXIT
 def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
   if flag[stock_name]['order_id'] != 0:
-    ord_det = kite_conn_var.order_history(order_id=flag[stock_name]['order_id'])
-    if ord_det[-1]['status'] == 'COMPLETE':
-      # CALL PLACE ORDER ----
-      place_ord(kite_conn_var,stock_name,flag)
-      # ---------------------
-    else:
-      # CALL CANCEL ORDER ----
-      cancel_ord(kite_conn_var,stock_name,flag)
-      # ----------------------
+    if flag[stock_name]['buy'] is True:
+      ord_det = kite_conn_var.order_history(order_id=flag[stock_name]['order_id'])
+      if ord_det[-1]['status'] == 'COMPLETE':
+        # CALL PLACE ORDER ----
+        place_ord(kite_conn_var,stock_name,flag)
+        # ---------------------
+      else:
+        # CALL CANCEL ORDER ----
+        cancel_ord(kite_conn_var,stock_name,flag)
+        # ----------------------
     flag[stock_name]['selling_price'] = price
     diff          = flag[stock_name]['selling_price'] - flag[stock_name]['buying_price']
     profit        = round((((diff/flag[stock_name]['buying_price']) * 100)),2)
