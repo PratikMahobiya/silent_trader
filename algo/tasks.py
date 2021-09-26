@@ -219,7 +219,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
     flag['Entry'] = []
     flag['Trend'] = []
     for symb in stock_symbol:
-      flag[symb] = {'buy':False,'trend':False,'d_sl_flag':False,'buying_price':0,'selling_price':0,'f_stoploss':0,'d_stoploss':0,'quantity':0,'count':0,'target':0,'order_id':0,'order_status':None}
+      flag[symb] = {'buy':False,'trend':False,'d_sl_flag':False,'buying_price':0,'selling_price':0,'stoploss':0,'f_stoploss':0,'d_stoploss':0,'quantity':0,'count':0,'target':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config
@@ -257,8 +257,8 @@ def CROSS_OVER_RUNS_5_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  # intervals      = ['5minute',5,60,55,21,10,'30minute',30,14,14,14]
-  intervals      = ['15minute',5,60,55,18,8,'30minute',30,14,14,14]
+  intervals      = ['5minute',5,60,55,21,10,'30minute',30,14,14,14,'15minute',5]
+  # intervals      = ['15minute',5,60,55,18,8,'30minute',30,14,14,14]
   curr_time      = datetime.now()
   '''
   -> Intervals:-
@@ -272,9 +272,10 @@ def CROSS_OVER_RUNS_5_MIN(self):
     flag = {}
     flag['Entry'] = []
     flag['Trend'] = []
-    flag['Trend_2'] = []
+    flag['Trend_15'] = []
+    flag['Trend_30'] = []
     for symb in stock_symbol:
-      flag[symb] = {'buy':False,'trend':False,'buying_price':0,'selling_price':0,'stoploss':0,'quantity':0,'count':0,'target':0,'order_id':0,'order_status':None}
+      flag[symb] = {'buy':False,'trend':False,'d_sl_flag':False,'buying_price':0,'selling_price':0,'stoploss':0,'f_stoploss':0,'d_stoploss':0,'quantity':0,'count':0,'target':0,'order_id':0,'order_status':None}
     with open(flag_config, "w") as outfile:
       json.dump(flag, outfile)
   # Load The Last Updated Flag Config

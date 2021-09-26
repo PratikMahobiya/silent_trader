@@ -52,7 +52,7 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
         flag['Entry'].remove(stock)
         flag[stock]['f_stoploss'], flag[stock]['count'],flag[stock]['target'] = 0, 0, 0
         flag[stock]['selling_price'], flag[stock]['buying_price'], flag[stock]['d_stoploss']  = 0, 0, 0
-        flag[stock]['order_id'], flag[stock]['order_status'] = 0, None
+        flag[stock]['order_id'], flag[stock]['order_status'], flag[stock]['stoploss'] = 0, None, 0
         flag[stock]['quantity'], flag[stock]['trend'] = 0, False
 
   # if price hits Fixed StopLoss, Exit
@@ -77,33 +77,34 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
       flag['Entry'].remove(stock)
       flag[stock]['f_stoploss'], flag[stock]['count'],flag[stock]['target'] = 0, 0, 0
       flag[stock]['selling_price'], flag[stock]['buying_price'], flag[stock]['d_stoploss']  = 0, 0, 0
-      flag[stock]['order_id'], flag[stock]['order_status'] = 0, None
+      flag[stock]['order_id'], flag[stock]['order_status'], flag[stock]['stoploss'] = 0, None, 0
       flag[stock]['quantity'], flag[stock]['trend'] = 0, False
 
   # if price hits outoftrend exit StopLoss, Exit
   elif flag[stock]['trend'] is False:
-    if flag[stock]['buy'] is True:
-      if flag[stock]['order_id'] != 0:
-        ord_det = kite_conn_var.order_history(order_id=flag[stock]['order_id'])
-        if ord_det[-1]['status'] == 'COMPLETE':
-          # CALL PLACE ORDER ----
-          place_ord(kite_conn_var,stock,flag)
-          # ---------------------
-        else:
-          # CALL CANCEL ORDER ----
-          cancel_ord(kite_conn_var,stock,flag)
-          # ----------------------
-      flag[stock]['selling_price'] = price
-      diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
-      profit        = round((((diff/flag[stock]['buying_price']) * 100)),2)
-      diff          = round((diff * flag[stock]['quantity']),2)
-      transactions.append({'symbol':stock,'indicate':'Exit','type':'OT_SL','date':curr_time,'close':flag[stock]['selling_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['f_stoploss'],'target':flag[stock]['target'],'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':None})
-      flag[stock]['buy'], flag[stock]['d_sl_flag']      = False, False
-      flag['Entry'].remove(stock)
-      flag[stock]['f_stoploss'], flag[stock]['count'],flag[stock]['target'] = 0, 0, 0
-      flag[stock]['selling_price'], flag[stock]['buying_price'], flag[stock]['d_stoploss']  = 0, 0, 0
-      flag[stock]['order_id'], flag[stock]['order_status'] = 0, None
-      flag[stock]['quantity'], flag[stock]['trend'] = 0, False
+    if price <= flag[stock]['stoploss']:
+      if flag[stock]['buy'] is True:
+        if flag[stock]['order_id'] != 0:
+          ord_det = kite_conn_var.order_history(order_id=flag[stock]['order_id'])
+          if ord_det[-1]['status'] == 'COMPLETE':
+            # CALL PLACE ORDER ----
+            place_ord(kite_conn_var,stock,flag)
+            # ---------------------
+          else:
+            # CALL CANCEL ORDER ----
+            cancel_ord(kite_conn_var,stock,flag)
+            # ----------------------
+        flag[stock]['selling_price'] = price
+        diff          = flag[stock]['selling_price'] - flag[stock]['buying_price']
+        profit        = round((((diff/flag[stock]['buying_price']) * 100)),2)
+        diff          = round((diff * flag[stock]['quantity']),2)
+        transactions.append({'symbol':stock,'indicate':'Exit','type':'OT_SL','date':curr_time,'close':flag[stock]['selling_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['stoploss'],'target':flag[stock]['target'],'difference':diff,'profit':profit,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':None})
+        flag[stock]['buy'], flag[stock]['d_sl_flag']      = False, False
+        flag['Entry'].remove(stock)
+        flag[stock]['f_stoploss'], flag[stock]['count'],flag[stock]['target'] = 0, 0, 0
+        flag[stock]['selling_price'], flag[stock]['buying_price'], flag[stock]['d_stoploss']  = 0, 0, 0
+        flag[stock]['order_id'], flag[stock]['order_status'], flag[stock]['stoploss'] = 0, None, 0
+        flag[stock]['quantity'], flag[stock]['trend'] = 0, False
   return transactions
 
 # SQUARE OFF, EXIT
@@ -128,7 +129,7 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
     flag['Entry'].remove(stock_name)
     flag[stock_name]['f_stoploss'], flag[stock_name]['count'],flag[stock_name]['target'] = 0, 0, 0
     flag[stock_name]['selling_price'], flag[stock_name]['buying_price'],flag[stock_name]['d_stoploss']  = 0, 0, 0
-    flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, None
+    flag[stock_name]['order_id'], flag[stock_name]['order_status'], flag[stock_name]['stoploss'] = 0, None, 0
     flag[stock_name]['quantity'], flag[stock_name]['trend'] = 0, False
   else:
     flag[stock_name]['order_id'] = '0'
@@ -142,6 +143,6 @@ def square_off(stock_name, price, flag, transactions, curr_time, kite_conn_var):
     flag['Entry'].remove(stock_name)
     flag[stock_name]['f_stoploss'], flag[stock_name]['count'],flag[stock_name]['target'] = 0, 0, 0
     flag[stock_name]['selling_price'], flag[stock_name]['buying_price'],flag[stock_name]['d_stoploss']  = 0, 0, 0
-    flag[stock_name]['order_id'], flag[stock_name]['order_status'] = 0, None
+    flag[stock_name]['order_id'], flag[stock_name]['order_status'], flag[stock_name]['stoploss'] = 0, None, 0
     flag[stock_name]['quantity'], flag[stock_name]['trend'] = 0, False
   return transactions
