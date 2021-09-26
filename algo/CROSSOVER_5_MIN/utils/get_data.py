@@ -25,7 +25,7 @@ def download_trend_data_15(for_trend_dict,intervals,kite_conn_var):
   df_key  = []
   for stock_name in for_trend_dict.keys():
     sleep(0.3)
-    data = kite_conn_var.historical_data(instrument_token=for_trend_dict[stock_name], from_date=from_day, to_date=now, interval=intervals[11]])
+    data = kite_conn_var.historical_data(instrument_token=for_trend_dict[stock_name], from_date=from_day, to_date=now, interval=intervals[11])
     data=pd.DataFrame(data)
     data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
     data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
