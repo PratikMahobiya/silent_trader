@@ -57,7 +57,7 @@ def model(intervals,stock_dict, flag, curr_time, kite_conn_var):
         flag['Trend'].clear()
         for stock in trending_stocks_list_15:
           rsi = talib.RSI(trade_data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[9])
-          if rsi[-1] > 50:
+          if rsi[-1] >= 50:
             for_trade_stocks[stock] = stock_dict[stock]
             flag['Trend'].append(stock)
 
