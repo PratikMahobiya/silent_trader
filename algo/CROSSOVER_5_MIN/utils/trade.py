@@ -10,7 +10,7 @@ def place_ord(kite_conn_var,stock,flag):
   # -------------------------------------------
 
 def checking_stoploss_fixed(price):
-  stoploss_val = price - price*0.003
+  stoploss_val = price - price*0.005
   per = ((price-stoploss_val)/price)*100
   return round(per,2), round(stoploss_val,2)
 
