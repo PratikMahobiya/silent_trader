@@ -61,7 +61,7 @@ def model(intervals,stock_dict, flag, curr_time, kite_conn_var):
             for_trade_stocks[stock] = stock_dict[stock]
             flag['Trend'].append(stock)
 
-    if len(for_trade_stocks) != 0:
+    if len(trending_stocks_list_15) != 0:
       # DownLoad data for initiating Trades
       trade_data_frame = get_data.download_trade_data(for_trade_stocks,intervals,kite_conn_var)
 
