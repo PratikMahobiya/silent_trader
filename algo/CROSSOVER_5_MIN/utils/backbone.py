@@ -46,6 +46,7 @@ def model(intervals,stock_dict, flag, curr_time, kite_conn_var):
     for stock in trending_stocks_list_15:
       for_trade_stocks_temp[stock] = stock_dict[stock]
     
+    for_trade_stocks = {}
     # GET 15 MINUTE TRENDING STOCKS
     if len(trending_stocks_list_15) != 0:
       if (0 <= datetime.now().time().minute < 4) or (15 <= datetime.now().time().minute < 19) or (30 <= datetime.now().time().minute < 34) or (45 <= datetime.now().time().minute < 49):
@@ -54,14 +55,13 @@ def model(intervals,stock_dict, flag, curr_time, kite_conn_var):
         # DownLoad data for initiating Trades
         trade_data_frame = get_data.download_trade_data(for_trade_stocks_temp,intervals,kite_conn_var)
         flag['Trend'].clear()
-        for_trade_stocks = {}
         for stock in trending_stocks_list_15:
           rsi = talib.RSI(trade_data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[9])
           if rsi[-1] > 50:
             for_trade_stocks[stock] = stock_dict[stock]
             flag['Trend'].append(stock)
 
-    if len(trending_stocks_list_15) != 0:
+    if len(for_trade_stocks) != 0:
       # DownLoad data for initiating Trades
       trade_data_frame = get_data.download_trade_data(for_trade_stocks,intervals,kite_conn_var)
 
