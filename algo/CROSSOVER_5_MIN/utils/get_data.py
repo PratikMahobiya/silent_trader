@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, time, datetime
 from time import sleep
 import pandas as pd
 
@@ -7,6 +7,8 @@ def download_trend_data_30(for_trend_dict,intervals,kite_conn_var):
   from_day = now - timedelta(days=intervals[7])
   df_list = []
   df_key  = []
+  if time(9,15,00) <= datetime.now().time() <= time(9,16,00):
+    sleep(10)
   for stock_name in for_trend_dict.keys():
     sleep(0.3)
     data = kite_conn_var.historical_data(instrument_token=for_trend_dict[stock_name], from_date=from_day, to_date=now, interval=intervals[6])
