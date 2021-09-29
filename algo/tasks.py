@@ -320,13 +320,10 @@ def CROSS_OVER_RUNS_15_MIN_DB(self):
     stock_dict          = get_stocks()
     # Create stocks and config's for trade in stock and config table
     for stock_sym in stock_dict:
-      try:
-        if not models.STOCK.objects.filter(symbol = stock_sym).exists():
-          models.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym]).save()
-        if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
-          models.CONFIG_15M(symbol = stock_sym).save()
-      except Exception as e:
-        pass
+      if not models.STOCK.objects.filter(symbol = stock_sym).exists():
+        models.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym]).save()
+      if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
+        models.CONFIG_15M(symbol = stock_sym).save()
   
   # Initialize Kite Connections
   kite_conn_var       = connect_to_kite_connection()
