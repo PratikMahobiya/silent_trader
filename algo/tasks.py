@@ -266,7 +266,7 @@ def CROSS_OVER_RUNS_5_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['5minute',5,60,55,18,8,'30minute',30,14,14,14,'15minute',5]
+  intervals      = ['5minute',5,60,55,21,10,'30minute',30,14,14,14,'15minute',5]
   # intervals      = ['15minute',5,60,55,18,8,'30minute',30,14,14,14]
   curr_time      = datetime.now()
   '''

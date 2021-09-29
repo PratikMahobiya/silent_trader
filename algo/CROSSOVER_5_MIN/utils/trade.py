@@ -21,7 +21,7 @@ def checking_stoploss_fixed(price):
   return round(per,2), round(stoploss_val,2)
 
 def checking_stoploss(price, atr):
-  stoploss_val = price - atr[-1]*0.3
+  stoploss_val = price - atr[-1]*0.5
   return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, flag, transactions, curr_time, kite_conn_var):
@@ -57,7 +57,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
               flag['Entry'].append(stock)
               flag[stock]['buy'] = True
               stoploss_per, flag[stock]['f_stoploss'] =  checking_stoploss_fixed(flag[stock]['buying_price'])
-              flag[stock]['target']   = flag[stock]['buying_price'] + flag[stock]['buying_price'] * 0.005
+              flag[stock]['target']   = flag[stock]['buying_price'] + flag[stock]['buying_price'] * 0.006
               transactions.append({'symbol':stock,'indicate':'Entry','type':'BF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['f_stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
@@ -75,5 +75,5 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, intervals, flag, transac
                   flag['Entry'].append(stock)
                   flag[stock]['buy'] = True
                   stoploss_per, flag[stock]['f_stoploss'] =  checking_stoploss_fixed(flag[stock]['buying_price'])
-                  flag[stock]['target']   = flag[stock]['buying_price'] + flag[stock]['buying_price'] * 0.005
+                  flag[stock]['target']   = flag[stock]['buying_price'] + flag[stock]['buying_price'] * 0.006
                   transactions.append({'symbol':stock,'indicate':'Entry','type':'AF_CROSS_OVER','date':curr_time,'close':flag[stock]['buying_price'],'quantity':flag[stock]['quantity'],'stoploss':flag[stock]['f_stoploss'],'target':flag[stock]['target'],'difference':None,'profit':None,'order_id':flag[stock]['order_id'],'order_status':flag[stock]['order_status'],'stoploss_percent':stoploss_per})
