@@ -19,4 +19,4 @@ class CROSSOVER_5_MIN_Serializer(serializers.ModelSerializer):
 class CROSSOVER_15_Min_Serializer_db(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_15_MIN_db
-		fields 	= ('date','symbol','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
+		fields 	= ('symbol','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
