@@ -20,7 +20,7 @@ class TREND_15M_Admin(ExportActionMixin,admin.ModelAdmin):
 
 @admin.register(models.ENTRY_15M)
 class ENTRY_15M_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol')
+    list_display = ('symbol',)
 
 @admin.register(models.CONFIG_15M)
 class CONFIG_15M_Admin(ExportActionMixin,admin.ModelAdmin):
