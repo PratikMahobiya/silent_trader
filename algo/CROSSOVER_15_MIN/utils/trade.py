@@ -10,14 +10,19 @@ def place_ord(kite_conn_var,stock,flag):
   # -------------------------------------------
 
 def checking_stoploss_fixed(price):
-  stoploss_val = price - price*0.005
-  per = ((price-stoploss_val)/price)*100
+  stoploss_val = 0
+  per          = 0
+  try:
+    stoploss_val = price - price*0.005
+    per = ((price-stoploss_val)/price)*100
+  except Exception as e:
+    per = 0.5
+    pass
   return round(per,2), round(stoploss_val,2)
 
 def checking_stoploss(price, atr):
   stoploss_val = price - atr[-1]*0.3
-  per = ((price-stoploss_val)/price)*100
-  return round(per,2), round(stoploss_val,2)
+  return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, flag, transactions, curr_time, kite_conn_var):
   for stock in for_trade_stocks.keys():
@@ -34,7 +39,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, flag, transactions,
 # UPDATE STOPLOSS
 def updatestoploss(stock, data_frame, atr, flag):
   if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Open'].iloc[-2]:
-    _ ,flag[stock]['stoploss'] = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
+    flag[stock]['stoploss'] = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
   return 0
 
 # BUYS STOCKS ; ENTRY
