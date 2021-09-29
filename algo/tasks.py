@@ -10,8 +10,10 @@ from . import models
 from . import serializers
 from . import check_ltp
 from . import check_ltp_crs_5
+from . import check_ltp_db
 from celery import shared_task
 from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
+from .CROSSOVER_15_MIN_db.utils import backbone as backbone_CRS_db
 from .CROSSOVER_5_MIN.utils import backbone as backbone_CRS_5_MIN
 
 def get_stocks():
@@ -134,7 +136,7 @@ def connect_to_kite_connection():
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
-  response = {'LTP': False, 'STATUS': 'NONE','OUT_TREND':None,'IN_TREND_ENTRY_STOCK':None,'LTP_5_MIN': False, 'STATUS_5_MIN': 'NONE','OUT_TREND_5_MIN':None,'IN_TREND_ENTRY_STOCK_5_MIN':None}
+  response = {'LTP': False, 'STATUS': 'NONE','OUT_TREND':None,'IN_TREND_ENTRY_STOCK':None,'LTP_5_MIN': False, 'STATUS_5_MIN': 'NONE','OUT_TREND_5_MIN':None,'IN_TREND_ENTRY_STOCK_5_MIN':None,'LTP_DB': False, 'STATUS_DB': 'NONE','ACTIVE_STOCKS_DB':None}
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
     
@@ -172,10 +174,17 @@ def ltp_of_entries(self):
     except Exception as e:
       pass
 
+    # LTP CRS
+    try:
+      status, active_stocks = check_ltp_db.get_stock_ltp(kite_conn_var)
+      response.update({'LTP_DB': True, 'STATUS_DB': status,'ACTIVE_STOCKS_DB':active_stocks})
+    except Exception as e:
+      pass
+
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
-    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.','LTP_5_MIN': True, 'STATUS_5_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
+    response.update({'LTP': True, 'STATUS': 'ALL STOCKS ARE SQUARED OFF.','LTP_5_MIN': True, 'STATUS_5_MIN': 'ALL STOCKS ARE SQUARED OFF.','LTP_DB': True, 'STATUS_DB': 'SQUARED OFF'})
   else:
-    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_5_MIN': True, 'STATUS_5_MIN': 'MARKET IS CLOSED.'})
+    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_5_MIN': True, 'STATUS_5_MIN': 'MARKET IS CLOSED.','LTP_DB': True, 'STATUS_DB': 'MARKET IS CLOSED'})
   return response
 
 @shared_task(bind=True,max_retries=3)
@@ -299,4 +308,36 @@ def CROSS_OVER_RUNS_5_MIN(self):
   # Update config File:
   with open(flag_config, "w") as outfile:
     json.dump(flag, outfile)
+  return response
+
+@shared_task(bind=True,max_retries=3)
+def CROSS_OVER_RUNS_15_MIN_DB(self):
+  response = {'CRS': False, 'STATUS': 'NONE'}
+
+  # initial_setup on DATABASE -------------------------------------
+  if time(9,00,00) <= datetime.now().time() <= time(9,3,00):
+    # Stock List in dict
+    stock_dict          = get_stocks()
+    # Create stocks and config's for trade in stock and config table
+    for stock_sym in stock_dict:
+      try:
+        if not models.STOCK.objects.filter(symbol = stock_sym).exists():
+          models.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym]).save()
+        if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
+          models.CONFIG_15M(symbol = stock_sym).save()
+      except Exception as e:
+        pass
+  
+  # Initialize Kite Connections
+  kite_conn_var       = connect_to_kite_connection()
+  '''
+    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
+  '''
+  intervals      = ['15minute',5,60,55,18,8,'30minute',30,14,14,14]
+  '''
+  -> Intervals:-
+    ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
+  '''
+  status = backbone_CRS_db.model(intervals, kite_conn_var)
+  response.update({'CRS': True, 'STATUS': status, 'TREND': models.TREND_15M.objects.all().values_list('symbol',flat=True), 'ENTRY':models.ENTRY_15M.objects.all().values_list('symbol',flat=True)})
   return response
