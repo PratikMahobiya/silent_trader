@@ -21,14 +21,16 @@ def sell(stock, price, flag, transactions, curr_time, kite_conn_var):
   # if price hits Target, Exit
   if price >= flag[stock]['target']:
     if flag[stock]['buy'] is True:
-      flag[stock]['count']      += 1
-      # if flag[stock]['count'] == 1:
-      #   flag[stock]['target']     = price + price*0.001
+      # if flag[stock]['count'] == 0:
+      #   flag[stock]['target']     = price + price*0.0025
       #   flag[stock]['d_stoploss'] = price - price*0.004
       #   flag[stock]['d_sl_flag']  = True
+      #   flag[stock]['count']      += 1
+      # else:
       flag[stock]['target']     = price + price*0.003
       flag[stock]['d_stoploss'] = price - price*0.004
       flag[stock]['d_sl_flag']  = True
+      flag[stock]['count']      += 1
         
 
   # if price hits dynamic StopLoss, Exit

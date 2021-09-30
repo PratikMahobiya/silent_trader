@@ -13,10 +13,10 @@ def checking_stoploss_fixed(price):
   stoploss_val = 0
   per          = 0
   try:
-    stoploss_val = price - price*0.005
+    stoploss_val = price - price*0.003
     per = ((price-stoploss_val)/price)*100
   except Exception as e:
-    per = 0.5
+    per = 0.3
     pass
   return round(per,2), round(stoploss_val,2)
 

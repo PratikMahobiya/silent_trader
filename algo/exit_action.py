@@ -24,11 +24,18 @@ def sell(stock, price, kite_conn_var):
   stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
   if price >= stock_config_obj.target:
     if stock_config_obj.buy is True:
-      stock_config_obj.target       = price + price*0.005
-      stock_config_obj.d_stoploss   = price - price*0.005
-      stock_config_obj.d_sl_flag    = True
-      stock_config_obj.count        += 1
-      stock_config_obj.save()
+      if stock_config_obj.count == 0:
+        stock_config_obj.target       = price + price*0.0025
+        stock_config_obj.d_stoploss   = price - price*0.004
+        stock_config_obj.d_sl_flag    = True
+        stock_config_obj.count        += 1
+        stock_config_obj.save()
+      else:
+        stock_config_obj.target       = price + price*0.0025
+        stock_config_obj.d_stoploss   = price - price*0.005
+        stock_config_obj.d_sl_flag    = True
+        stock_config_obj.count        += 1
+        stock_config_obj.save()
 
   # if price hits dynamic StopLoss, Exit
   elif stock_config_obj.d_sl_flag is True:
@@ -57,7 +64,6 @@ def sell(stock, price, kite_conn_var):
           transaction.save()
         models.ENTRY_15M.objects.filter(symbol = stock).delete()
         models.TREND_15M.objects.filter(symbol = stock).delete()
-        stock_config_obj.sell_price   = price
         stock_config_obj.buy          = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
@@ -92,7 +98,6 @@ def sell(stock, price, kite_conn_var):
       stock_config_obj.buy          = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
-      stock_config_obj.sell_price   = price
       stock_config_obj.count        = 0
       stock_config_obj.order_id     = 0
       stock_config_obj.save()
@@ -125,7 +130,6 @@ def sell(stock, price, kite_conn_var):
         stock_config_obj.buy          = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
-        stock_config_obj.sell_price   = price
         stock_config_obj.count        = 0
         stock_config_obj.order_id     = 0
         stock_config_obj.save()
@@ -159,7 +163,6 @@ def square_off(stock, price, kite_conn_var):
       stock_config_obj.buy          = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
-      stock_config_obj.sell_price   = price
       stock_config_obj.count        = 0
       stock_config_obj.order_id     = 0
       stock_config_obj.save()
@@ -179,7 +182,6 @@ def square_off(stock, price, kite_conn_var):
     stock_config_obj.buy          = False
     stock_config_obj.d_sl_flag    = False
     stock_config_obj.trend        = False
-    stock_config_obj.sell_price   = price
     stock_config_obj.count        = 0
     stock_config_obj.order_id     = 0
     stock_config_obj.save()

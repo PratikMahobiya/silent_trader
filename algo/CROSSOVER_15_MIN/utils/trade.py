@@ -47,7 +47,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
       if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
         if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
           if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-            if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
+            if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
               # Place Order in ZERODHA.
               order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
               # UPDATE CONFIG
@@ -55,7 +55,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
               stock_config_obj.buy            = True
               stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
               stock_config_obj.stoploss       = checking_stoploss(price,atr)
-              stock_config_obj.target         = price + price * 0.01
+              stock_config_obj.target         = price + price * 0.005
               stock_config_obj.quantity       = quantity
               stock_config_obj.buy_price      = price
               stock_config_obj.order_id       = order_id
@@ -76,7 +76,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
             if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-              if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
+              if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
                 if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                   # Place Order in ZERODHA.
                   order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
@@ -85,7 +85,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                   stock_config_obj.buy            = True
                   stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                   stock_config_obj.stoploss       = checking_stoploss(price,atr)
-                  stock_config_obj.target         = price + price * 0.01
+                  stock_config_obj.target         = price + price * 0.005
                   stock_config_obj.quantity       = quantity
                   stock_config_obj.buy_price      = price
                   stock_config_obj.order_id       = order_id

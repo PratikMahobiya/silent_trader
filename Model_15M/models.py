@@ -27,7 +27,6 @@ class CONFIG_15M(models.Model):
     trend                   = models.BooleanField(verbose_name='IN_TREND',default=False)
     d_sl_flag               = models.BooleanField(verbose_name='D_SL_FLAG',default=False)
     buy_price               = models.FloatField(verbose_name='BUY PRICE',default=0)
-    sell_price              = models.FloatField(verbose_name='SELL PRICE',default=0)
     stoploss                = models.FloatField(verbose_name='STOPLOSS',default=0)
     target                  = models.FloatField(verbose_name='TARGET',default=0)
     f_stoploss              = models.FloatField(verbose_name='F_SL',default=0)
