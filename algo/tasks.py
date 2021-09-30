@@ -336,5 +336,5 @@ def CROSS_OVER_RUNS_15_MIN_DB(self):
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
   status = backbone_CRS_db.model(intervals, kite_conn_var)
-  response.update({'CRS': True, 'STATUS': status, 'TREND': models.TREND_15M.objects.all().values_list('symbol',flat=True), 'ENTRY':models.ENTRY_15M.objects.all().values_list('symbol',flat=True)})
+  response.update({'CRS': True, 'STATUS': status, 'TREND': list(models.TREND_15M.objects.all().values_list('symbol',flat=True)), 'ENTRY':list(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))})
   return response

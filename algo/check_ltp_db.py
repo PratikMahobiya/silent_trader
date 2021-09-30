@@ -23,5 +23,5 @@ def get_stock_ltp(kite_conn_var):
             exit_action_db.square_off(stock_name, price, kite_conn_var)
       except Exception as e:
         pass
-    return 'TRUE',stock_list
-  return 'NO ENTRY',stock_list
+    return 'TRUE',list(stock_list)
+  return 'NO ENTRY',list(stock_list)

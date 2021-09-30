@@ -53,7 +53,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
               stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
               stock_config_obj.buy            = True
               stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-              stock_config_obj.target         = price = price * 0.01
+              stock_config_obj.target         = price + price * 0.01
               stock_config_obj.quantity       = quantity
               stock_config_obj.buy_price      = price
               stock_config_obj.order_id       = order_id
@@ -82,7 +82,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                   stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
                   stock_config_obj.buy            = True
                   stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                  stock_config_obj.target         = price = price * 0.01
+                  stock_config_obj.target         = price + price * 0.01
                   stock_config_obj.quantity       = quantity
                   stock_config_obj.buy_price      = price
                   stock_config_obj.order_id       = order_id
