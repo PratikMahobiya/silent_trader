@@ -1,4 +1,4 @@
-from algo import models
+from Model_15M import models
 from datetime import datetime
 import talib
 

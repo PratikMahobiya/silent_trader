@@ -1,4 +1,4 @@
-from algo import models
+from Model_15M import models
 
 from . import exit_action_db
 from datetime import datetime, time

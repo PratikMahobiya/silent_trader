@@ -4,4 +4,4 @@ from django.apps import AppConfig
 class AlgoConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'algo'
-    verbose_name = "... INTRADAY ..."
+    verbose_name = "........ INTRADAY ........"

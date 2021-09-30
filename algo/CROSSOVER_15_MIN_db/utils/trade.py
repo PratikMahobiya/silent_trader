@@ -1,4 +1,5 @@
-from algo import models, serializers
+from algo import serializers
+from Model_15M import models
 import talib
 from . import zerodha_action
 

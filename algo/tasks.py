@@ -1,12 +1,9 @@
 import os
 import json
-from django.db import models
-import pandas as pd
-from time import sleep
 from datetime import datetime, time
 from kiteconnect import KiteConnect
 
-from . import models
+from Model_15M import models
 from . import serializers
 from . import check_ltp
 from . import check_ltp_crs_5

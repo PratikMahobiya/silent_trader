@@ -1,4 +1,5 @@
-from algo import models, serializers
+from algo import serializers
+from Model_15M import models
 from . import ltp_zerodha_action_db
 
 # place a sell order for exit

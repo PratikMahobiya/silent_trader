@@ -1,4 +1,4 @@
-from algo import models
+from Model_15M import models
 from datetime import date, datetime, time, timedelta
 from time import sleep
 import pandas as pd
