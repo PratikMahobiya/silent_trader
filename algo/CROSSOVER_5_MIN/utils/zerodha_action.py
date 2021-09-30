@@ -1,4 +1,3 @@
-from time import sleep
 
 def place_regular_buy_order(kite_conn_var,symbol,flag):
   # Place an order
@@ -6,7 +5,6 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
   error_status = 'NOT_PLACED'
   try:
     stocks_ltp = kite_conn_var.ltp('NSE:'+symbol)
-    sleep(0.3)
     quantity = 1
     while True:
       price = stocks_ltp['NSE:'+symbol]['last_price'] * quantity

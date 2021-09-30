@@ -1,4 +1,3 @@
-from time import sleep
 
 def place_regular_buy_order(kite_conn_var,symbol):
   # Place an order
@@ -9,7 +8,6 @@ def place_regular_buy_order(kite_conn_var,symbol):
   try:
     stocks_ltp = kite_conn_var.ltp('NSE:'+symbol)
     ltp        = stocks_ltp['NSE:'+symbol]['last_price']
-    sleep(0.3)
     while True:
       price = ltp * quantity
       if price >= 2000:

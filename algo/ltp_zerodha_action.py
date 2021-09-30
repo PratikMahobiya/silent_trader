@@ -1,13 +1,9 @@
 
-from time import sleep
-
-
 def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
   # Place an order
   order_id = 0
   error_status = 'NOT_PLACED'
   try:
-    sleep(0.3)
     order_id = kite_conn_var.place_order(tradingsymbol=symbol.split('.')[0],
                                 exchange=kite_conn_var.EXCHANGE_NSE,
                                 transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
