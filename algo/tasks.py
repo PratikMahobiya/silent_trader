@@ -4,7 +4,7 @@ from datetime import datetime, time
 from kiteconnect import KiteConnect
 
 from Model_15M import models
-from . import models_a
+from . import models as models_a
 from . import serializers
 from . import check_ltp
 from . import check_ltp_crs_5
