@@ -4,6 +4,7 @@ from datetime import datetime, time
 from kiteconnect import KiteConnect
 
 from Model_15M import models
+from . import models_a
 from . import serializers
 from . import check_ltp
 from . import check_ltp_crs_5
@@ -121,7 +122,7 @@ def get_stocks():
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
   # access_token = open('algo/config/access_token.txt','r').read()
-  access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
+  access_token = models_a.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
   try:
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)
