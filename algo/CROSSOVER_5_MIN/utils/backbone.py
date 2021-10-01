@@ -19,7 +19,7 @@ def model(intervals,stock_dict, flag, curr_time, kite_conn_var):
     # Convert dataframe to List of Companies
 
     # GET 30 MINUTE TRENDING STOCKS
-    if (15 <= datetime.now().time().minute < 30) or (45 <= datetime.now().time().minute < 59):
+    if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
       # DownLoad data for trend analysis 30 MIN
       data_frame_30 = get_data.download_trend_data_30(stock_dict,intervals,kite_conn_var)
 
