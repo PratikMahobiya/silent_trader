@@ -10,18 +10,23 @@ def model(intervals, kite_conn_var):
     kite_conn_var      = to place orders in zerodha
   '''
   # Regular Trades Execution
-  if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,15,00):
+  if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,00,00):
     # Trend Update i every 15 and 45 interval
     trending_stocks_list = []
-    if (15 <= datetime.now().time().minute < 30) or (45 <= datetime.now().time().minute < 59):
+    if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
       # DownLoad data for trend analysis
-      data_frame  = get_data.download_trend_data(intervals,kite_conn_var)
+      data_frame  = get_data.download_trend_data_30(intervals,kite_conn_var)
 
-      # Get the list of Trending Stocks
-      trending_stocks.trending(data_frame,intervals)
-      trending_stocks_list  = models.TREND_15M_A.objects.all().values_list('symbol', flat=True)
+      # Get the list of Trending Stocks in 30 Minutes
+      trending_stocks.trending_30(data_frame,intervals)
+      trending_stocks_list        = models.TREND_15M_A.objects.all().values_list('symbol', flat=True)
     else:
-      trending_stocks_list  = models.TREND_15M_A.objects.all().values_list('symbol', flat=True)
+      # DownLoad data for trend analysis
+      data_frame  = get_data.download_trend_data_15(intervals,kite_conn_var)
+
+      # Get the list of Trending Stocks in 15 Minutes from that 30 Minutes 45 50 RSI list
+      trending_stocks.trending_15(data_frame,intervals)
+      trending_stocks_list    = models.TREND_15M_A.objects.all().values_list('symbol', flat=True)
 
     if len(trending_stocks_list) != 0:
       # DownLoad data for initiating Trades
@@ -34,6 +39,8 @@ def model(intervals, kite_conn_var):
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.'
 
-  elif datetime.now().time() >= time(15,31,00):
+  elif time(15,00,00) <= datetime.now().time() <= time(15,30,00):
+    return 'ENTRY IS CLOSED.'
+  elif datetime.now().time() > time(15,30,00):
     return 'MARKET ENDED.'
   return 'MARKET NOT STARTED.'
