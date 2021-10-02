@@ -207,7 +207,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
   status = backbone_CRS.model(intervals, kite_conn_var)
-  response.update({'CRS': True, 'STATUS': status, 'TREND': list(models.TREND_15M.objects.all().values_list('symbol',flat=True)), 'ENTRY':list(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))})
+  response.update({'CRS': True, 'STATUS': status, 'TREND': list(models.TREND_15M_A.objects.all().values_list('symbol',flat=True)), 'ENTRY':list(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))})
   return response
 
 @shared_task(bind=True,max_retries=3)

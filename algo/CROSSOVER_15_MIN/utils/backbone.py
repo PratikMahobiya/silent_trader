@@ -19,9 +19,9 @@ def model(intervals, kite_conn_var):
 
       # Get the list of Trending Stocks
       trending_stocks.trending(data_frame,intervals)
-      trending_stocks_list  = models.TREND_15M.objects.all().values_list('symbol', flat=True)
+      trending_stocks_list  = models.TREND_15M_A.objects.all().values_list('symbol', flat=True)
     else:
-      trending_stocks_list  = models.TREND_15M.objects.all().values_list('symbol', flat=True)
+      trending_stocks_list  = models.TREND_15M_A.objects.all().values_list('symbol', flat=True)
 
     if len(trending_stocks_list) != 0:
       # DownLoad data for initiating Trades

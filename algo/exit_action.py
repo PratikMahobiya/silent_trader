@@ -63,7 +63,7 @@ def sell(stock, price, kite_conn_var):
         if transaction.is_valid():
           transaction.save()
         models.ENTRY_15M.objects.filter(symbol = stock).delete()
-        models.TREND_15M.objects.filter(symbol = stock).delete()
+        models.TREND_15M_A.objects.filter(symbol = stock).delete()
         stock_config_obj.buy          = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
@@ -94,7 +94,7 @@ def sell(stock, price, kite_conn_var):
       if transaction.is_valid():
         transaction.save()
       models.ENTRY_15M.objects.filter(symbol = stock).delete()
-      models.TREND_15M.objects.filter(symbol = stock).delete()
+      models.TREND_15M_A.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
@@ -126,7 +126,7 @@ def sell(stock, price, kite_conn_var):
         if transaction.is_valid():
           transaction.save()
         models.ENTRY_15M.objects.filter(symbol = stock).delete()
-        models.TREND_15M.objects.filter(symbol = stock).delete()
+        models.TREND_15M_A.objects.filter(symbol = stock).delete()
         stock_config_obj.buy          = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
@@ -159,7 +159,7 @@ def square_off(stock, price, kite_conn_var):
       if transaction.is_valid():
         transaction.save()
       models.ENTRY_15M.objects.filter(symbol = stock).delete()
-      models.TREND_15M.objects.filter(symbol = stock).delete()
+      models.TREND_15M_A.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
@@ -178,7 +178,7 @@ def square_off(stock, price, kite_conn_var):
     if transaction.is_valid():
       transaction.save()
     models.ENTRY_15M.objects.filter(symbol = stock).delete()
-    models.TREND_15M.objects.filter(symbol = stock).delete()
+    models.TREND_15M_A.objects.filter(symbol = stock).delete()
     stock_config_obj.buy          = False
     stock_config_obj.d_sl_flag    = False
     stock_config_obj.trend        = False

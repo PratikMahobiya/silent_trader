@@ -8,8 +8,14 @@ class STOCK_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('symbol','instrument_key','active')
     search_fields = ['symbol',]
 
-@admin.register(models.TREND_15M)
-class TREND_15M_Admin(ExportActionMixin,admin.ModelAdmin):
+@admin.register(models.TREND_15M_A)
+class TREND_15M_A_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('symbol','rsi')
+    list_per_page = 10
+    search_fields = ['symbol',]
+
+@admin.register(models.TREND_15M_B)
+class TREND_15M_B_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('symbol','rsi')
     list_per_page = 10
     search_fields = ['symbol',]
