@@ -19,7 +19,7 @@ def cancel_ord(kite_conn_var,stock_config_obj):
 # SELL STOCK ; EXIT
 def sell(stock, price, kite_conn_var):
   order_id      = 0
-  order_status  = 'NONE'
+  order_status  = 'NOT ACTIVE'
   # if price hits Target, Exit
   stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
   if price >= stock_config_obj.target:

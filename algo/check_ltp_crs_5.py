@@ -1,18 +1,11 @@
-import json
+from Model_5M import models
 
 from . import exit_action_crs_5
 from datetime import datetime, time
 
 def get_stock_ltp(kite_conn_var):
-  curr_time = datetime.now()
-  transactions = []
-  # Workbook Path
-  flag_config_5            = 'algo/config/crs_5_min_flag.json'
-  with open(flag_config_5, "r") as outfile:
-    flag_5 = json.load(outfile)
-
   # GET ACTIVE STOCK LIST
-  stock_list = flag_5['Entry']
+  stock_list = models.ENTRY_5M.objects.all().values_list('symbol', flat=True)
   active_stocks = []
   for stock in stock_list:
     active_stocks.append('NSE:'+stock)
@@ -23,23 +16,12 @@ def get_stock_ltp(kite_conn_var):
       stock_name = stock_key.split(':')[-1]
       try:
         if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,15,00):
-          if stock_name in flag_5['Entry']:
-            exit_action_crs_5.sell(stock_name, price, flag_5, transactions, curr_time, kite_conn_var)
+          if stock_name in stock_list:
+            exit_action_crs_5.sell(stock_name, price, kite_conn_var)
         elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,30,00):
-          if stock_name in flag_5['Entry']:
-            exit_action_crs_5.square_off(stock_name, price, flag_5, transactions, curr_time, kite_conn_var)
+          if stock_name in stock_list:
+            exit_action_crs_5.square_off(stock_name, price, kite_conn_var)
       except Exception as e:
         pass
-    # Update config File:
-    with open(flag_config_5, "w") as outfile:
-      json.dump(flag_5, outfile)
-    active_stocks_ltp = []
-    for i in stock_list:
-      if flag_5[i]['trend'] == False:
-        active_stocks_ltp.append(i.split(':')[-1])
-    return transactions, active_stocks_ltp, stock_list
-
-  # Update config File:
-  with open(flag_config_5, "w") as outfile:
-    json.dump(flag_5, outfile)
-  return transactions, active_stocks, stock_list
+    return 'TRUE',list(stock_list)
+  return 'NO ENTRY',list(stock_list)
