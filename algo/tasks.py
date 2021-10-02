@@ -16,7 +16,7 @@ from .CROSSOVER_5_MIN.utils import backbone as backbone_CRS_5_MIN
 @shared_task(bind=True,max_retries=3)
 # initial_setup on DATABASE -------------------------------------
 def get_stocks_configs(self):
-  response = {'stock_table': False, 'config_table': False}
+  response = {'stock_table': False, 'config_table_15': False, 'config_table_5': False}
   # Stock dict
   stock_dict = {
     'AUROPHARMA':70401,
@@ -130,17 +130,27 @@ def get_stocks_configs(self):
     # CREATE CONFIG IN FOR 15 MIN
     if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
       models.CONFIG_15M(symbol = stock_sym).save()
+    # CREATE CONFIG IN FOR 5 MIN
+    if not models_5.CONFIG_5M.objects.filter(symbol = stock_sym).exists():
+      models_5.CONFIG_5M(symbol = stock_sym).save()
 
-  # Update Responce as per Data in 15 Minute
+  # Update Responce as per Stock Dict
   if len(models_a.STOCK.objects.all()) == len(stock_dict):
     response.update({'stock_table': True, 'stock_len': len(models_a.STOCK.objects.all())})
   else:
     response.update({'stock_table': False, 'stock_len': len(models_a.STOCK.objects.all())})
 
+  # Update Responce as per Data in 15 Minute
   if len(models.CONFIG_15M.objects.all()) == len(stock_dict):
-    response.update({'config_table': True, 'config_len': len(models.CONFIG_15M.objects.all())})
+    response.update({'config_table_15': True, 'config_len_15': len(models.CONFIG_15M.objects.all())})
   else:
-    response.update({'config_table': False, 'config_len': len(models.CONFIG_15M.objects.all())})
+    response.update({'config_table_15': False, 'config_len_15': len(models.CONFIG_15M.objects.all())})
+
+  # Update Responce as per Data in 5 Minute
+  if len(models_5.CONFIG_5M.objects.all()) == len(stock_dict):
+    response.update({'config_table_5': True, 'config_len_5': len(models_5.CONFIG_5M.objects.all())})
+  else:
+    response.update({'config_table_5': False, 'config_len_5': len(models_5.CONFIG_5M.objects.all())})
   return response
 
 def connect_to_kite_connection():
