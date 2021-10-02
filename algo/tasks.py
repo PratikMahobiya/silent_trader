@@ -12,7 +12,11 @@ from celery import shared_task
 from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
 from .CROSSOVER_5_MIN.utils import backbone as backbone_CRS_5_MIN
 
-def get_stocks():
+@shared_task(bind=True,max_retries=3)
+# initial_setup on DATABASE -------------------------------------
+def get_stocks_configs(self):
+  response = {'stock_table': False, 'config_table': False}
+  # Stock dict
   stock_dict = {
     'AUROPHARMA':70401,
     'AARTIIND':1793,
@@ -117,7 +121,26 @@ def get_stocks():
     'TATACONSUM':878593,
     'UPL':2889473
   }
-  return stock_dict
+  # Create stocks and config's for trade in stock and config table
+  for stock_sym in stock_dict:
+    # STORE IN STOCK TABLE
+    if not models_a.STOCK.objects.filter(symbol = stock_sym).exists():
+      models_a.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym]).save()
+    # CREATE CONFIG IN FOR 15 MIN
+    if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
+      models.CONFIG_15M(symbol = stock_sym).save()
+
+  # Update Responce as per Data in 15 Minute
+  if len(models_a.STOCK.objects.all()) == len(stock_dict):
+    response.update({'stock_table': True, 'stock_len': len(models_a.STOCK.objects.all())})
+  else:
+    response.update({'stock_table': False, 'stock_len': len(models_a.STOCK.objects.all())})
+
+  if len(models.CONFIG_15M.objects.all()) == len(stock_dict):
+    response.update({'config_table': True, 'config_len': len(models.CONFIG_15M.objects.all())})
+  else:
+    response.update({'config_table': False, 'config_len': len(models.CONFIG_15M.objects.all())})
+  return response
 
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
@@ -185,17 +208,6 @@ def REMOVE_CONFIG_FILES(self):
 def CROSS_OVER_RUNS_15_MIN(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
 
-  # initial_setup on DATABASE -------------------------------------
-  if time(9,00,00) <= datetime.now().time() <= time(9,3,00):
-    # Stock List in dict
-    stock_dict          = get_stocks()
-    # Create stocks and config's for trade in stock and config table
-    for stock_sym in stock_dict:
-      if not models.STOCK.objects.filter(symbol = stock_sym).exists():
-        models.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym]).save()
-      if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
-        models.CONFIG_15M(symbol = stock_sym).save()
-  
   # Initialize Kite Connections
   kite_conn_var       = connect_to_kite_connection()
   '''

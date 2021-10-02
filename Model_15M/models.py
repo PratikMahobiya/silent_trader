@@ -1,15 +1,6 @@
 from django.db import models
 
 # Create your models here.
-class STOCK(models.Model):
-    symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
-    instrument_key          = models.BigIntegerField(verbose_name='INSTRUMENT KEY')
-    active                  = models.BooleanField(verbose_name='ACTIVE',default=True)
-    def __str__(self):
-        return self.symbol
-    class Meta:
-        db_table = 'STOCK'
-
 class TREND_15M_A(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')

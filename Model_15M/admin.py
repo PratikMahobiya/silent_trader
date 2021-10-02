@@ -3,11 +3,6 @@ from . import models
 from import_export.admin import ExportActionMixin
 
 # Register your models here.
-@admin.register(models.STOCK)
-class STOCK_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol','instrument_key','active')
-    search_fields = ['symbol',]
-
 @admin.register(models.TREND_15M_A)
 class TREND_15M_A_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('symbol','rsi')
