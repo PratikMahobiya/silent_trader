@@ -19,9 +19,9 @@ app.conf.enable_utc = False
 app.conf.update(timezone = 'Asia/Kolkata')
 
 app.conf.beat_schedule = {
-    'REMOVE_CONFIG_FILES':{
-        'task': 'algo.tasks.REMOVE_CONFIG_FILES',
-        'schedule': crontab(minute=0, hour=0, day_of_week='mon-fri'),
+    'STOCKS_CONFIG_FILES':{
+        'task': 'algo.tasks.get_stocks_configs',
+        'schedule': crontab(minute=0, hour=7, day_of_week='mon-fri'),
     },
     'LTD_5_SEC':{
         'task': 'algo.tasks.ltp_of_entries',

@@ -144,7 +144,6 @@ def get_stocks_configs(self):
 
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
-  # access_token = open('algo/config/access_token.txt','r').read()
   access_token = models_a.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
   try:
     kite = KiteConnect(api_key=api_key)
@@ -189,20 +188,6 @@ def ltp_of_entries(self):
   else:
     response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED','LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_5_MIN': True, 'STATUS_5_MIN': 'MARKET IS CLOSED.'})
   return response
-
-@shared_task(bind=True,max_retries=3)
-def REMOVE_CONFIG_FILES(self):
-  directory = './algo/config'
-  files_in_directory = os.listdir(directory)
-  filtered_files = [file for file in files_in_directory if file.endswith(".json")]
-  for file in filtered_files:
-    try:
-      path_to_file = os.path.join(directory, file)
-      os.remove(path_to_file)
-    except Exception as e:
-      pass
-  files_in_directory = os.listdir(directory)
-  return {'success': True, 'Files_in_config':files_in_directory}
 
 @shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_15_MIN(self):
