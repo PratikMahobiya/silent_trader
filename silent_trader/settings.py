@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Custom Apps
     'algo.apps.AlgoConfig',
     'Model_15M.apps.Model15MConfig',
+    'Model_5M.apps.Model5MConfig',
 
     # Downloaded Apps -------
     'rest_framework',

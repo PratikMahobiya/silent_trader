@@ -1,13 +1,15 @@
 
-def place_regular_buy_order(kite_conn_var,symbol,flag):
+def place_regular_buy_order(kite_conn_var,symbol):
   # Place an order
-  order_id = 0
-  error_status = 'NOT_PLACED'
+  quantity  = 1
+  ltp       = 0
+  order_id  = 0
+  order_status = 'NOT_PLACED'
   try:
     stocks_ltp = kite_conn_var.ltp('NSE:'+symbol)
-    quantity = 1
+    ltp        = stocks_ltp['NSE:'+symbol]['last_price']
     while True:
-      price = stocks_ltp['NSE:'+symbol]['last_price'] * quantity
+      price = ltp * quantity
       if price >= 2000:
         quantity = quantity - 1
         break
@@ -20,11 +22,9 @@ def place_regular_buy_order(kite_conn_var,symbol,flag):
     #                             order_type=kite_conn_var.ORDER_TYPE_LIMIT,
     #                             product=kite_conn_var.PRODUCT_MIS,
     #                             validity=kite_conn_var.VALIDITY_DAY,
-    #                             price=stocks_ltp['NSE:'+symbol]['last_price'],
+    #                             price=ltp,
     #                             )
-    flag[symbol]['buying_price'] = stocks_ltp['NSE:'+symbol]['last_price']
-    flag[symbol]['quantity'] = quantity
-    error_status = 'NOT ACTIVE ENTRY'
+    order_status = 'SUCCESSFULLY_PLACED_ENTRY'
   except Exception as e:
-    error_status = 'PROBLEM AT ZERODHA END.'
-  return order_id, error_status
+    order_status = 'PROBLEM AT ZERODHA END.'
+  return order_id, order_status, ltp, quantity

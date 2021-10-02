@@ -4,6 +4,7 @@ from datetime import datetime, time
 from kiteconnect import KiteConnect
 
 from Model_15M import models
+from Model_5M import models as models_5
 from . import models as models_a
 from . import serializers
 from . import check_ltp
@@ -154,7 +155,7 @@ def connect_to_kite_connection():
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
-  response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_5_MIN': False, 'STATUS_5_MIN': 'NONE','OUT_TREND_5_MIN':None,'IN_TREND_ENTRY_STOCK_5_MIN':None}
+  response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_5': False, 'STATUS_5': 'NONE','ACTIVE_STOCKS_5': None}
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
     
@@ -167,18 +168,8 @@ def ltp_of_entries(self):
 
     # LTP CRS_5MIN
     try:
-      transactions, out_trend_stock, in_trend_entry_stock = check_ltp_crs_5.get_stock_ltp(kite_conn_var)
-      if len(transactions) != 0:
-        for trans in transactions:
-          serializer = serializers.CROSSOVER_5_MIN_Serializer(data=trans)
-          if serializer.is_valid():
-            serializer.save()
-          else:
-            response['CRS_5_MIN_SERIALIZER'] = serializer.errors
-        response.update({'LTP_5_MIN': True, 'STATUS_5_MIN': 'DONE.','OUT_TREND_5_MIN':out_trend_stock,'IN_TREND_ENTRY_STOCK_5_MIN':in_trend_entry_stock})
-      else:
-        transactions = 'NO CHANGE'
-        response.update({'LTP_5_MIN': True, 'STATUS_5_MIN': transactions,'OUT_TREND_5_MIN':out_trend_stock,'IN_TREND_ENTRY_STOCK_5_MIN':in_trend_entry_stock})
+      status, active_stocks = check_ltp_crs_5.get_stock_ltp(kite_conn_var)
+      response.update({'LTP_5': True, 'STATUS_5': status,'ACTIVE_STOCKS_5':active_stocks})
     except Exception as e:
       pass
 
@@ -204,61 +195,23 @@ def CROSS_OVER_RUNS_15_MIN(self):
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
   status = backbone_CRS.model(intervals, kite_conn_var)
-  response.update({'CRS': True, 'STATUS': status, 'TREND': list(models.TREND_15M_A.objects.all().values_list('symbol',flat=True)), 'ENTRY':list(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))})
+  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))})
   return response
 
 @shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_5_MIN(self):
-  response = {'CRS_5MIN': False, 'STATUS': 'NONE'}
+  response = {'CRS': False, 'STATUS': 'NONE'}
 
-  # Stock List in dict
-  stock_dict          = get_stocks()
-  # Extract Symbols in list
-  stock_symbol        = stock_dict.keys()
+  # Initialize Kite Connections
   kite_conn_var       = connect_to_kite_connection()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
   intervals      = ['5minute',5,60,55,21,10,'30minute',30,14,14,14,'15minute',5]
-  # intervals      = ['15minute',5,60,55,18,8,'30minute',30,14,14,14]
-  curr_time      = datetime.now()
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  # Workbook Path
-  flag_config            = 'algo/config/crs_5_min_flag.json'
-  # Create Flag config for each company
-  if not os.path.exists(flag_config):
-    # print("Created Flag Config File For all STOCKS.")
-    flag = {}
-    flag['Entry'] = []
-    flag['Trend'] = []
-    flag['Trend_15'] = []
-    flag['Trend_30'] = []
-    for symb in stock_symbol:
-      flag[symb] = {'buy':False,'trend':False,'d_sl_flag':False,'buying_price':0,'selling_price':0,'stoploss':0,'f_stoploss':0,'d_stoploss':0,'quantity':0,'count':0,'target':0,'order_id':0,'order_status':None}
-    with open(flag_config, "w") as outfile:
-      json.dump(flag, outfile)
-  # Load The Last Updated Flag Config
-  else:
-    # print("Loaded Flag Config File For all Stocks.")
-    with open(flag_config, "r") as outfile:
-      flag = json.load(outfile)
-
-  data_frame, status = backbone_CRS_5_MIN.model(intervals, stock_dict, flag, curr_time,kite_conn_var)
-  if status is True:
-    for data_f in data_frame:
-      serializer = serializers.CROSSOVER_5_MIN_Serializer(data=data_f)
-      if serializer.is_valid():
-        serializer.save()
-      else:
-        response['TH_PACA_T2_SERIALIZER'] = serializer.errors
-    response.update({'CRS_5MIN': True, 'STATUS': 'ALL DONE.'})
-  elif status is False:
-    response.update({'CRS_5MIN': True, 'STATUS': data_frame})
-  response['Trending Stocks'] = flag['Trend']
-  # Update config File:
-  with open(flag_config, "w") as outfile:
-    json.dump(flag, outfile)
+  status = backbone_CRS_5_MIN.model(intervals, kite_conn_var)
+  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_5.ENTRY_5M.objects.all().values_list('symbol',flat=True))})
   return response
