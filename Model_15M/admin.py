@@ -9,12 +9,6 @@ class TREND_15M_A_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol',]
 
-@admin.register(models.TREND_15M_B)
-class TREND_15M_B_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol','rsi')
-    list_per_page = 10
-    search_fields = ['symbol',]
-
 @admin.register(models.ENTRY_15M)
 class ENTRY_15M_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('symbol',)

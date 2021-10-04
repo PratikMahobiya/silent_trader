@@ -7,12 +7,6 @@ class TREND_15M_A(models.Model):
     class Meta:
         db_table = 'TREND_15M_A'
 
-class TREND_15M_B(models.Model):
-    symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
-    rsi                     = models.FloatField(verbose_name='RSI')
-    class Meta:
-        db_table = 'TREND_15M_B'
-
 class ENTRY_15M(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     class Meta:
