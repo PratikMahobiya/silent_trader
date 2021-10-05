@@ -10,6 +10,13 @@ def place_ord(kite_conn_var,stock):
   # -------------------------------------------
   return order_id, order_status, price, quantity
 
+def checking_close_ema_diff(stock,data_frame,ema_max):
+  per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/data_frame[stock]['Close'].iloc[-2])*100
+  if per < 0.2:
+    return True
+  else:
+    return False
+
 def checking_candle_percent(stock, data_frame):
   prev_per = ((data_frame[stock]['Close'].iloc[-3] - data_frame[stock]['Open'].iloc[-3])/data_frame[stock]['Open'].iloc[-3])*100
   curr_per = ((data_frame[stock]['Close'].iloc[-2] - data_frame[stock]['Open'].iloc[-2])/data_frame[stock]['Open'].iloc[-2])*100
@@ -52,6 +59,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
     # if checking_candle_percent(stock,data_frame):
+    if checking_close_ema_diff(stock,data_frame,ema_max):
       if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
@@ -82,6 +90,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   elif ema_min[-1] > ema_max[-1]:
     if ema_min[-2] < ema_max[-2]:
       # if checking_candle_percent(stock,data_frame):
+      if checking_close_ema_diff(stock,data_frame,ema_max):
         if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
           if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
             if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
