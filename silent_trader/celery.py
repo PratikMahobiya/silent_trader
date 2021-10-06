@@ -40,6 +40,10 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.CROSS_OVER_RUNS_15_MIN_TEMP',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
+    'CRS_5_MIN_TEMP':{
+        'task': 'algo.tasks.CROSS_OVER_RUNS_5_MIN_TEMP',
+        'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
+    },
 }
 
 # Load task modules from all registered Django app configs.

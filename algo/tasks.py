@@ -18,6 +18,10 @@ from Model_15_temp import models_temp
 from . import check_ltp_temp
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 
+from Model_5_temp import models as models_5_temp
+from . import check_ltp_crs_5_temp
+from .CROSSOVER_5_MIN_temp.utils import backbone as backbone_CRS_5_MIN_temp
+
 @shared_task(bind=True,max_retries=3)
 # initial_setup on DATABASE -------------------------------------
 def get_stocks_configs(self):
@@ -143,7 +147,10 @@ def get_stocks_configs(self):
     # CREATE CONFIG IN FOR 15 MIN TEMP
     if not models_temp.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
       models_temp.CONFIG_15M(symbol = stock_sym).save()
-    
+
+    # CREATE CONFIG IN FOR 5 MIN TEMP
+    if not models_5_temp.CONFIG_5M.objects.filter(symbol = stock_sym).exists():
+      models_5_temp.CONFIG_5M(symbol = stock_sym).save()
 
   # Update Responce as per Stock Dict
   if len(models_a.STOCK.objects.all()) == len(stock_dict):
@@ -202,6 +209,12 @@ def ltp_of_entries(self):
     except Exception as e:
       pass
 
+    # LTP CRS_5MIN
+    try:
+      status, active_stocks = check_ltp_crs_5_temp.get_stock_ltp(kite_conn_var)
+      response.update({'LTP_5_TEMP': True, 'STATUS_5_TEMP': status,'ACTIVE_STOCKS_5_TEMP':active_stocks})
+    except Exception as e:
+      pass
 
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
     response.update({'LTP': True, 'STATUS': 'SQUARED OFF','LTP_5_MIN': True, 'STATUS_5_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
@@ -262,4 +275,22 @@ def CROSS_OVER_RUNS_15_MIN_TEMP(self):
   '''
   status = backbone_CRS_temp.model(intervals, kite_conn_var)
   response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_temp.ENTRY_15M.objects.all().values_list('symbol',flat=True))})
+  return response
+
+@shared_task(bind=True,max_retries=3)
+def CROSS_OVER_RUNS_5_MIN_TEMP(self):
+  response = {'CRS': False, 'STATUS': 'NONE'}
+
+  # Initialize Kite Connections
+  kite_conn_var       = connect_to_kite_connection()
+  '''
+    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
+  '''
+  intervals      = ['5minute',5,60,55,21,10,'30minute',30,14,14,14,'15minute',5]
+  '''
+  -> Intervals:-
+    ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
+  '''
+  status = backbone_CRS_5_MIN_temp.model(intervals, kite_conn_var)
+  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_5_temp.ENTRY_5M.objects.all().values_list('symbol',flat=True))})
   return response
