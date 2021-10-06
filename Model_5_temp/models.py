@@ -1,30 +1,30 @@
 from django.db import models
 
 # Create your models here.
-class TREND_5M_A(models.Model):
+class TREND_5M_A_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')
     class Meta:
-        db_table = 'TREND_5M_A'
+        db_table = 'TREND_5M_A_TEMP'
 
-class TREND_5M_B(models.Model):
+class TREND_5M_B_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')
     class Meta:
-        db_table = 'TREND_5M_B'
+        db_table = 'TREND_5M_B_TEMP'
 
-class TREND_5M_C(models.Model):
+class TREND_5M_C_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')
     class Meta:
-        db_table = 'TREND_5M_C'
+        db_table = 'TREND_5M_C_TEMP'
 
-class ENTRY_5M(models.Model):
+class ENTRY_5M_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     class Meta:
-        db_table = 'ENTRY_5M'
+        db_table = 'ENTRY_5M_TEMP'
 
-class CONFIG_5M(models.Model):
+class CONFIG_5M_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     buy                     = models.BooleanField(verbose_name='BUY',default=False)
     trend                   = models.BooleanField(verbose_name='IN_TREND',default=False)
@@ -39,4 +39,4 @@ class CONFIG_5M(models.Model):
     order_id                = models.BigIntegerField(verbose_name='ORDER ID',default=0)
     order_status            = models.CharField(max_length=100, verbose_name='ORDER STATUS',default='NONE')
     class Meta:
-        db_table = 'CONFIG_5M'
+        db_table = 'CONFIG_5M_TEMP'

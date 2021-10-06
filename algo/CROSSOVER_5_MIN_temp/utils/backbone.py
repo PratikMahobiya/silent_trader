@@ -26,14 +26,14 @@ def model(intervals, kite_conn_var):
 
       # Get the list of Trending Stocks in 15 Minutes from that 30 Minutes 45 50 RSI list
       trending_stocks.trending_15(data_frame,intervals)
-      trending_stocks_list    = models.TREND_5M_A.objects.all().values_list('symbol', flat=True)
+      trending_stocks_list    = models.TREND_5M_A_TEMP.objects.all().values_list('symbol', flat=True)
     else:
       # DownLoad data for trend analysis
       data_frame  = get_data.download_trend_data_5(intervals,kite_conn_var)
 
       # Get the list of Trending Stocks in 5 Minutes from that 15 Minutes list
       trending_stocks.trending_5(data_frame,intervals)
-      trending_stocks_list    = models.TREND_5M_A.objects.all().values_list('symbol', flat=True)
+      trending_stocks_list    = models.TREND_5M_A_TEMP.objects.all().values_list('symbol', flat=True)
 
     if len(trending_stocks_list) != 0:
       # DownLoad data for initiating Trades

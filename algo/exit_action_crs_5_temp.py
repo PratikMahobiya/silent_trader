@@ -21,7 +21,7 @@ def sell(stock, price, kite_conn_var):
   order_id      = 0
   order_status  = 'NOT ACTIVE'
   # if price hits Target, Exit
-  stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+  stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
   if price >= stock_config_obj.target:
     if stock_config_obj.buy is True:
       stock_config_obj.target       = price + price*0.003
@@ -57,8 +57,8 @@ def sell(stock, price, kite_conn_var):
         transaction   = serializers.CROSSOVER_5_MIN_Serializer_TEMP(data=trans_data)
         if transaction.is_valid():
           transaction.save()
-        models.ENTRY_5M.objects.filter(symbol = stock).delete()
-        models.TREND_5M_B.objects.filter(symbol = stock).delete()
+        models.ENTRY_5M_TEMP.objects.filter(symbol = stock).delete()
+        models.TREND_5M_B_TEMP.objects.filter(symbol = stock).delete()
         stock_config_obj.buy          = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
@@ -88,8 +88,8 @@ def sell(stock, price, kite_conn_var):
       transaction   = serializers.CROSSOVER_5_MIN_Serializer_TEMP(data=trans_data)
       if transaction.is_valid():
         transaction.save()
-      models.ENTRY_5M.objects.filter(symbol = stock).delete()
-      models.TREND_5M_B.objects.filter(symbol = stock).delete()
+      models.ENTRY_5M_TEMP.objects.filter(symbol = stock).delete()
+      models.TREND_5M_B_TEMP.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
@@ -120,8 +120,8 @@ def sell(stock, price, kite_conn_var):
         transaction   = serializers.CROSSOVER_5_MIN_Serializer_TEMP(data=trans_data)
         if transaction.is_valid():
           transaction.save()
-        models.ENTRY_5M.objects.filter(symbol = stock).delete()
-        models.TREND_5M_B.objects.filter(symbol = stock).delete()
+        models.ENTRY_5M_TEMP.objects.filter(symbol = stock).delete()
+        models.TREND_5M_B_TEMP.objects.filter(symbol = stock).delete()
         stock_config_obj.buy          = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
@@ -132,7 +132,7 @@ def sell(stock, price, kite_conn_var):
 
 # SQUARE OFF, EXIT
 def square_off(stock, price, kite_conn_var):
-  stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+  stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
   if stock_config_obj.order_id != 0:
     if stock_config_obj.buy is True:
       ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
@@ -153,8 +153,8 @@ def square_off(stock, price, kite_conn_var):
       transaction   = serializers.CROSSOVER_5_MIN_Serializer_TEMP(data=trans_data)
       if transaction.is_valid():
         transaction.save()
-      models.ENTRY_5M.objects.filter(symbol = stock).delete()
-      models.TREND_5M_B.objects.filter(symbol = stock).delete()
+      models.ENTRY_5M_TEMP.objects.filter(symbol = stock).delete()
+      models.TREND_5M_B_TEMP.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
@@ -172,8 +172,8 @@ def square_off(stock, price, kite_conn_var):
     transaction   = serializers.CROSSOVER_5_MIN_Serializer_TEMP(data=trans_data)
     if transaction.is_valid():
       transaction.save()
-    models.ENTRY_5M.objects.filter(symbol = stock).delete()
-    models.TREND_5M_B.objects.filter(symbol = stock).delete()
+    models.ENTRY_5M_TEMP.objects.filter(symbol = stock).delete()
+    models.TREND_5M_B_TEMP.objects.filter(symbol = stock).delete()
     stock_config_obj.buy          = False
     stock_config_obj.d_sl_flag    = False
     stock_config_obj.trend        = False

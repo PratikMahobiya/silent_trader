@@ -26,7 +26,7 @@ def download_trend_data_15(intervals,kite_conn_var):
   from_day = now - timedelta(days=intervals[12])
   df_list = []
   df_key  = []
-  for_trend = models.TREND_5M_C.objects.all().values_list('symbol', flat=True)
+  for_trend = models.TREND_5M_C_TEMP.objects.all().values_list('symbol', flat=True)
   for stock_name in for_trend:
     sleep(0.3)
     data = kite_conn_var.historical_data(instrument_token=models_a.STOCK.objects.get(symbol = stock_name).instrument_key, from_date=from_day, to_date=now, interval=intervals[11])
@@ -43,7 +43,7 @@ def download_trend_data_5(intervals,kite_conn_var):
   from_day = now - timedelta(days=intervals[1])
   df_list = []
   df_key  = []
-  for_trend = models.TREND_5M_B.objects.all().values_list('symbol', flat=True)
+  for_trend = models.TREND_5M_B_TEMP.objects.all().values_list('symbol', flat=True)
   for stock_name in for_trend:
     sleep(0.3)
     data = kite_conn_var.historical_data(instrument_token=models_a.STOCK.objects.get(symbol = stock_name).instrument_key, from_date=from_day, to_date=now, interval=intervals[0])

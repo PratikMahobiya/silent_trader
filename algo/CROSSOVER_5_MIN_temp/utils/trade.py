@@ -39,7 +39,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[9])
     atr         = talib.ATR(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[10])
-    stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+    stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
       buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var)
     else:
@@ -49,7 +49,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
 # UPDATE STOPLOSS
 def updatestoploss(stock, data_frame, atr):
   if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Open'].iloc[-2]:
-    stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+    stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
     stock_config_obj.stoploss = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
     stock_config_obj.save()
   return 0
@@ -68,7 +68,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
                 # UPDATE CONFIG
-                stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+                stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                 stock_config_obj.stoploss       = checking_stoploss(price,atr)
@@ -79,7 +79,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 stock_config_obj.order_status   = order_status
                 stock_config_obj.save()
                 # UPDATE CURRENT ENTRY TABLE
-                models.ENTRY_5M(symbol = stock).save()
+                models.ENTRY_5M_TEMP(symbol = stock).save()
                 # TRANSACTION TABLE UPDATE
                 trans_data = {'symbol':stock,'indicate':'Entry','type':'BF_CRS','price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                 transaction   = serializers.CROSSOVER_5_MIN_Serializer_TEMP(data=trans_data)
@@ -100,7 +100,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     # Place Order in ZERODHA.
                     order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
                     # UPDATE CONFIG
-                    stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+                    stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
                     stock_config_obj.buy            = True
                     stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                     stock_config_obj.stoploss       = checking_stoploss(price,atr)
@@ -111,7 +111,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     stock_config_obj.order_status   = order_status
                     stock_config_obj.save()
                     # UPDATE CURRENT ENTRY TABLE
-                    models.ENTRY_5M(symbol = stock).save()
+                    models.ENTRY_5M_TEMP(symbol = stock).save()
                     # TRANSACTION TABLE UPDATE
                     trans_data = {'symbol':stock,'indicate':'Entry','type':'AF_CRS','price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                     transaction   = serializers.CROSSOVER_5_MIN_Serializer_TEMP(data=trans_data)

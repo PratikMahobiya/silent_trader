@@ -149,8 +149,8 @@ def get_stocks_configs(self):
       models_temp.CONFIG_15M_TEMP(symbol = stock_sym).save()
 
     # CREATE CONFIG IN FOR 5 MIN TEMP
-    if not models_5_temp.CONFIG_5M.objects.filter(symbol = stock_sym).exists():
-      models_5_temp.CONFIG_5M(symbol = stock_sym).save()
+    if not models_5_temp.CONFIG_5M_TEMP.objects.filter(symbol = stock_sym).exists():
+      models_5_temp.CONFIG_5M_TEMP(symbol = stock_sym).save()
 
   # Update Responce as per Stock Dict
   if len(models_a.STOCK.objects.all()) == len(stock_dict):
@@ -292,5 +292,5 @@ def CROSS_OVER_RUNS_5_MIN_TEMP(self):
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
   status = backbone_CRS_5_MIN_temp.model(intervals, kite_conn_var)
-  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_5_temp.ENTRY_5M.objects.all().values_list('symbol',flat=True))})
+  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_5_temp.ENTRY_5M_TEMP.objects.all().values_list('symbol',flat=True))})
   return response
