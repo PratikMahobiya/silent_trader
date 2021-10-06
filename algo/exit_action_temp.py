@@ -25,19 +25,19 @@ def sell(stock, price, kite_conn_var):
   if price >= stock_config_obj.target:
     if stock_config_obj.buy is True:
       if stock_config_obj.count == 0:
-        stock_config_obj.target       = price + price*0.003
+        stock_config_obj.target       = price + price*0.0025
         stock_config_obj.d_stoploss   = price - price*0.0045
         stock_config_obj.d_sl_flag    = True
         stock_config_obj.count        += 1
         stock_config_obj.save()
-      elif stock_config_obj.count > 5:
-        stock_config_obj.target       = price + price*0.003
-        stock_config_obj.d_stoploss   = price - price*0.007
-        stock_config_obj.d_sl_flag    = True
-        stock_config_obj.count        += 1
-        stock_config_obj.save()
+      # elif stock_config_obj.count > 5:
+      #   stock_config_obj.target       = price + price*0.003
+      #   stock_config_obj.d_stoploss   = price - price*0.007
+      #   stock_config_obj.d_sl_flag    = True
+      #   stock_config_obj.count        += 1
+      #   stock_config_obj.save()
       else:
-        stock_config_obj.target       = price + price*0.003
+        stock_config_obj.target       = price + price*0.0025
         stock_config_obj.d_stoploss   = price - price*0.005
         stock_config_obj.d_sl_flag    = True
         stock_config_obj.count        += 1
