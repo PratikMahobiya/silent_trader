@@ -27,3 +27,11 @@ class CROSSOVER_5_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
     list_filter = ("date",)
     list_per_page = 10
     search_fields = ['symbol','date']
+
+# -------------------------------------- Not Active ---------------------------------------
+@admin.register(models.CROSSOVER_15_MIN_TEMP)
+class CROSSOVER_15_Min_TEMP_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','order_status')
+    list_filter = ("date",)
+    list_per_page = 10
+    search_fields = ['symbol','date']

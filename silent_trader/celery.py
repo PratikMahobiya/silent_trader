@@ -21,7 +21,7 @@ app.conf.update(timezone = 'Asia/Kolkata')
 app.conf.beat_schedule = {
     'STOCKS_CONFIG_FILES':{
         'task': 'algo.tasks.get_stocks_configs',
-        'schedule': crontab(minute=20, hour=2),
+        'schedule': crontab(minute=20, hour=1),
     },
     'LTD_5_SEC':{
         'task': 'algo.tasks.ltp_of_entries',
@@ -34,6 +34,11 @@ app.conf.beat_schedule = {
     'CRS_5_MIN':{
         'task': 'algo.tasks.CROSS_OVER_RUNS_5_MIN',
         'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
+    },
+    # ------------------------ Not Active -----------------
+    'CRS_15_MIN_TEMP':{
+        'task': 'algo.tasks.CROSS_OVER_RUNS_15_MIN_TEMP',
+        'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
     },
 }
 
