@@ -14,7 +14,7 @@ from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
 from .CROSSOVER_5_MIN.utils import backbone as backbone_CRS_5_MIN
 
 # -------------------- Not ------------------
-from Model_15_temp import models_temp
+from Model_15_temp import models as models_temp
 from . import check_ltp_temp
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 
@@ -145,8 +145,8 @@ def get_stocks_configs(self):
     
     # ----------------------------------- Not Ative ------------------------------------
     # CREATE CONFIG IN FOR 15 MIN TEMP
-    if not models_temp.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
-      models_temp.CONFIG_15M(symbol = stock_sym).save()
+    if not models_temp.CONFIG_15M_TEMP.objects.filter(symbol = stock_sym).exists():
+      models_temp.CONFIG_15M_TEMP(symbol = stock_sym).save()
 
     # CREATE CONFIG IN FOR 5 MIN TEMP
     if not models_5_temp.CONFIG_5M.objects.filter(symbol = stock_sym).exists():
@@ -274,7 +274,7 @@ def CROSS_OVER_RUNS_15_MIN_TEMP(self):
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
   status = backbone_CRS_temp.model(intervals, kite_conn_var)
-  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_temp.ENTRY_15M.objects.all().values_list('symbol',flat=True))})
+  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))})
   return response
 
 @shared_task(bind=True,max_retries=3)

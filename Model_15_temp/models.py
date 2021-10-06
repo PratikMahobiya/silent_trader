@@ -1,18 +1,18 @@
 from django.db import models
 
 # Create your models here.
-class TREND_15M_A(models.Model):
+class TREND_15M_A_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')
     class Meta:
-        db_table = 'TREND_15M_A'
+        db_table = 'TREND_15M_A_TEMP'
 
-class ENTRY_15M(models.Model):
+class ENTRY_15M_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     class Meta:
-        db_table = 'ENTRY_15M'
+        db_table = 'ENTRY_15M_TEMP'
 
-class CONFIG_15M(models.Model):
+class CONFIG_15M_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     buy                     = models.BooleanField(verbose_name='BUY',default=False)
     trend                   = models.BooleanField(verbose_name='IN_TREND',default=False)
@@ -27,4 +27,4 @@ class CONFIG_15M(models.Model):
     order_id                = models.BigIntegerField(verbose_name='ORDER ID',default=0)
     order_status            = models.CharField(max_length=100, verbose_name='ORDER STATUS',default='NONE')
     class Meta:
-        db_table = 'CONFIG_15M'
+        db_table = 'CONFIG_15M_TEMP'
