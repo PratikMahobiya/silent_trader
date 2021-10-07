@@ -10,6 +10,13 @@ def place_ord(kite_conn_var,stock):
   # -------------------------------------------
   return order_id, order_status, price, quantity
 
+def checking_close_ema_diff(stock,data_frame,ema_max):
+  per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100
+  if per <= 0.8:
+    return True
+  else:
+    return False
+
 def checking_candle_percent(stock, data_frame):
   prev_per = ((data_frame[stock]['Close'].iloc[-3] - data_frame[stock]['Open'].iloc[-3])/data_frame[stock]['Open'].iloc[-3])*100
   curr_per = ((data_frame[stock]['Close'].iloc[-2] - data_frame[stock]['Open'].iloc[-2])/data_frame[stock]['Open'].iloc[-2])*100
@@ -19,11 +26,15 @@ def checking_candle_percent(stock, data_frame):
     return False
 
 def checking_stoploss_fixed(price):
-  stoploss_val = price - price*0.005
+  stoploss_val = price - price*0.004
   return round(stoploss_val,2)
 
-def checking_stoploss(price, atr):
+def checking_stoploss_ot(price, atr):
   stoploss_val = price - atr[-1]*0.5
+  return round(stoploss_val,2)
+
+def checking_stoploss_tu(price):
+  stoploss_val = price - price*0.005
   return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
@@ -43,7 +54,10 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
 def updatestoploss(stock, data_frame, atr):
   if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Open'].iloc[-2]:
     stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
-    stock_config_obj.stoploss = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
+    stock_config_obj.stoploss = checking_stoploss_ot(data_frame[stock]['Close'].iloc[-2],atr)
+    if stock_config_obj.d_sl_flag is True:
+      stock_config_obj.d_stoploss = checking_stoploss_tu(data_frame[stock]['Close'].iloc[-2])
+      stock_config_obj.count        += 1
     stock_config_obj.save()
   return 0
 
@@ -51,7 +65,8 @@ def updatestoploss(stock, data_frame, atr):
 def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
-    if checking_candle_percent(stock,data_frame):
+    # if checking_candle_percent(stock,data_frame):
+    if checking_close_ema_diff(stock,data_frame,ema_max):
       if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
@@ -63,7 +78,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                stock_config_obj.stoploss       = checking_stoploss(price,atr)
+                stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
                 stock_config_obj.target         = price + price * 0.005
                 stock_config_obj.quantity       = quantity
                 stock_config_obj.buy_price      = price
@@ -81,7 +96,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
     if ema_min[-2] < ema_max[-2]:
-      if checking_candle_percent(stock,data_frame):
+      # if checking_candle_percent(stock,data_frame):
+      if checking_close_ema_diff(stock,data_frame,ema_max):
         if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
           if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
             if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
@@ -94,7 +110,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
                     stock_config_obj.buy            = True
                     stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                    stock_config_obj.stoploss       = checking_stoploss(price,atr)
+                    stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
                     stock_config_obj.target         = price + price * 0.005
                     stock_config_obj.quantity       = quantity
                     stock_config_obj.buy_price      = price
