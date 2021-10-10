@@ -29,8 +29,12 @@ def checking_stoploss_fixed(price):
   stoploss_val = price - price*0.003
   return round(stoploss_val,2)
 
-def checking_stoploss(price, atr):
+def checking_stoploss_ot(price, atr):
   stoploss_val = price - atr[-1]*0.5
+  return round(stoploss_val,2)
+
+def checking_stoploss_tu(price):
+  stoploss_val = price - price*0.005
   return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
@@ -50,7 +54,10 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
 def updatestoploss(stock, data_frame, atr):
   if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Open'].iloc[-2]:
     stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
-    stock_config_obj.stoploss = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
+    stock_config_obj.stoploss = checking_stoploss_ot(data_frame[stock]['Close'].iloc[-2],atr)
+    if stock_config_obj.d_sl_flag is True:
+      stock_config_obj.d_stoploss = checking_stoploss_tu(data_frame[stock]['Close'].iloc[-2])
+      stock_config_obj.count        += 1
     stock_config_obj.save()
   return 0
 
@@ -71,7 +78,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                stock_config_obj.stoploss       = checking_stoploss(price,atr)
+                stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
                 stock_config_obj.target         = price + price * 0.005
                 stock_config_obj.quantity       = quantity
                 stock_config_obj.buy_price      = price
@@ -103,7 +110,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
                     stock_config_obj.buy            = True
                     stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                    stock_config_obj.stoploss       = checking_stoploss(price,atr)
+                    stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
                     stock_config_obj.target         = price + price * 0.005
                     stock_config_obj.quantity       = quantity
                     stock_config_obj.buy_price      = price

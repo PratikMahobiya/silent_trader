@@ -22,13 +22,14 @@ def sell(stock, price, kite_conn_var):
   order_status  = 'NOT ACTIVE'
   # if price hits Target, Exit
   stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
-  if price >= stock_config_obj.target:
+  if ((price >= stock_config_obj.target) and (stock_config_obj.d_sl_flag is False)):
     if stock_config_obj.buy is True:
-      stock_config_obj.target       = price + price*0.003
-      stock_config_obj.d_stoploss   = price - price*0.004
-      stock_config_obj.d_sl_flag    = True
-      stock_config_obj.count        += 1
-      stock_config_obj.save()
+      if stock_config_obj.count == 0:
+        # stock_config_obj.target       = price + price*0.003
+        stock_config_obj.d_stoploss   = price - price*0.004
+        stock_config_obj.d_sl_flag    = True
+        stock_config_obj.count        += 1
+        stock_config_obj.save()
 
   # if price hits dynamic StopLoss, Exit
   elif stock_config_obj.d_sl_flag is True:
