@@ -41,7 +41,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
 
 # UPDATE STOPLOSS
 def updatestoploss(stock, data_frame, atr):
-  if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Open'].iloc[-2]:
+  if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Close'].iloc[-3]:
     stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
     stock_config_obj.stoploss = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
     stock_config_obj.save()
