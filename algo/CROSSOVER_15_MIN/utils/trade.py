@@ -12,7 +12,7 @@ def place_ord(kite_conn_var,stock):
 
 def checking_close_ema_diff(stock,data_frame,ema_max):
   per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100
-  if per <= 0.8:
+  if per <= 0.5:
     return True
   else:
     return False
