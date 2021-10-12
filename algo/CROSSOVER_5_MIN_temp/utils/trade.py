@@ -12,7 +12,7 @@ def place_ord(kite_conn_var,stock):
 
 def checking_close_ema_diff(stock,data_frame,ema_max):
   per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/data_frame[stock]['Close'].iloc[-2])*100
-  if per < 0.2:
+  if per < 0.7:
     return True
   else:
     return False
@@ -26,11 +26,15 @@ def checking_candle_percent(stock, data_frame):
     return False
 
 def checking_stoploss_fixed(price):
-  stoploss_val = price - price*0.003
+  stoploss_val = price - price*0.004
   return round(stoploss_val,2)
 
-def checking_stoploss(price, atr):
+def checking_stoploss_ot(price, atr):
   stoploss_val = price - atr[-1]*0.5
+  return round(stoploss_val,2)
+
+def checking_stoploss_tu(price):
+  stoploss_val = price - price*0.005
   return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
@@ -50,7 +54,10 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
 def updatestoploss(stock, data_frame, atr):
   if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Close'].iloc[-3]:
     stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
-    stock_config_obj.stoploss = checking_stoploss(data_frame[stock]['Close'].iloc[-2],atr)
+    stock_config_obj.stoploss = checking_stoploss_ot(data_frame[stock]['Close'].iloc[-2],atr)
+    if stock_config_obj.d_sl_flag is True:
+      stock_config_obj.d_stoploss = checking_stoploss_tu(data_frame[stock]['Close'].iloc[-2])
+      stock_config_obj.count        += 1
     stock_config_obj.save()
   return 0
 
@@ -59,20 +66,20 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
     # if checking_candle_percent(stock,data_frame):
-    # if checking_close_ema_diff(stock,data_frame,ema_max):
+    if checking_close_ema_diff(stock,data_frame,ema_max):
       if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
             if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-              if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
+              if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
                 # UPDATE CONFIG
                 stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                stock_config_obj.stoploss       = checking_stoploss(price,atr)
-                stock_config_obj.target         = price + price * 0.004
+                stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
+                stock_config_obj.target         = price + price * 0.005
                 stock_config_obj.quantity       = quantity
                 stock_config_obj.buy_price      = price
                 stock_config_obj.order_id       = order_id
@@ -90,12 +97,12 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   elif ema_min[-1] > ema_max[-1]:
     if ema_min[-2] < ema_max[-2]:
       # if checking_candle_percent(stock,data_frame):
-      # if checking_close_ema_diff(stock,data_frame,ema_max):
+      if checking_close_ema_diff(stock,data_frame,ema_max):
         if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
           if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
             if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
               if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-                if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
+                if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
                   if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                     # Place Order in ZERODHA.
                     order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
@@ -103,8 +110,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
                     stock_config_obj.buy            = True
                     stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                    stock_config_obj.stoploss       = checking_stoploss(price,atr)
-                    stock_config_obj.target         = price + price * 0.004
+                    stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
+                    stock_config_obj.target         = price + price * 0.005
                     stock_config_obj.quantity       = quantity
                     stock_config_obj.buy_price      = price
                     stock_config_obj.order_id       = order_id

@@ -13,26 +13,26 @@ def model(intervals, kite_conn_var):
   if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,00,00):
     # Trend Update i every 15 and 45 interval
     trending_stocks_list    = []
-    if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
+    if (15 <= datetime.now().time().minute < 25) or (45 <= datetime.now().time().minute < 55):
       # DownLoad data for trend analysis
       data_frame  = get_data.download_trend_data_30(intervals,kite_conn_var)
 
       # Get the list of Trending Stocks in 30 Minutes
       trending_stocks.trending_30(data_frame,intervals)
 
-    if (0 <= datetime.now().time().minute < 4) or (15 <= datetime.now().time().minute < 19) or (30 <= datetime.now().time().minute < 34) or (45 <= datetime.now().time().minute < 49):
-      # DownLoad data for trend analysis
-      data_frame  = get_data.download_trend_data_15(intervals,kite_conn_var)
+    # if (0 <= datetime.now().time().minute < 4) or (15 <= datetime.now().time().minute < 19) or (30 <= datetime.now().time().minute < 34) or (45 <= datetime.now().time().minute < 49):
+    #   # DownLoad data for trend analysis
+    #   data_frame  = get_data.download_trend_data_15(intervals,kite_conn_var)
 
-      # Get the list of Trending Stocks in 15 Minutes from that 30 Minutes 45 50 RSI list
-      trending_stocks.trending_15(data_frame,intervals)
+    #   # Get the list of Trending Stocks in 15 Minutes from that 30 Minutes 45 50 RSI list
+    #   trending_stocks.trending_15(data_frame,intervals)
       trending_stocks_list    = models.TREND_5M_A_TEMP.objects.all().values_list('symbol', flat=True)
     else:
-      # DownLoad data for trend analysis
-      data_frame  = get_data.download_trend_data_5(intervals,kite_conn_var)
+      # # DownLoad data for trend analysis
+      # data_frame  = get_data.download_trend_data_5(intervals,kite_conn_var)
 
-      # Get the list of Trending Stocks in 5 Minutes from that 15 Minutes list
-      trending_stocks.trending_5(data_frame,intervals)
+      # # Get the list of Trending Stocks in 5 Minutes from that 15 Minutes list
+      # trending_stocks.trending_5(data_frame,intervals)
       trending_stocks_list    = models.TREND_5M_A_TEMP.objects.all().values_list('symbol', flat=True)
 
     if len(trending_stocks_list) != 0:
