@@ -20,12 +20,12 @@ def cancel_ord(kite_conn_var,stock_config_obj):
 def sell(stock, price, kite_conn_var):
   order_id      = 0
   order_status  = 'NOT ACTIVE'
-  # if price hits Target, Exit
+  # if price hits First Target Starts TU.
   stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
   if ((price >= stock_config_obj.target) and (stock_config_obj.d_sl_flag is False)):
     if stock_config_obj.buy is True:
       if stock_config_obj.count == 0:
-        # stock_config_obj.target       = price + price*0.003
+        stock_config_obj.last_top     = price
         stock_config_obj.d_stoploss   = price - price*0.004
         stock_config_obj.d_sl_flag    = True
         stock_config_obj.count        += 1

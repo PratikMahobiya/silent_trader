@@ -52,8 +52,9 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
 
 # UPDATE STOPLOSS
 def updatestoploss(stock, data_frame, atr):
-  if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Close'].iloc[-3]:
-    stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
+  stock_config_obj = models.CONFIG_5M_TEMP.objects.get(symbol = stock)
+  if data_frame[stock]['Close'].iloc[-2] > stock_config_obj.last_top:
+    stock_config_obj.last_top = data_frame[stock]['Close'].iloc[-2]
     stock_config_obj.stoploss = checking_stoploss_ot(data_frame[stock]['Close'].iloc[-2],atr)
     if stock_config_obj.d_sl_flag is True:
       stock_config_obj.d_stoploss = checking_stoploss_tu(data_frame[stock]['Close'].iloc[-2])
@@ -82,6 +83,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 stock_config_obj.target         = price + price * 0.005
                 stock_config_obj.quantity       = quantity
                 stock_config_obj.buy_price      = price
+                stock_config_obj.last_top       = price
                 stock_config_obj.order_id       = order_id
                 stock_config_obj.order_status   = order_status
                 stock_config_obj.save()
@@ -114,6 +116,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     stock_config_obj.target         = price + price * 0.005
                     stock_config_obj.quantity       = quantity
                     stock_config_obj.buy_price      = price
+                    stock_config_obj.last_top       = price
                     stock_config_obj.order_id       = order_id
                     stock_config_obj.order_status   = order_status
                     stock_config_obj.save()

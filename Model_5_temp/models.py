@@ -32,6 +32,7 @@ class CONFIG_5M_TEMP(models.Model):
     buy_price               = models.FloatField(verbose_name='BUY PRICE',default=0)
     stoploss                = models.FloatField(verbose_name='STOPLOSS',default=0)
     target                  = models.FloatField(verbose_name='TARGET',default=0)
+    last_top                = models.FloatField(verbose_name='LAST TOP',default=0)
     f_stoploss              = models.FloatField(verbose_name='F_SL',default=0)
     d_stoploss              = models.FloatField(verbose_name='D_SL',default=0)
     quantity                = models.BigIntegerField(verbose_name='QUANTITY',default=0)

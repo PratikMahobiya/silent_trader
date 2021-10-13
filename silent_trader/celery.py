@@ -23,6 +23,10 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.get_stocks_configs',
         'schedule': crontab(minute=10, hour=2),
     },
+    'CLEAR_TRANSACTIONS':{
+        'task': 'algo.tasks.Clear_Transactions',
+        'schedule': crontab(minute=10, hour=1),
+    },
     'LTD_5_SEC':{
         'task': 'algo.tasks.ltp_of_entries',
         'schedule': 5.0,

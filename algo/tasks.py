@@ -182,6 +182,21 @@ def connect_to_kite_connection():
   return kite
 
 @shared_task(bind=True,max_retries=3)
+def Clear_Transactions(self):
+  response = {'TRANSACTION': True, 'STATUS': 'NONE'}
+  models_a.CROSSOVER_15_MIN.objects.all().delete()
+  models_a.CROSSOVER_15_MIN_TEMP.objects.all().delete()
+  models_a.CROSSOVER_5_MIN.objects.all().delete()
+  models_a.CROSSOVER_5_MIN_TEMP.objects.all().delete()
+  Number_of_trans = []
+  Number_of_trans.append(len(models_a.CROSSOVER_15_MIN.objects.all()))
+  Number_of_trans.append(len(models_a.CROSSOVER_15_MIN_TEMP.objects.all()))
+  Number_of_trans.append(len(models_a.CROSSOVER_5_MIN.objects.all()))
+  Number_of_trans.append(len(models_a.CROSSOVER_5_MIN_TEMP.objects.all()))
+  response.update({'N0_of_trans':Number_of_trans,'STATUS':'CLEARED'})
+  return response
+
+@shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_5': False, 'STATUS_5': 'NONE','ACTIVE_STOCKS_5': None}
   if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
