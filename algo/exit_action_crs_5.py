@@ -26,7 +26,7 @@ def sell(stock, price, kite_conn_var):
     if stock_config_obj.buy is True:
       if stock_config_obj.count == 0:
         stock_config_obj.last_top     = price
-        stock_config_obj.d_stoploss   = price - price*0.004
+        stock_config_obj.d_stoploss   = price - price*0.0045
         stock_config_obj.d_sl_flag    = True
         stock_config_obj.count        += 1
         stock_config_obj.save()
@@ -59,7 +59,7 @@ def sell(stock, price, kite_conn_var):
         if transaction.is_valid():
           transaction.save()
         models.ENTRY_5M.objects.filter(symbol = stock).delete()
-        models.TREND_5M_B.objects.filter(symbol = stock).delete()
+        models.TREND_5M_A.objects.filter(symbol = stock).delete()
         stock_config_obj.buy          = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
@@ -90,7 +90,7 @@ def sell(stock, price, kite_conn_var):
       if transaction.is_valid():
         transaction.save()
       models.ENTRY_5M.objects.filter(symbol = stock).delete()
-      models.TREND_5M_B.objects.filter(symbol = stock).delete()
+      models.TREND_5M_A.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
@@ -122,7 +122,7 @@ def sell(stock, price, kite_conn_var):
         if transaction.is_valid():
           transaction.save()
         models.ENTRY_5M.objects.filter(symbol = stock).delete()
-        models.TREND_5M_B.objects.filter(symbol = stock).delete()
+        models.TREND_5M_A.objects.filter(symbol = stock).delete()
         stock_config_obj.buy          = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
@@ -155,7 +155,7 @@ def square_off(stock, price, kite_conn_var):
       if transaction.is_valid():
         transaction.save()
       models.ENTRY_5M.objects.filter(symbol = stock).delete()
-      models.TREND_5M_B.objects.filter(symbol = stock).delete()
+      models.TREND_5M_A.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
@@ -174,7 +174,7 @@ def square_off(stock, price, kite_conn_var):
     if transaction.is_valid():
       transaction.save()
     models.ENTRY_5M.objects.filter(symbol = stock).delete()
-    models.TREND_5M_B.objects.filter(symbol = stock).delete()
+    models.TREND_5M_A.objects.filter(symbol = stock).delete()
     stock_config_obj.buy          = False
     stock_config_obj.d_sl_flag    = False
     stock_config_obj.trend        = False

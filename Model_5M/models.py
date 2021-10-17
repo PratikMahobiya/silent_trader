@@ -7,18 +7,6 @@ class TREND_5M_A(models.Model):
     class Meta:
         db_table = 'TREND_5M_A'
 
-class TREND_5M_B(models.Model):
-    symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
-    rsi                     = models.FloatField(verbose_name='RSI')
-    class Meta:
-        db_table = 'TREND_5M_B'
-
-class TREND_5M_C(models.Model):
-    symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
-    rsi                     = models.FloatField(verbose_name='RSI')
-    class Meta:
-        db_table = 'TREND_5M_C'
-
 class ENTRY_5M(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     class Meta:

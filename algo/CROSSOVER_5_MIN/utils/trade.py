@@ -26,7 +26,7 @@ def checking_candle_percent(stock, data_frame):
     return False
 
 def checking_stoploss_fixed(price):
-  stoploss_val = price - price*0.003
+  stoploss_val = price - price*0.005
   return round(stoploss_val,2)
 
 def checking_stoploss_ot(price, atr):
