@@ -14,6 +14,7 @@ class ENTRY_5M(models.Model):
 
 class CONFIG_5M(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     buy                     = models.BooleanField(verbose_name='BUY',default=False)
     trend                   = models.BooleanField(verbose_name='IN_TREND',default=False)
     d_sl_flag               = models.BooleanField(verbose_name='D_SL_FLAG',default=False)

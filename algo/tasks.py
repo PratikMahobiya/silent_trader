@@ -135,22 +135,22 @@ def get_stocks_configs(self):
   for stock_sym in stock_dict:
     # STORE IN STOCK TABLE
     if not models_a.STOCK.objects.filter(symbol = stock_sym).exists():
-      models_a.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym]).save()
+      models_a.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym][0], sector = stock_dict[stock_sym][1]).save()
     # CREATE CONFIG IN FOR 15 MIN
     if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
-      models.CONFIG_15M(symbol = stock_sym).save()
+      models.CONFIG_15M(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
     # CREATE CONFIG IN FOR 5 MIN
     if not models_5.CONFIG_5M.objects.filter(symbol = stock_sym).exists():
-      models_5.CONFIG_5M(symbol = stock_sym).save()
+      models_5.CONFIG_5M(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
     
     # ----------------------------------- Not Ative ------------------------------------
     # CREATE CONFIG IN FOR 15 MIN TEMP
     if not models_temp.CONFIG_15M_TEMP.objects.filter(symbol = stock_sym).exists():
-      models_temp.CONFIG_15M_TEMP(symbol = stock_sym).save()
+      models_temp.CONFIG_15M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
 
     # CREATE CONFIG IN FOR 5 MIN TEMP
     if not models_5_temp.CONFIG_5M_TEMP.objects.filter(symbol = stock_sym).exists():
-      models_5_temp.CONFIG_5M_TEMP(symbol = stock_sym).save()
+      models_5_temp.CONFIG_5M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
 
   # Update Responce as per Stock Dict
   if len(models_a.STOCK.objects.all()) == len(stock_dict):

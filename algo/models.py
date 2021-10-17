@@ -4,6 +4,7 @@ from django.db import models
 class STOCK(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     instrument_key          = models.BigIntegerField(verbose_name='INSTRUMENT KEY')
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     active_15               = models.BooleanField(verbose_name='ACTIVE 15 Minute',default=True)
     active_5                = models.BooleanField(verbose_name='ACTIVE 5 Minute',default=True)
     def __str__(self):
@@ -22,6 +23,7 @@ class ZERODHA_KEYS(models.Model):
 
 class CROSSOVER_15_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
     date                    = models.DateTimeField(auto_now_add=True)
@@ -40,6 +42,7 @@ class CROSSOVER_15_MIN(models.Model):
 
 class CROSSOVER_5_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
     date                    = models.DateTimeField(auto_now_add=True)
@@ -59,6 +62,7 @@ class CROSSOVER_5_MIN(models.Model):
 # -------------------------------------- Not Active ---------------------------------------
 class CROSSOVER_15_MIN_TEMP(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
     date                    = models.DateTimeField(auto_now_add=True)
@@ -77,6 +81,7 @@ class CROSSOVER_15_MIN_TEMP(models.Model):
 
 class CROSSOVER_5_MIN_TEMP(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
     type           			= models.CharField(max_length=100, verbose_name='TYPE')
     date                    = models.DateTimeField(auto_now_add=True)

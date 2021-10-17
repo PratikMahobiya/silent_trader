@@ -9,20 +9,20 @@ class ZERODHA_KEYS_Serializer(serializers.ModelSerializer):
 class CROSSOVER_15_Min_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_15_MIN
-		fields 	= ('symbol','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
+		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
 
 class CROSSOVER_5_MIN_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_5_MIN
-		fields 	= ('symbol','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
+		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
 
 # -------------------------------------- Not Active ---------------------------------------
 class CROSSOVER_15_Min_Serializer_TEMP(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_15_MIN_TEMP
-		fields 	= ('symbol','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
+		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
 
 class CROSSOVER_5_MIN_Serializer_TEMP(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_5_MIN_TEMP
-		fields 	= ('symbol','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
+		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
