@@ -10,7 +10,7 @@ def place_regular_buy_order(kite_conn_var,symbol):
     ltp        = stocks_ltp['NSE:'+symbol]['last_price']
     while True:
       price = ltp * quantity
-      if price >= 30000:
+      if price >= 100000:
         quantity = quantity - 1
         break
       quantity += 1
