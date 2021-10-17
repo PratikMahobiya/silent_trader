@@ -21,12 +21,12 @@ app.conf.update(timezone = 'Asia/Kolkata')
 app.conf.beat_schedule = {
     'STOCKS_CONFIG_FILES':{
         'task': 'algo.tasks.get_stocks_configs',
-        'schedule': crontab(minute=10, hour=2),
+        'schedule': crontab(minute=50, hour=1),
     },
-    'CLEAR_TRANSACTIONS':{
-        'task': 'algo.tasks.Clear_Transactions',
-        'schedule': crontab(minute=10, hour=1),
-    },
+    # 'CLEAR_TRANSACTIONS':{
+    #     'task': 'algo.tasks.Clear_Transactions',
+    #     'schedule': crontab(minute=10, hour=1),
+    # },
     'LTD_5_SEC':{
         'task': 'algo.tasks.ltp_of_entries',
         'schedule': 5.0,

@@ -15,12 +15,12 @@ def get_stock_ltp(kite_conn_var):
       price = stocks_ltp[stock_key]['last_price']
       stock_name = stock_key.split(':')[-1]
       try:
-        if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,15,00):
+        if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,20,00):
           if stock_name in stock_list:
             exit_action_crs_5.sell(stock_name, price, kite_conn_var)
-        elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,30,00):
-          if stock_name in stock_list:
-            exit_action_crs_5.square_off(stock_name, price, kite_conn_var)
+        # elif datetime.now().time() >= time(15,15,00) and datetime.now().time() <= time(15,30,00):
+        #   if stock_name in stock_list:
+        #     exit_action_crs_5.square_off(stock_name, price, kite_conn_var)
       except Exception as e:
         pass
     return 'TRUE',list(stock_list)

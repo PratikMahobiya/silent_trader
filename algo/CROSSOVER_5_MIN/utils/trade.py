@@ -34,7 +34,7 @@ def checking_stoploss_ot(price, atr):
   return round(stoploss_val,2)
 
 def checking_stoploss_tu(price):
-  stoploss_val = price - price*0.004
+  stoploss_val = price - price*0.005
   return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):

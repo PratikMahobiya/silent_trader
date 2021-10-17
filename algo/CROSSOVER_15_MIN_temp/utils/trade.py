@@ -11,7 +11,7 @@ def place_ord(kite_conn_var,stock):
   return order_id, order_status, price, quantity
 
 def checking_stoploss_fixed(price):
-  stoploss_val = price - price*0.005
+  stoploss_val = price - price*0.004
   return round(stoploss_val,2)
 
 def checking_stoploss_ot(price, atr):
