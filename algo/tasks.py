@@ -256,7 +256,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   return response
 
 @shared_task(bind=True,max_retries=3)
-def CROSS_OVER_RUNS_5_MIN(self):
+def CROSS_OVER_RUNS_30_MIN(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
 
   # Initialize Kite Connections
