@@ -12,21 +12,13 @@ def place_ord(kite_conn_var,stock):
 
 def checking_close_ema_diff(stock,data_frame,ema_max):
   per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/data_frame[stock]['Close'].iloc[-2])*100
-  if per < 0.2:
-    return True
-  else:
-    return False
-
-def checking_candle_percent(stock, data_frame):
-  prev_per = ((data_frame[stock]['Close'].iloc[-3] - data_frame[stock]['Open'].iloc[-3])/data_frame[stock]['Open'].iloc[-3])*100
-  curr_per = ((data_frame[stock]['Close'].iloc[-2] - data_frame[stock]['Open'].iloc[-2])/data_frame[stock]['Open'].iloc[-2])*100
-  if (prev_per + curr_per) < 0.9:
+  if per < 0.8:
     return True
   else:
     return False
 
 def checking_stoploss_fixed(price):
-  stoploss_val = price - price*0.005
+  stoploss_val = price - price*0.004
   return round(stoploss_val,2)
 
 def checking_stoploss_ot(price, atr):
@@ -66,7 +58,6 @@ def updatestoploss(stock, data_frame, atr):
 def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
-    # if checking_candle_percent(stock,data_frame):
     if checking_close_ema_diff(stock,data_frame,ema_max):
       if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
@@ -98,7 +89,6 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
     if ema_min[-2] < ema_max[-2]:
-      # if checking_candle_percent(stock,data_frame):
       if checking_close_ema_diff(stock,data_frame,ema_max):
         if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
           if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:

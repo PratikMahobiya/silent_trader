@@ -208,7 +208,7 @@ def Clear_Transactions(self):
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_30': False, 'STATUS_30': 'NONE','ACTIVE_STOCKS_30': None}
-  if datetime.now().time() >= time(9,16,00) and datetime.now().time() < time(15,25,00):
+  if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
     
     # LTP CRS
