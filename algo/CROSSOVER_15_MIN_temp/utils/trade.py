@@ -66,6 +66,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
               stock_config_obj.target         = price + price * 0.005
               stock_config_obj.quantity       = quantity
               stock_config_obj.buy_price      = price
+              stock_config_obj.last_top       = price
               stock_config_obj.order_id       = order_id
               stock_config_obj.order_status   = order_status
               stock_config_obj.save()
@@ -96,6 +97,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                   stock_config_obj.target         = price + price * 0.005
                   stock_config_obj.quantity       = quantity
                   stock_config_obj.buy_price      = price
+                  stock_config_obj.last_top       = price
                   stock_config_obj.order_id       = order_id
                   stock_config_obj.order_status   = order_status
                   stock_config_obj.save()
