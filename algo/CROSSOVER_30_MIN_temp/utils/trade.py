@@ -12,7 +12,7 @@ def place_ord(kite_conn_var,stock):
 
 def checking_close_ema_diff(stock,data_frame,ema_max):
   per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/data_frame[stock]['Close'].iloc[-2])*100
-  if per < 0.4:
+  if per < 0.6:
     return True
   else:
     return False
@@ -63,7 +63,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
             if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-              if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.2):
+              if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
                 # UPDATE CONFIG
@@ -94,7 +94,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
           if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
             if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
               if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-                if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.2):
+                if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
                   if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                     # Place Order in ZERODHA.
                     order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
