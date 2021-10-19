@@ -22,7 +22,8 @@ def sell(stock, price, gain, kite_conn_var):
   order_status  = 'NOT ACTIVE'
   stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
   # get the p&l
-  gain.append(price - stock_config_obj.buy_price)
+  gain_val = round(((price - stock_config_obj.buy_price) * stock_config_obj.quantity),2)
+  gain.append(gain_val)
 
   # if price hits First Target Starts TU.
   if ((price >= stock_config_obj.target) and (stock_config_obj.d_sl_flag is False)):
