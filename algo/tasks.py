@@ -163,6 +163,27 @@ def get_stocks_configs(self):
     if not models_temp.CONFIG_15M_TEMP.objects.filter(symbol = stock_sym).exists():
       models_temp.CONFIG_15M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
 
+  # Config Model to Profit Tables
+  model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN']
+  for model_name in model_name_list:
+    # if model not configure in Profit Table
+    if not models_a.PROFIT.objects.filter(model_name = model_name).exists():
+      models_a.PROFIT(model_name = model_name).save()
+    else:
+      model_config_obj = models_a.PROFIT.objects.filter(model_name = model_name)
+      model_config_obj.top_gain = 0
+      model_config_obj.top_loss = 0
+      model_config_obj.save()
+
+  # empty the trend list
+  models.TREND_15M_A.objects.all().delete()
+  models_temp.TREND_15M_A_TEMP.objects.all().delete()
+  model_5_entry_list = models_5.ENTRY_5M.objects.all().values_list('symbol', flat=True)
+  model_5_trend_list = models_5.TREND_5M_A.objects.all().values_list('symbol', flat=True)
+  for stock in model_5_trend_list:
+    if stock not in model_5_entry_list:
+      models_5.TREND_5M_A.objects.filter(symbol = stock).delete()
+
   # Update Responce as per Stock Dict
   if len(models_a.STOCK.objects.all()) == len(stock_dict):
     response.update({'stock_table': True, 'stock_len': len(models_a.STOCK.objects.all())})
@@ -208,19 +229,22 @@ def Clear_Transactions(self):
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_30': False, 'STATUS_30': 'NONE','ACTIVE_STOCKS_30': None}
+  model_name_dict = {}
   if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,25,00):
     kite_conn_var = connect_to_kite_connection()
     
     # LTP CRS
     try:
-      status, active_stocks = check_ltp.get_stock_ltp(kite_conn_var)
+      status, active_stocks, gain = check_ltp.get_stock_ltp(kite_conn_var)
+      model_name_dict.update({'CRS_MAIN': gain})
       response.update({'LTP': True, 'STATUS': status,'ACTIVE_STOCKS':active_stocks})
     except Exception as e:
       pass
 
     # LTP CRS_30MIN
     try:
-      status, active_stocks = check_ltp_crs_5.get_stock_ltp(kite_conn_var)
+      status, active_stocks, gain = check_ltp_crs_5.get_stock_ltp(kite_conn_var)
+      model_name_dict.update({'CRS_30_MIN': gain})
       response.update({'LTP_30': True, 'STATUS_30': status,'ACTIVE_STOCKS_30':active_stocks})
     except Exception as e:
       pass
@@ -228,10 +252,22 @@ def ltp_of_entries(self):
     # ----------------------------------------- NOT ACTIVE ---------------------------------
     # LTP CRS
     try:
-      status, active_stocks = check_ltp_temp.get_stock_ltp(kite_conn_var)
+      status, active_stocks, gain = check_ltp_temp.get_stock_ltp(kite_conn_var)
+      model_name_dict.update({'CRS_TEMP': gain})
       response.update({'LTP_TEMP': True, 'STATUS_TEMP': status,'ACTIVE_STOCKS_TEMP':active_stocks})
     except Exception as e:
       pass
+    
+    # --------------------------------- Calculate Profit at each LTP ------------------------
+    for model_name in model_name_dict:
+      model_config_obj = models_a.PROFIT.objects.get(model_name = model_name)
+      total_sum = model_name_dict[model_name].sum()
+      if total_sum > model_config_obj.top_gain:
+        model_config_obj.top_gain       = total_sum
+      if total_sum < model_config_obj.top_loss:
+        model_config_obj.top_loss       = total_sum
+      model_config_obj.save()
+
 
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
     response.update({'LTP': True, 'STATUS': 'SQUARED OFF','LTP_30_MIN': True, 'STATUS_30_MIN': 'ALL STOCKS ARE SQUARED OFF.'})

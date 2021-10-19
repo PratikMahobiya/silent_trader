@@ -21,6 +21,14 @@ class ZERODHA_KEYS(models.Model):
     class Meta:
         db_table = 'ZERODHA_KEYS'
 
+class PROFIT(models.Model):
+    model_name              = models.CharField(max_length=100, verbose_name='MODEL NAME',unique=True)
+    top_gain  				= models.FloatField(verbose_name='TOP GAIN',default=0)
+    top_loss  				= models.FloatField(verbose_name='TOP LOSS',default=0)
+    def __int__(self):
+    	return self.id
+    class Meta:
+        db_table = 'PROFIT'
 class CROSSOVER_15_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')

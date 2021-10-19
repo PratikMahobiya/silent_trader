@@ -14,6 +14,10 @@ class ZERODHA_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     readonly_fields = ('access_token','api_key','api_secret')
 
+@admin.register(models.PROFIT)
+class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('model_name','top_gain','top_loss')
+
 @admin.register(models.CROSSOVER_15_MIN)
 class CROSSOVER_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','order_status')
