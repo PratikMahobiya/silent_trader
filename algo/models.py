@@ -48,7 +48,7 @@ class CROSSOVER_15_MIN(models.Model):
     class Meta:
         db_table = 'CROSSOVER_15_MIN'
 
-class CROSSOVER_5_MIN(models.Model):
+class CROSSOVER_30_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
@@ -65,7 +65,7 @@ class CROSSOVER_5_MIN(models.Model):
     def __int__(self):
     	return self.id
     class Meta:
-        db_table = 'CROSSOVER_5_MIN'
+        db_table = 'CROSSOVER_30_MIN'
 
 # -------------------------------------- Not Active ---------------------------------------
 class CROSSOVER_15_MIN_TEMP(models.Model):

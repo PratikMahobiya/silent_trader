@@ -2,13 +2,13 @@ from datetime import datetime, time
 from kiteconnect import KiteConnect
 
 from Model_15M import models
-from Model_5M import models as models_5
+from Model_30M import models as models_30
 from . import models as models_a
 from . import check_ltp
-from . import check_ltp_crs_5
+from . import check_ltp_crs_30
 from celery import shared_task
-from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS
-from .CROSSOVER_5_MIN.utils import backbone as backbone_CRS_5_MIN
+from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS_15_MIN
+from .CROSSOVER_30_MIN.utils import backbone as backbone_CRS_30_MIN
 
 # -------------------- Not ------------------
 from Model_15_temp import models as models_temp
@@ -154,9 +154,9 @@ def get_stocks_configs(self):
     # CREATE CONFIG IN FOR 15 MIN
     if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
       models.CONFIG_15M(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
-    # CREATE CONFIG IN FOR 5 MIN
-    if not models_5.CONFIG_5M.objects.filter(symbol = stock_sym).exists():
-      models_5.CONFIG_5M(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
+    # CREATE CONFIG IN FOR 30 MIN
+    if not models_30.CONFIG_30M.objects.filter(symbol = stock_sym).exists():
+      models_30.CONFIG_30M(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
     
     # ----------------------------------- Not Ative ------------------------------------
     # CREATE CONFIG IN FOR 15 MIN TEMP
@@ -178,11 +178,11 @@ def get_stocks_configs(self):
   # empty the trend list
   models.TREND_15M_A.objects.all().delete()
   models_temp.TREND_15M_A_TEMP.objects.all().delete()
-  model_5_entry_list = models_5.ENTRY_5M.objects.all().values_list('symbol', flat=True)
-  model_5_trend_list = models_5.TREND_5M_A.objects.all().values_list('symbol', flat=True)
-  for stock in model_5_trend_list:
-    if stock not in model_5_entry_list:
-      models_5.TREND_5M_A.objects.filter(symbol = stock).delete()
+  model_30_entry_list = models_30.ENTRY_30M.objects.all().values_list('symbol', flat=True)
+  model_30_trend_list = models_30.TREND_30M_A.objects.all().values_list('symbol', flat=True)
+  for stock in model_30_trend_list:
+    if stock not in model_30_entry_list:
+      models_30.TREND_30M_A.objects.filter(symbol = stock).delete()
 
   # Update Responce as per Stock Dict
   if len(models_a.STOCK.objects.all()) == len(stock_dict):
@@ -196,11 +196,11 @@ def get_stocks_configs(self):
   else:
     response.update({'config_table_15': False, 'config_len_15': len(models.CONFIG_15M.objects.all())})
 
-  # Update Responce as per Data in 5 Minute
-  if len(models_5.CONFIG_5M.objects.all()) == len(stock_dict):
-    response.update({'config_table_5': True, 'config_len_5': len(models_5.CONFIG_5M.objects.all())})
+  # Update Responce as per Data in 30 Minute
+  if len(models_30.CONFIG_30M.objects.all()) == len(stock_dict):
+    response.update({'config_table_30': True, 'config_len_30': len(models_30.CONFIG_30M.objects.all())})
   else:
-    response.update({'config_table_5': False, 'config_len_5': len(models_5.CONFIG_5M.objects.all())})
+    response.update({'config_table_30': False, 'config_len_30': len(models_30.CONFIG_30M.objects.all())})
   return response
 
 def connect_to_kite_connection():
@@ -218,11 +218,11 @@ def Clear_Transactions(self):
   response = {'TRANSACTION': True, 'STATUS': 'NONE'}
   models_a.CROSSOVER_15_MIN.objects.all().delete()
   models_a.CROSSOVER_15_MIN_TEMP.objects.all().delete()
-  models_a.CROSSOVER_5_MIN.objects.all().delete()
+  models_a.CROSSOVER_30_MIN.objects.all().delete()
   Number_of_trans = []
   Number_of_trans.append(len(models_a.CROSSOVER_15_MIN.objects.all()))
   Number_of_trans.append(len(models_a.CROSSOVER_15_MIN_TEMP.objects.all()))
-  Number_of_trans.append(len(models_a.CROSSOVER_5_MIN.objects.all()))
+  Number_of_trans.append(len(models_a.CROSSOVER_30_MIN.objects.all()))
   response.update({'N0_of_trans':Number_of_trans,'STATUS':'CLEARED'})
   return response
 
@@ -243,7 +243,7 @@ def ltp_of_entries(self):
 
     # LTP CRS_30MIN
     try:
-      status, active_stocks, gain = check_ltp_crs_5.get_stock_ltp(kite_conn_var)
+      status, active_stocks, gain = check_ltp_crs_30.get_stock_ltp(kite_conn_var)
       model_name_dict.update({'CRS_30_MIN': gain})
       response.update({'LTP_30': True, 'STATUS_30': status,'ACTIVE_STOCKS_30':active_stocks})
     except Exception as e:
@@ -289,7 +289,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  status = backbone_CRS.model(intervals, kite_conn_var)
+  status = backbone_CRS_15_MIN.model(intervals, kite_conn_var)
   response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))})
   return response
 
@@ -307,8 +307,8 @@ def CROSS_OVER_RUNS_30_MIN(self):
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
   '''
-  status = backbone_CRS_5_MIN.model(intervals, kite_conn_var)
-  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_5.ENTRY_5M.objects.all().values_list('symbol',flat=True))})
+  status = backbone_CRS_30_MIN.model(intervals, kite_conn_var)
+  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))})
   return response
 
 # ------------------------------------------- Not Active ---------------------------------------

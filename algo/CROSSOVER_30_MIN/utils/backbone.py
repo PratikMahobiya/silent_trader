@@ -1,4 +1,4 @@
-from Model_5M import models
+from Model_30M import models
 from datetime import datetime, time
 from time import sleep
 from . import trade
@@ -21,9 +21,9 @@ def model(intervals, kite_conn_var):
 
       # Get the list of Trending Stocks in 60 Minutes
       trending_stocks.trending_60(data_frame,intervals)
-      trending_stocks_list    = models.TREND_5M_A.objects.all().values_list('symbol', flat=True)
+      trending_stocks_list    = models.TREND_30M_A.objects.all().values_list('symbol', flat=True)
     else:
-      trending_stocks_list    = models.TREND_5M_A.objects.all().values_list('symbol', flat=True)
+      trending_stocks_list    = models.TREND_30M_A.objects.all().values_list('symbol', flat=True)
 
     if len(trending_stocks_list) != 0:
       # DownLoad data for initiating Trades

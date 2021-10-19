@@ -1,18 +1,18 @@
 from django.db import models
 
 # Create your models here.
-class TREND_5M_A(models.Model):
+class TREND_30M_A(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')
     class Meta:
-        db_table = 'TREND_5M_A'
+        db_table = 'TREND_30M_A'
 
-class ENTRY_5M(models.Model):
+class ENTRY_30M(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     class Meta:
-        db_table = 'ENTRY_5M'
+        db_table = 'ENTRY_30M'
 
-class CONFIG_5M(models.Model):
+class CONFIG_30M(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     buy                     = models.BooleanField(verbose_name='BUY',default=False)
@@ -29,4 +29,4 @@ class CONFIG_5M(models.Model):
     order_id                = models.BigIntegerField(verbose_name='ORDER ID',default=0)
     order_status            = models.CharField(max_length=100, verbose_name='ORDER STATUS',default='NONE')
     class Meta:
-        db_table = 'CONFIG_5M'
+        db_table = 'CONFIG_30M'

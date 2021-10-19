@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     # Custom Apps
     'algo.apps.AlgoConfig',
     'Model_15M.apps.Model15MConfig',
-    'Model_5M.apps.Model5MConfig',
+    'Model_30M.apps.Model30MConfig',
     # ---- NA ----------
     'Model_15_temp.apps.Model15TempConfig',
 

@@ -1,5 +1,5 @@
 from algo import serializers
-from Model_5M import models
+from Model_30M import models
 import talib
 from . import zerodha_action
 
@@ -35,7 +35,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[9])
     atr         = talib.ATR(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[10])
-    stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+    stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
       buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var)
     else:
@@ -44,7 +44,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
 
 # UPDATE STOPLOSS
 def updatestoploss(stock, data_frame, atr):
-  stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+  stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
   if data_frame[stock]['Close'].iloc[-2] > stock_config_obj.last_top:
     stock_config_obj.last_top = data_frame[stock]['Close'].iloc[-2]
     stock_config_obj.stoploss = checking_stoploss_ot(data_frame[stock]['Close'].iloc[-2],atr)
@@ -67,7 +67,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
                 # UPDATE CONFIG
-                stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+                stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                 stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
@@ -79,10 +79,10 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 stock_config_obj.order_status   = order_status
                 stock_config_obj.save()
                 # UPDATE CURRENT ENTRY TABLE
-                models.ENTRY_5M(symbol = stock).save()
+                models.ENTRY_30M(symbol = stock).save()
                 # TRANSACTION TABLE UPDATE
                 trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':'BF_CRS','price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
-                transaction   = serializers.CROSSOVER_5_MIN_Serializer(data=trans_data)
+                transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
                 if transaction.is_valid():
                   transaction.save()
 
@@ -99,7 +99,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     # Place Order in ZERODHA.
                     order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
                     # UPDATE CONFIG
-                    stock_config_obj = models.CONFIG_5M.objects.get(symbol = stock)
+                    stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
                     stock_config_obj.buy            = True
                     stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                     stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
@@ -111,9 +111,9 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     stock_config_obj.order_status   = order_status
                     stock_config_obj.save()
                     # UPDATE CURRENT ENTRY TABLE
-                    models.ENTRY_5M(symbol = stock).save()
+                    models.ENTRY_30M(symbol = stock).save()
                     # TRANSACTION TABLE UPDATE
                     trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':'AF_CRS','price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
-                    transaction   = serializers.CROSSOVER_5_MIN_Serializer(data=trans_data)
+                    transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
                     if transaction.is_valid():
                       transaction.save()

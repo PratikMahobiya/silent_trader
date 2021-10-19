@@ -11,9 +11,9 @@ class CROSSOVER_15_Min_Serializer(serializers.ModelSerializer):
 		model 	= models.CROSSOVER_15_MIN
 		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
 
-class CROSSOVER_5_MIN_Serializer(serializers.ModelSerializer):
+class CROSSOVER_30_MIN_Serializer(serializers.ModelSerializer):
 	class Meta:
-		model 	= models.CROSSOVER_5_MIN
+		model 	= models.CROSSOVER_30_MIN
 		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
 
 # -------------------------------------- Not Active ---------------------------------------
