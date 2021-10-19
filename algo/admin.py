@@ -5,7 +5,7 @@ from import_export.admin import ExportActionMixin
 # Register your models here.
 @admin.register(models.STOCK)
 class STOCK_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol','instrument_key','sector','active_15','active_5')
+    list_display = ('symbol','instrument_key','sector','active_15','active_30')
     search_fields = ['symbol',]
 
 @admin.register(models.ZERODHA_KEYS)

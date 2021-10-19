@@ -5,7 +5,7 @@ import talib
 
 def trending_60(data_frame,intervals):
   models.TREND_30M_A_TEMP.objects.all().delete()
-  for_trend_stocks = models_a.STOCK.objects.filter(active_15 = True).values_list('symbol', flat=True)
+  for_trend_stocks = models_a.STOCK.objects.filter(active_30 = True).values_list('symbol', flat=True)
   for stock in for_trend_stocks:
     rsi = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
     if rsi[-1] >= 50:

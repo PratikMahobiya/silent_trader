@@ -6,7 +6,7 @@ class STOCK(models.Model):
     instrument_key          = models.BigIntegerField(verbose_name='INSTRUMENT KEY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     active_15               = models.BooleanField(verbose_name='ACTIVE 15 Minute',default=True)
-    active_5                = models.BooleanField(verbose_name='ACTIVE 5 Minute',default=True)
+    active_30                = models.BooleanField(verbose_name='ACTIVE 5 Minute',default=True)
     def __str__(self):
         return self.symbol
     class Meta:
