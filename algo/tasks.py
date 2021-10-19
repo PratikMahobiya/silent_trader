@@ -229,11 +229,9 @@ def Clear_Transactions(self):
   response = {'TRANSACTION': True, 'STATUS': 'NONE'}
   models_a.CROSSOVER_15_MIN.objects.all().delete()
   models_a.CROSSOVER_15_MIN_TEMP.objects.all().delete()
-  models_a.CROSSOVER_30_MIN.objects.all().delete()
   Number_of_trans = []
   Number_of_trans.append(len(models_a.CROSSOVER_15_MIN.objects.all()))
   Number_of_trans.append(len(models_a.CROSSOVER_15_MIN_TEMP.objects.all()))
-  Number_of_trans.append(len(models_a.CROSSOVER_30_MIN.objects.all()))
   response.update({'N0_of_trans':Number_of_trans,'STATUS':'CLEARED'})
   return response
 
@@ -273,7 +271,7 @@ def ltp_of_entries(self):
     try:
       status, active_stocks, gain = check_ltp_crs_30_temp.get_stock_ltp(kite_conn_var)
       model_name_dict.update({'CRS_30_MIN_TEMP': gain})
-      response.update({'LTP_30': True, 'STATUS_30': status,'ACTIVE_STOCKS_30':active_stocks})
+      response.update({'LTP_30_TEMP': True, 'STATUS_30_TEMP': status,'ACTIVE_STOCKS_30_TEMP':active_stocks})
     except Exception as e:
       pass
     
