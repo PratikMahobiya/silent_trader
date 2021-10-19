@@ -12,8 +12,11 @@ from .CROSSOVER_30_MIN.utils import backbone as backbone_CRS_30_MIN
 
 # -------------------- Not ------------------
 from Model_15_temp import models as models_temp
+from Model_30M_temp import models as models_30_temp
 from . import check_ltp_temp
+from . import check_ltp_crs_30_temp
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
+from .CROSSOVER_30_MIN_temp.utils import backbone as backbone_CRS_30_temp
 
 @shared_task(bind=True,max_retries=3)
 # initial_setup on DATABASE -------------------------------------
@@ -162,9 +165,12 @@ def get_stocks_configs(self):
     # CREATE CONFIG IN FOR 15 MIN TEMP
     if not models_temp.CONFIG_15M_TEMP.objects.filter(symbol = stock_sym).exists():
       models_temp.CONFIG_15M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
+    # CREATE CONFIG IN FOR 30 MIN TEMP
+    if not models_30_temp.CONFIG_30M_TEMP.objects.filter(symbol = stock_sym).exists():
+      models_30_temp.CONFIG_30M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
 
   # Config Model to Profit Tables
-  model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN']
+  model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN', 'CRS_30_MIN_TEMP']
   for model_name in model_name_list:
     # if model not configure in Profit Table
     if not models_a.PROFIT.objects.filter(model_name = model_name).exists():
@@ -183,6 +189,11 @@ def get_stocks_configs(self):
   for stock in model_30_trend_list:
     if stock not in model_30_entry_list:
       models_30.TREND_30M_A.objects.filter(symbol = stock).delete()
+  model_30_temp_entry_list = models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol', flat=True)
+  model_30_temp_trend_list = models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol', flat=True)
+  for stock in model_30_temp_trend_list:
+    if stock not in model_30_temp_entry_list:
+      models_30_temp.TREND_30M_A_TEMP.objects.filter(symbol = stock).delete()
 
   # Update Responce as per Stock Dict
   if len(models_a.STOCK.objects.all()) == len(stock_dict):
@@ -241,7 +252,7 @@ def ltp_of_entries(self):
     except Exception as e:
       pass
 
-    # LTP CRS_30MIN
+    # LTP CRS 30 MIN
     try:
       status, active_stocks, gain = check_ltp_crs_30.get_stock_ltp(kite_conn_var)
       model_name_dict.update({'CRS_30_MIN': gain})
@@ -250,11 +261,19 @@ def ltp_of_entries(self):
       pass
 
     # ----------------------------------------- NOT ACTIVE ---------------------------------
-    # LTP CRS
+    # LTP CRS TEMP
     try:
       status, active_stocks, gain = check_ltp_temp.get_stock_ltp(kite_conn_var)
       model_name_dict.update({'CRS_TEMP': gain})
       response.update({'LTP_TEMP': True, 'STATUS_TEMP': status,'ACTIVE_STOCKS_TEMP':active_stocks})
+    except Exception as e:
+      pass
+
+    # LTP CRS 30 MIN TEMP
+    try:
+      status, active_stocks, gain = check_ltp_crs_30_temp.get_stock_ltp(kite_conn_var)
+      model_name_dict.update({'CRS_30_MIN_TEMP': gain})
+      response.update({'LTP_30': True, 'STATUS_30': status,'ACTIVE_STOCKS_30':active_stocks})
     except Exception as e:
       pass
     
@@ -328,4 +347,22 @@ def CROSS_OVER_RUNS_15_MIN_TEMP(self):
   '''
   status = backbone_CRS_temp.model(intervals, kite_conn_var)
   response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))})
+  return response
+
+@shared_task(bind=True,max_retries=3)
+def CROSS_OVER_RUNS_30_MIN_TEMP(self):
+  response = {'CRS': False, 'STATUS': 'NONE'}
+
+  # Initialize Kite Connections
+  kite_conn_var       = connect_to_kite_connection()
+  '''
+    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
+  '''
+  intervals      = ['30minute',5,60,55,15,7,'60minute',30,14,14,14]
+  '''
+  -> Intervals:-
+    ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
+  '''
+  status = backbone_CRS_30_temp.model(intervals, kite_conn_var)
+  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))})
   return response
