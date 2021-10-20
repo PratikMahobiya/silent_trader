@@ -243,7 +243,7 @@ def Clear_Transactions(self):
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_30': False, 'STATUS_30': 'NONE','ACTIVE_STOCKS_30': None}
   model_name_dict = {}
-  if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,25,00):
+  if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,17,00):
     kite_conn_var = connect_to_kite_connection()
     
     # LTP CRS
@@ -288,50 +288,81 @@ def ltp_of_entries(self):
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = total_sum
         model_config_obj.current_gain_time      = datetime.now()
+        model_config_obj.current_gain_entry     = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
         if total_sum > model_config_obj.top_gain:
           model_config_obj.top_gain       = total_sum
           model_config_obj.top_gain_time  = datetime.now()
+          model_config_obj.top_gain_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
         if total_sum < model_config_obj.top_loss:
           model_config_obj.top_loss       = total_sum
           model_config_obj.top_loss_time  = datetime.now()
+          model_config_obj.top_loss_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
       if index == 1:
         actual_gain_list  = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = total_sum
         model_config_obj.current_gain_time      = datetime.now()
+        model_config_obj.current_gain_entry     = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
         if total_sum > model_config_obj.top_gain:
           model_config_obj.top_gain       = total_sum
           model_config_obj.top_gain_time  = datetime.now()
+          model_config_obj.top_gain_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
         if total_sum < model_config_obj.top_loss:
           model_config_obj.top_loss       = total_sum
           model_config_obj.top_loss_time  = datetime.now()
+          model_config_obj.top_loss_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
       if index == 2:
         actual_gain_list  = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = total_sum
         model_config_obj.current_gain_time      = datetime.now()
+        model_config_obj.current_gain_entry     = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
         if total_sum > model_config_obj.top_gain:
           model_config_obj.top_gain       = total_sum
           model_config_obj.top_gain_time  = datetime.now()
+          model_config_obj.top_gain_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
         if total_sum < model_config_obj.top_loss:
           model_config_obj.top_loss       = total_sum
           model_config_obj.top_loss_time  = datetime.now()
+          model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
       if index == 3:
         actual_gain_list  = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = total_sum
+        model_config_obj.current_gain_entry      = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
         model_config_obj.current_gain_time      = datetime.now()
         if total_sum > model_config_obj.top_gain:
           model_config_obj.top_gain       = total_sum
           model_config_obj.top_gain_time  = datetime.now()
+          model_config_obj.top_gain_entry = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
         if total_sum < model_config_obj.top_loss:
           model_config_obj.top_loss       = total_sum
           model_config_obj.top_loss_time  = datetime.now()
+          model_config_obj.top_loss_entry = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
       model_config_obj.save()
 
-    
+  elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
+    model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN', 'CRS_30_MIN_TEMP']
+    for ind, m_name in enumerate(model_name_list):
+      model_config_obj = models_a.PROFIT.objects.filter(model_name = m_name, date = datetime.now().date())
+      if ind == 0:
+        profit = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        model_config_obj.current_gain_entry      = len(profit)
+        model_config_obj.p_l                     = sum(profit)
+      if ind == 1:
+        profit = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        model_config_obj.current_gain_entry      = len(profit)
+        model_config_obj.p_l                     = sum(profit)
+      if ind == 2:
+        profit = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        model_config_obj.current_gain_entry      = len(profit)
+        model_config_obj.p_l                     = sum(profit)
+      if ind == 3:
+        profit = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        model_config_obj.current_gain_entry      = len(profit)
+        model_config_obj.p_l                     = sum(profit)
+      model_config_obj.save()
 
-  elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
     response.update({'LTP': True, 'STATUS': 'SQUARED OFF','LTP_30_MIN': True, 'STATUS_30_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
   else:
     response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED','LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_30_MIN': True, 'STATUS_30_MIN': 'MARKET IS CLOSED.'})

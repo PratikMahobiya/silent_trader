@@ -26,10 +26,14 @@ class PROFIT(models.Model):
     model_name              = models.CharField(max_length=100, verbose_name='MODEL NAME')
     top_gain  				= models.FloatField(verbose_name='TOP GAIN',default=0)
     top_gain_time           = models.DateTimeField(verbose_name='TOP GAIN TIME',null=True, blank=True)
+    top_gain_entry			= models.BigIntegerField(verbose_name='TOP GAIN ENTRY',default=0)
     top_loss  				= models.FloatField(verbose_name='TOP LOSS',default=0)
     top_loss_time           = models.DateTimeField(verbose_name='TOP LOSS TIME',null=True, blank=True)
+    top_loss_entry			= models.BigIntegerField(verbose_name='TOP LOSS ENTRY',default=0)
     current_gain            = models.FloatField(verbose_name='CURRENT GAIN',default=0)
     current_gain_time       = models.DateTimeField(verbose_name='CURRENT GAIN TIME',null=True, blank=True)
+    current_gain_entry		= models.BigIntegerField(verbose_name='CURRENT GAIN ENTRY',default=0)
+    p_l                     = models.FloatField(verbose_name='P/L(%)',default=0)
     def __int__(self):
     	return self.id
     class Meta:
