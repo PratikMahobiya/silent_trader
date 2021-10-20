@@ -22,6 +22,7 @@ class ZERODHA_KEYS(models.Model):
         db_table = 'ZERODHA_KEYS'
 
 class PROFIT(models.Model):
+    date                    = models.DateField(verbose_name='DATE',null=True, blank=True)
     model_name              = models.CharField(max_length=100, verbose_name='MODEL NAME',unique=True)
     top_gain  				= models.FloatField(verbose_name='TOP GAIN',default=0)
     top_gain_time           = models.DateTimeField(verbose_name='TOP GAIN TIME',null=True, blank=True)

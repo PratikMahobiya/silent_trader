@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import date, datetime, time
 from kiteconnect import KiteConnect
 
 from Model_15M import models
@@ -173,13 +173,17 @@ def get_stocks_configs(self):
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN', 'CRS_30_MIN_TEMP']
   for model_name in model_name_list:
     # if model not configure in Profit Table
-    if not models_a.PROFIT.objects.filter(model_name = model_name).exists():
-      models_a.PROFIT(model_name = model_name).save()
-    else:
-      model_config_obj = models_a.PROFIT.objects.filter(model_name = model_name)
-      model_config_obj.top_gain = 0
-      model_config_obj.top_loss = 0
-      model_config_obj.save()
+    if not models_a.PROFIT.objects.filter(model_name = model_name, date = datetime.now().date()).exists():
+      models_a.PROFIT(model_name = model_name, date = datetime.now().date()).save()
+    # else:
+    #   model_config_obj = models_a.PROFIT.objects.filter(model_name = model_name, date = datetime.now().date())
+    #   model_config_obj.top_gain = 0
+    #   model_config_obj.top_gain_time = datetime.now()
+    #   model_config_obj.top_loss = 0
+    #   model_config_obj.top_loss_time = datetime.now()
+    #   model_config_obj.current_gain = 0
+    #   model_config_obj.current_gain_time = datetime.now()
+    #   model_config_obj.save()
 
   # empty the trend list
   models.TREND_15M_A.objects.all().delete()
@@ -277,7 +281,7 @@ def ltp_of_entries(self):
     
     # --------------------------------- Calculate Profit at each LTP ------------------------
     for index, model_name in enumerate(model_name_dict):
-      model_config_obj = models_a.PROFIT.objects.get(model_name = model_name)
+      model_config_obj = models_a.PROFIT.objects.filter(model_name = model_name, date = datetime.now().date())
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       if index == 0:
         actual_gain_list  = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
