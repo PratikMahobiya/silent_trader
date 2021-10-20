@@ -288,19 +288,19 @@ def ltp_of_entries(self):
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       if index == 0:
         actual_gain = models_a.CROSSOVER_15_MIN.objects.all().values_list('difference', flat=True)
-        model_config_obj.current_gain           = sum(actual_gain) + total_sum
+        model_config_obj.current_gain           = sum(actual_gain + model_name_dict[model_name])
         model_config_obj.current_gain_time      = datetime.now()
       if index == 1:
         actual_gain = models_a.CROSSOVER_30_MIN.objects.all().values_list('difference', flat=True)
-        model_config_obj.current_gain           = sum(actual_gain) + total_sum
+        model_config_obj.current_gain           = sum(actual_gain + model_name_dict[model_name])
         model_config_obj.current_gain_time      = datetime.now()
       if index == 2:
         actual_gain = models_a.CROSSOVER_15_MIN_TEMP.objects.all().values_list('difference', flat=True)
-        model_config_obj.current_gain           = sum(actual_gain) + total_sum
+        model_config_obj.current_gain           = sum(actual_gain + model_name_dict[model_name])
         model_config_obj.current_gain_time      = datetime.now()
       if index == 3:
         actual_gain = models_a.CROSSOVER_30_MIN_TEMP.objects.all().values_list('difference', flat=True)
-        model_config_obj.current_gain           = sum(actual_gain) + total_sum
+        model_config_obj.current_gain           = sum(actual_gain + model_name_dict[model_name])
         model_config_obj.current_gain_time      = datetime.now()
       model_config_obj.save()
 
