@@ -278,7 +278,7 @@ def ltp_of_entries(self):
     # --------------------------------- Calculate Profit at each LTP ------------------------
     for model_name in model_name_dict:
       model_config_obj = models_a.PROFIT.objects.get(model_name = model_name)
-      total_sum = model_name_dict[model_name].sum()
+      total_sum = sum(model_name_dict[model_name])
       if total_sum > model_config_obj.top_gain:
         model_config_obj.top_gain       = total_sum
       if total_sum < model_config_obj.top_loss:
