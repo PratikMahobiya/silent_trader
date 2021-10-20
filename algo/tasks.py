@@ -278,30 +278,51 @@ def ltp_of_entries(self):
     # --------------------------------- Calculate Profit at each LTP ------------------------
     for index, model_name in enumerate(model_name_dict):
       model_config_obj = models_a.PROFIT.objects.get(model_name = model_name)
-      total_sum = sum(model_name_dict[model_name])
-      if total_sum > model_config_obj.top_gain:
-        model_config_obj.top_gain       = total_sum
-        model_config_obj.top_gain_time  = datetime.now()
-      if total_sum < model_config_obj.top_loss:
-        model_config_obj.top_loss       = total_sum
-        model_config_obj.top_loss_time  = datetime.now()
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       if index == 0:
         actual_gain_list  = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
-        model_config_obj.current_gain           = sum(actual_gain_list) + total_sum
+        total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
+        model_config_obj.current_gain           = total_sum
         model_config_obj.current_gain_time      = datetime.now()
+        if total_sum > model_config_obj.top_gain:
+          model_config_obj.top_gain       = total_sum
+          model_config_obj.top_gain_time  = datetime.now()
+        if total_sum < model_config_obj.top_loss:
+          model_config_obj.top_loss       = total_sum
+          model_config_obj.top_loss_time  = datetime.now()
       if index == 1:
         actual_gain_list  = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
-        model_config_obj.current_gain           = sum(actual_gain_list) + total_sum
+        total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
+        model_config_obj.current_gain           = total_sum
         model_config_obj.current_gain_time      = datetime.now()
+        if total_sum > model_config_obj.top_gain:
+          model_config_obj.top_gain       = total_sum
+          model_config_obj.top_gain_time  = datetime.now()
+        if total_sum < model_config_obj.top_loss:
+          model_config_obj.top_loss       = total_sum
+          model_config_obj.top_loss_time  = datetime.now()
       if index == 2:
         actual_gain_list  = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
-        model_config_obj.current_gain           = sum(actual_gain_list) + total_sum
+        total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
+        model_config_obj.current_gain           = total_sum
         model_config_obj.current_gain_time      = datetime.now()
+        if total_sum > model_config_obj.top_gain:
+          model_config_obj.top_gain       = total_sum
+          model_config_obj.top_gain_time  = datetime.now()
+        if total_sum < model_config_obj.top_loss:
+          model_config_obj.top_loss       = total_sum
+          model_config_obj.top_loss_time  = datetime.now()
       if index == 3:
         actual_gain_list  = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
-        model_config_obj.current_gain           = sum(actual_gain_list) + total_sum
+        total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
+        model_config_obj.current_gain           = total_sum
         model_config_obj.current_gain_time      = datetime.now()
+        if total_sum > model_config_obj.top_gain:
+          model_config_obj.top_gain       = total_sum
+          model_config_obj.top_gain_time  = datetime.now()
+        if total_sum < model_config_obj.top_loss:
+          model_config_obj.top_loss       = total_sum
+          model_config_obj.top_loss_time  = datetime.now()
       model_config_obj.save()
 
     
