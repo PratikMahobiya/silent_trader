@@ -24,7 +24,11 @@ class ZERODHA_KEYS(models.Model):
 class PROFIT(models.Model):
     model_name              = models.CharField(max_length=100, verbose_name='MODEL NAME',unique=True)
     top_gain  				= models.FloatField(verbose_name='TOP GAIN',default=0)
+    top_gain_time           = models.DateTimeField(verbose_name='TOP GAIN TIME',null=True, blank=True)
     top_loss  				= models.FloatField(verbose_name='TOP LOSS',default=0)
+    top_loss_time           = models.DateTimeField(verbose_name='TOP LOSS TIME',null=True, blank=True)
+    current_gain            = models.FloatField(verbose_name='CURRENT GAIN',default=0)
+    current_gain_time       = models.DateTimeField(verbose_name='CURRENT GAIN TIME',null=True, blank=True)
     def __int__(self):
     	return self.id
     class Meta:

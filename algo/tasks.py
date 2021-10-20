@@ -276,15 +276,35 @@ def ltp_of_entries(self):
       pass
     
     # --------------------------------- Calculate Profit at each LTP ------------------------
-    for model_name in model_name_dict:
+    for index, model_name in enumerate(model_name_dict):
       model_config_obj = models_a.PROFIT.objects.get(model_name = model_name)
       total_sum = sum(model_name_dict[model_name])
       if total_sum > model_config_obj.top_gain:
         model_config_obj.top_gain       = total_sum
+        model_config_obj.top_gain_time  = datetime.now()
       if total_sum < model_config_obj.top_loss:
         model_config_obj.top_loss       = total_sum
+        model_config_obj.top_loss_time  = datetime.now()
+      # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+      if index == 0:
+        actual_gain = models_a.CROSSOVER_15_MIN.objects.all().values_list('difference', flat=True)
+        model_config_obj.current_gain           = sum(actual_gain) + total_sum
+        model_config_obj.current_gain_time      = datetime.now()
+      if index == 1:
+        actual_gain = models_a.CROSSOVER_30_MIN.objects.all().values_list('difference', flat=True)
+        model_config_obj.current_gain           = sum(actual_gain) + total_sum
+        model_config_obj.current_gain_time      = datetime.now()
+      if index == 2:
+        actual_gain = models_a.CROSSOVER_15_MIN_TEMP.objects.all().values_list('difference', flat=True)
+        model_config_obj.current_gain           = sum(actual_gain) + total_sum
+        model_config_obj.current_gain_time      = datetime.now()
+      if index == 3:
+        actual_gain = models_a.CROSSOVER_30_MIN_TEMP.objects.all().values_list('difference', flat=True)
+        model_config_obj.current_gain           = sum(actual_gain) + total_sum
+        model_config_obj.current_gain_time      = datetime.now()
       model_config_obj.save()
 
+    
 
   elif datetime.now().time() >= time(15,25,00) and datetime.now().time() < time(15,30,00):
     response.update({'LTP': True, 'STATUS': 'SQUARED OFF','LTP_30_MIN': True, 'STATUS_30_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
