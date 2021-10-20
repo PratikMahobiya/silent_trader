@@ -32,7 +32,7 @@ class PROFIT(models.Model):
     top_loss_entry			= models.BigIntegerField(verbose_name='TOP LOSS ENTRY',default=0)
     current_gain            = models.FloatField(verbose_name='CURRENT GAIN',default=0)
     current_gain_time       = models.DateTimeField(verbose_name='CURRENT GAIN TIME',null=True, blank=True)
-    current_gain_entry		= models.BigIntegerField(verbose_name='CURRENT GAIN ENTRY',default=0)
+    current_gain_entry		= models.BigIntegerField(verbose_name='TOTAL ENTRY',default=0)
     p_l                     = models.FloatField(verbose_name='P/L(%)',default=0)
     def __int__(self):
     	return self.id
