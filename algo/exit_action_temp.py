@@ -25,8 +25,107 @@ def sell(stock, price, gain, kite_conn_var):
   gain_val = round(((price - stock_config_obj.buy_price) * stock_config_obj.quantity),2)
   gain.append(gain_val)
 
-  # if price hits Target, Exit
-  if ((price >= stock_config_obj.target) and (stock_config_obj.d_sl_flag is False)):
+  # if gap_up entry of 0.7 or above, Exit
+  if stock_config_obj.fixed_target_flag is True:
+    # if price hits Fixed Target, Exit
+    if price >= stock_config_obj.fixed_target:
+      if stock_config_obj.buy is True:
+        if stock_config_obj.order_id != 0:
+          ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
+          if ord_det[-1]['status'] == 'COMPLETE':
+            # CALL PLACE ORDER ----
+            order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
+            # ---------------------
+          else:
+            # CALL CANCEL ORDER ----
+            order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
+            # ----------------------
+
+        diff          = price - stock_config_obj.buy_price
+        profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
+        diff          = round((diff * stock_config_obj.quantity),2)
+
+        trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'HIT_0.5','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+        transaction   = serializers.CROSSOVER_30_MIN_Serializer_TEMP(data=trans_data)
+        if transaction.is_valid():
+          transaction.save()
+        models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
+        models.TREND_15M_A_TEMP.objects.filter(symbol = stock).delete()
+        stock_config_obj.buy                  = False
+        stock_config_obj.d_sl_flag            = False
+        stock_config_obj.fixed_target_flag    = False
+        stock_config_obj.trend                = False
+        stock_config_obj.count                = 0
+        stock_config_obj.order_id             = 0
+        stock_config_obj.save()
+
+    # if price hits Fixed StopLoss, Exit
+    elif price <= stock_config_obj.f_stoploss:
+      if stock_config_obj.buy is True:
+        if stock_config_obj.order_id != 0:
+          ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
+          if ord_det[-1]['status'] == 'COMPLETE':
+            # CALL PLACE ORDER ----
+            order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
+            # ---------------------
+          else:
+            # CALL CANCEL ORDER ----
+            order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
+            # ----------------------
+
+        diff          = price - stock_config_obj.buy_price
+        profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
+        diff          = round((diff * stock_config_obj.quantity),2)
+
+        trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FIXED SL','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+        transaction   = serializers.CROSSOVER_30_MIN_Serializer_TEMP(data=trans_data)
+        if transaction.is_valid():
+          transaction.save()
+        models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
+        models.TREND_15M_A_TEMP.objects.filter(symbol = stock).delete()
+        stock_config_obj.buy                  = False
+        stock_config_obj.d_sl_flag            = False
+        stock_config_obj.fixed_target_flag    = False
+        stock_config_obj.trend                = False
+        stock_config_obj.count                = 0
+        stock_config_obj.order_id             = 0
+        stock_config_obj.save()
+
+    # if price hits outoftrend exit StopLoss, Exit
+    elif stock_config_obj.trend is False:
+      if price <= stock_config_obj.stoploss:
+        if stock_config_obj.buy is True:
+          if stock_config_obj.order_id != 0:
+            ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
+            if ord_det[-1]['status'] == 'COMPLETE':
+              # CALL PLACE ORDER ----
+              order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
+              # ---------------------
+            else:
+              # CALL CANCEL ORDER ----
+              order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
+              # ----------------------
+
+          diff          = price - stock_config_obj.buy_price
+          profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
+          diff          = round((diff * stock_config_obj.quantity),2)
+
+          trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'OT_SL','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+          transaction   = serializers.CROSSOVER_30_MIN_Serializer_TEMP(data=trans_data)
+          if transaction.is_valid():
+            transaction.save()
+          models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
+          models.TREND_15M_A_TEMP.objects.filter(symbol = stock).delete()
+          stock_config_obj.buy                  = False
+          stock_config_obj.d_sl_flag            = False
+          stock_config_obj.fixed_target_flag    = False
+          stock_config_obj.trend                = False
+          stock_config_obj.count                = 0
+          stock_config_obj.order_id             = 0
+          stock_config_obj.save()
+
+  # if price hits First Target Starts TU.
+  elif ((price >= stock_config_obj.target) and (stock_config_obj.d_sl_flag is False)):
     if stock_config_obj.buy is True:
       if stock_config_obj.count == 0:
         stock_config_obj.last_top     = price
@@ -64,11 +163,12 @@ def sell(stock, price, gain, kite_conn_var):
           transaction.save()
         models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
         models.TREND_15M_A_TEMP.objects.filter(symbol = stock).delete()
-        stock_config_obj.buy          = False
-        stock_config_obj.d_sl_flag    = False
-        stock_config_obj.trend        = False
-        stock_config_obj.count        = 0
-        stock_config_obj.order_id     = 0
+        stock_config_obj.buy                  = False
+        stock_config_obj.d_sl_flag            = False
+        stock_config_obj.fixed_target_flag    = False
+        stock_config_obj.trend                = False
+        stock_config_obj.count                = 0
+        stock_config_obj.order_id             = 0
         stock_config_obj.save()
 
   # if price hits Fixed StopLoss, Exit
@@ -95,11 +195,12 @@ def sell(stock, price, gain, kite_conn_var):
         transaction.save()
       models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
       models.TREND_15M_A_TEMP.objects.filter(symbol = stock).delete()
-      stock_config_obj.buy          = False
-      stock_config_obj.d_sl_flag    = False
-      stock_config_obj.trend        = False
-      stock_config_obj.count        = 0
-      stock_config_obj.order_id     = 0
+      stock_config_obj.buy                  = False
+      stock_config_obj.d_sl_flag            = False
+      stock_config_obj.fixed_target_flag    = False
+      stock_config_obj.trend                = False
+      stock_config_obj.count                = 0
+      stock_config_obj.order_id             = 0
       stock_config_obj.save()
 
   # if price hits outoftrend exit StopLoss, Exit
@@ -127,11 +228,12 @@ def sell(stock, price, gain, kite_conn_var):
           transaction.save()
         models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
         models.TREND_15M_A_TEMP.objects.filter(symbol = stock).delete()
-        stock_config_obj.buy          = False
-        stock_config_obj.d_sl_flag    = False
-        stock_config_obj.trend        = False
-        stock_config_obj.count        = 0
-        stock_config_obj.order_id     = 0
+        stock_config_obj.buy                  = False
+        stock_config_obj.d_sl_flag            = False
+        stock_config_obj.fixed_target_flag    = False
+        stock_config_obj.trend                = False
+        stock_config_obj.count                = 0
+        stock_config_obj.order_id             = 0
         stock_config_obj.save()
   return 0
 
@@ -160,11 +262,12 @@ def square_off(stock, price, kite_conn_var):
         transaction.save()
       models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
       models.TREND_15M_A_TEMP.objects.filter(symbol = stock).delete()
-      stock_config_obj.buy          = False
-      stock_config_obj.d_sl_flag    = False
-      stock_config_obj.trend        = False
-      stock_config_obj.count        = 0
-      stock_config_obj.order_id     = 0
+      stock_config_obj.buy                  = False
+      stock_config_obj.d_sl_flag            = False
+      stock_config_obj.fixed_target_flag    = False
+      stock_config_obj.trend                = False
+      stock_config_obj.count                = 0
+      stock_config_obj.order_id             = 0
       stock_config_obj.save()
   else:
     order_id       = '0'
@@ -179,10 +282,11 @@ def square_off(stock, price, kite_conn_var):
       transaction.save()
     models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
     models.TREND_15M_A_TEMP.objects.filter(symbol = stock).delete()
-    stock_config_obj.buy          = False
-    stock_config_obj.d_sl_flag    = False
-    stock_config_obj.trend        = False
-    stock_config_obj.count        = 0
-    stock_config_obj.order_id     = 0
+    stock_config_obj.buy                  = False
+    stock_config_obj.d_sl_flag            = False
+    stock_config_obj.fixed_target_flag    = False
+    stock_config_obj.trend                = False
+    stock_config_obj.count                = 0
+    stock_config_obj.order_id             = 0
     stock_config_obj.save()
   return 0
