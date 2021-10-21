@@ -289,6 +289,8 @@ def ltp_of_entries(self):
         model_config_obj.current_gain           = round(total_sum,2)
         model_config_obj.current_gain_time      = datetime.now()
         model_config_obj.current_gain_entry     = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
+        if len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+          model_config_obj.max_entry     = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
         if total_sum > model_config_obj.top_gain:
           model_config_obj.top_gain       = round(total_sum,2)
           model_config_obj.top_gain_time  = datetime.now()
@@ -303,6 +305,8 @@ def ltp_of_entries(self):
         model_config_obj.current_gain           = round(total_sum,2)
         model_config_obj.current_gain_time      = datetime.now()
         model_config_obj.current_gain_entry     = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
+        if len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+          model_config_obj.max_entry     = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
         if total_sum > model_config_obj.top_gain:
           model_config_obj.top_gain       = round(total_sum,2)
           model_config_obj.top_gain_time  = datetime.now()
@@ -317,6 +321,8 @@ def ltp_of_entries(self):
         model_config_obj.current_gain           = round(total_sum,2)
         model_config_obj.current_gain_time      = datetime.now()
         model_config_obj.current_gain_entry     = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
+        if len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+          model_config_obj.max_entry     = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
         if total_sum > model_config_obj.top_gain:
           model_config_obj.top_gain       = round(total_sum,2)
           model_config_obj.top_gain_time  = datetime.now()
@@ -329,8 +335,10 @@ def ltp_of_entries(self):
         actual_gain_list  = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = round(total_sum,2)
-        model_config_obj.current_gain_entry      = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
         model_config_obj.current_gain_time      = datetime.now()
+        model_config_obj.current_gain_entry     = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
+        if len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+          model_config_obj.max_entry     = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
         if total_sum > model_config_obj.top_gain:
           model_config_obj.top_gain       = round(total_sum,2)
           model_config_obj.top_gain_time  = datetime.now()
