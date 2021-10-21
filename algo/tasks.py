@@ -356,19 +356,19 @@ def ltp_of_entries(self):
       if ind == 0:
         profit = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
-        model_config_obj.p_l                     = sum(profit)
+        model_config_obj.p_l                     = round(sum(profit),2)
       if ind == 1:
         profit = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
-        model_config_obj.p_l                     = sum(profit)
+        model_config_obj.p_l                     = round(sum(profit),2)
       if ind == 2:
         profit = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
-        model_config_obj.p_l                     = sum(profit)
+        model_config_obj.p_l                     = round(sum(profit),2)
       if ind == 3:
         profit = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
-        model_config_obj.p_l                     = sum(profit)
+        model_config_obj.p_l                     = round(sum(profit),2)
       model_config_obj.save()
 
     response.update({'LTP': True, 'STATUS': 'SQUARED OFF','LTP_30_MIN': True, 'STATUS_30_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
