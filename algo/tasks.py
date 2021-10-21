@@ -281,7 +281,7 @@ def ltp_of_entries(self):
     
     # --------------------------------- Calculate Profit at each LTP ------------------------
     for index, model_name in enumerate(model_name_dict):
-      model_config_obj = models_a.PROFIT.objects.filter(model_name = model_name, date = datetime.now().date())
+      model_config_obj = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       if index == 0:
         actual_gain_list  = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
@@ -344,7 +344,7 @@ def ltp_of_entries(self):
   elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
     model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN', 'CRS_30_MIN_TEMP']
     for ind, m_name in enumerate(model_name_list):
-      model_config_obj = models_a.PROFIT.objects.filter(model_name = m_name, date = datetime.now().date())
+      model_config_obj = models_a.PROFIT.objects.get(model_name = m_name, date = datetime.now().date())
       if ind == 0:
         profit = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
