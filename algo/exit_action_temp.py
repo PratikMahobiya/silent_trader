@@ -46,7 +46,7 @@ def sell(stock, price, gain, kite_conn_var):
         diff          = round((diff * stock_config_obj.quantity),2)
 
         trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'HIT_0.5','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
-        transaction   = serializers.CROSSOVER_30_MIN_Serializer_TEMP(data=trans_data)
+        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP(data=trans_data)
         if transaction.is_valid():
           transaction.save()
         models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
@@ -78,7 +78,7 @@ def sell(stock, price, gain, kite_conn_var):
         diff          = round((diff * stock_config_obj.quantity),2)
 
         trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FIXED SL','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
-        transaction   = serializers.CROSSOVER_30_MIN_Serializer_TEMP(data=trans_data)
+        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP(data=trans_data)
         if transaction.is_valid():
           transaction.save()
         models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
@@ -111,7 +111,7 @@ def sell(stock, price, gain, kite_conn_var):
           diff          = round((diff * stock_config_obj.quantity),2)
 
           trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'OT_SL','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
-          transaction   = serializers.CROSSOVER_30_MIN_Serializer_TEMP(data=trans_data)
+          transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP(data=trans_data)
           if transaction.is_valid():
             transaction.save()
           models.ENTRY_15M_TEMP.objects.filter(symbol = stock).delete()
