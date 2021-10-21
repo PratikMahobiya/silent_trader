@@ -67,6 +67,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
                 # UPDATE CONFIG
+                type_str         = 'BF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
                 stock_config_obj = models.CONFIG_30M_TEMP.objects.get(symbol = stock)
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
@@ -81,7 +82,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                 # UPDATE CURRENT ENTRY TABLE
                 models.ENTRY_30M_TEMP(symbol = stock).save()
                 # TRANSACTION TABLE UPDATE
-                trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':'BF_CRS','price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                 transaction   = serializers.CROSSOVER_30_MIN_Serializer_TEMP(data=trans_data)
                 if transaction.is_valid():
                   transaction.save()
@@ -99,6 +100,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     # Place Order in ZERODHA.
                     order_id, order_status, price, quantity = place_ord(kite_conn_var,stock)
                     # UPDATE CONFIG
+                    type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
                     stock_config_obj = models.CONFIG_30M_TEMP.objects.get(symbol = stock)
                     stock_config_obj.buy            = True
                     stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
@@ -113,7 +115,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                     # UPDATE CURRENT ENTRY TABLE
                     models.ENTRY_30M_TEMP(symbol = stock).save()
                     # TRANSACTION TABLE UPDATE
-                    trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':'AF_CRS','price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                    trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                     transaction   = serializers.CROSSOVER_30_MIN_Serializer_TEMP(data=trans_data)
                     if transaction.is_valid():
                       transaction.save()

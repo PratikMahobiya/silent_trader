@@ -284,7 +284,7 @@ def ltp_of_entries(self):
       model_config_obj = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       if index == 0:
-        actual_gain_list  = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
+        actual_gain_list  = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = round(total_sum,2)
         model_config_obj.current_gain_time      = datetime.now()
@@ -300,7 +300,7 @@ def ltp_of_entries(self):
           model_config_obj.top_loss_time  = datetime.now()
           model_config_obj.top_loss_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
       if index == 1:
-        actual_gain_list  = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
+        actual_gain_list  = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = round(total_sum,2)
         model_config_obj.current_gain_time      = datetime.now()
@@ -316,7 +316,7 @@ def ltp_of_entries(self):
           model_config_obj.top_loss_time  = datetime.now()
           model_config_obj.top_loss_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
       if index == 2:
-        actual_gain_list  = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
+        actual_gain_list  = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = round(total_sum,2)
         model_config_obj.current_gain_time      = datetime.now()
@@ -332,7 +332,7 @@ def ltp_of_entries(self):
           model_config_obj.top_loss_time  = datetime.now()
           model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
       if index == 3:
-        actual_gain_list  = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference', flat=True)
+        actual_gain_list  = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
         total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
         model_config_obj.current_gain           = round(total_sum,2)
         model_config_obj.current_gain_time      = datetime.now()
@@ -354,19 +354,19 @@ def ltp_of_entries(self):
     for ind, m_name in enumerate(model_name_list):
       model_config_obj = models_a.PROFIT.objects.get(model_name = m_name, date = datetime.now().date())
       if ind == 0:
-        profit = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        profit = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = sum(profit)
       if ind == 1:
-        profit = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        profit = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = sum(profit)
       if ind == 2:
-        profit = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        profit = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = sum(profit)
       if ind == 3:
-        profit = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        profit = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = sum(profit)
       model_config_obj.save()
