@@ -16,7 +16,7 @@ class ZERODHA_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
 
 @admin.register(models.PROFIT)
 class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','model_name','max_entry','top_gain','top_gain_time','top_gain_entry','top_loss','top_loss_time','top_loss_entry','current_gain','current_gain_time','current_gain_entry','p_l')
+    list_display = ('date','model_name','current_gain','current_gain_time','current_gain_entry','max_entry','p_l','top_gain','top_gain_time','top_gain_entry','top_loss','top_loss_time','top_loss_entry')
     list_filter = ("date",)
 
 @admin.register(models.CROSSOVER_15_MIN)
