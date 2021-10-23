@@ -18,15 +18,6 @@ class ZERODHA_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
 class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','model_name','current_gain','current_gain_time','current_gain_entry','top_gain','top_gain_time','top_gain_entry','top_loss','top_loss_time','top_loss_entry','max_entry','p_l')
     list_filter = ("date",)
-    def current_gain_time(self, obj):
-        if obj:
-            return obj.date.time()
-    def top_gain_entry(self, obj):
-        if obj:
-            return obj.date.time()
-    def top_loss_time(self, obj):
-        if obj:
-            return obj.date.time()
 
 @admin.register(models.CROSSOVER_15_MIN)
 class CROSSOVER_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
