@@ -361,15 +361,28 @@ def ltp_of_entries(self):
         model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
         entry_list                     = models.ENTRY_15M.objects.all().values_list('symbol',flat=True)
         tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
-        model_profit_config_obj.target    = tr_price
-        model_profit_config_obj.entry     = len(entry_list)
-        if model_config_obj.current_gain > tr_price:
-          model_profit_config_obj.target    = tr_price + 500
-          model_profit_config_obj.stoploss  = tr_price - 200
-          model_profit_config_obj.count     += 1
-          model_profit_config_obj.active    = True
+        if model_profit_config_obj.active is False:
+          model_profit_config_obj.entry     = len(entry_list)
+          model_profit_config_obj.target    = tr_price
+          if model_config_obj.current_gain > tr_price:
+            model_profit_config_obj.stoploss  = tr_price - 200
+            model_profit_config_obj.target    = tr_price + 500
+            model_profit_config_obj.count     += 1
+            model_profit_config_obj.active    = True
         elif model_profit_config_obj.active is True:
-          if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+          if len(entry_list) > model_profit_config_obj.entry:
+            model_profit_config_obj.entry     = len(entry_list)
+            model_profit_config_obj.target    = tr_price
+            model_profit_config_obj.active    = False
+          elif len(entry_list) < model_profit_config_obj.entry:
+            model_profit_config_obj.entry     = len(entry_list)
+            model_profit_config_obj.target    = tr_price
+          elif model_config_obj.current_gain > model_profit_config_obj.target:
+            model_profit_config_obj.stoploss  = model_profit_config_obj.target - 200
+            model_profit_config_obj.target    = model_profit_config_obj.target + 500
+            model_profit_config_obj.count     += 1
+            model_profit_config_obj.active    = True
+          elif model_config_obj.current_gain < model_profit_config_obj.stoploss:
             # FREEZE PROFIT
             gain, p_l = freeze_all_15.freeze_all(entry_list,kite_conn_var)
             models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit)).save()
@@ -393,15 +406,26 @@ def ltp_of_entries(self):
         model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
         entry_list                     = models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True)
         tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
-        model_profit_config_obj.target    = tr_price
-        model_profit_config_obj.entry     = len(entry_list)
-        if model_config_obj.current_gain > tr_price:
-          model_profit_config_obj.target    = tr_price + 500
-          model_profit_config_obj.stoploss  = tr_price - 200
-          model_profit_config_obj.count     += 1
-          model_profit_config_obj.active    = True
+        if model_profit_config_obj.active is False:
+          model_profit_config_obj.entry     = len(entry_list)
+          model_profit_config_obj.target    = tr_price
+          if model_config_obj.current_gain > tr_price:
+            model_profit_config_obj.stoploss  = tr_price - 200
+            model_profit_config_obj.target    = tr_price + 500
+            model_profit_config_obj.count     += 1
+            model_profit_config_obj.active    = True
         elif model_profit_config_obj.active is True:
-          if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+          if len(entry_list) > model_profit_config_obj.entry:
+            model_profit_config_obj.entry     = len(entry_list)
+            model_profit_config_obj.target    = tr_price
+            model_profit_config_obj.active    = False
+          elif len(entry_list) < model_profit_config_obj.entry:
+            model_profit_config_obj.entry     = len(entry_list)
+            model_profit_config_obj.target    = tr_price
+          elif model_config_obj.current_gain > model_profit_config_obj.target:
+            model_profit_config_obj.stoploss  = model_profit_config_obj.target - 200
+            model_profit_config_obj.target    = model_profit_config_obj.target + 500
+          elif model_config_obj.current_gain < model_profit_config_obj.stoploss:
             # FREEZE PROFIT
             gain, p_l = freeze_all_30.freeze_all(entry_list,kite_conn_var)
             models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit)).save()
@@ -425,15 +449,26 @@ def ltp_of_entries(self):
         model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
         entry_list                     = models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True)
         tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
-        model_profit_config_obj.target    = tr_price
-        model_profit_config_obj.entry     = len(entry_list)
-        if model_config_obj.current_gain > tr_price:
-          model_profit_config_obj.target    = tr_price + 500
-          model_profit_config_obj.stoploss  = tr_price - 200
-          model_profit_config_obj.count     += 1
-          model_profit_config_obj.active    = True
+        if model_profit_config_obj.active is False:
+          model_profit_config_obj.entry     = len(entry_list)
+          model_profit_config_obj.target    = tr_price
+          if model_config_obj.current_gain > tr_price:
+            model_profit_config_obj.stoploss  = tr_price - 200
+            model_profit_config_obj.target    = tr_price + 500
+            model_profit_config_obj.count     += 1
+            model_profit_config_obj.active    = True
         elif model_profit_config_obj.active is True:
-          if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+          if len(entry_list) > model_profit_config_obj.entry:
+            model_profit_config_obj.entry     = len(entry_list)
+            model_profit_config_obj.target    = tr_price
+            model_profit_config_obj.active    = False
+          elif len(entry_list) < model_profit_config_obj.entry:
+            model_profit_config_obj.entry     = len(entry_list)
+            model_profit_config_obj.target    = tr_price
+          elif model_config_obj.current_gain > model_profit_config_obj.target:
+            model_profit_config_obj.stoploss  = model_profit_config_obj.target - 200
+            model_profit_config_obj.target    = model_profit_config_obj.target + 500
+          elif model_config_obj.current_gain < model_profit_config_obj.stoploss:
             # FREEZE PROFIT
             gain, p_l = freeze_all_15_temp.freeze_all(entry_list,kite_conn_var)
             models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit)).save()
@@ -457,15 +492,26 @@ def ltp_of_entries(self):
         model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
         entry_list                     = models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True)
         tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
-        model_profit_config_obj.target    = tr_price
-        model_profit_config_obj.entry     = len(entry_list)
-        if model_config_obj.current_gain > tr_price:
-          model_profit_config_obj.target    = tr_price + 500
-          model_profit_config_obj.stoploss  = tr_price - 200
-          model_profit_config_obj.count     += 1
-          model_profit_config_obj.active    = True
+        if model_profit_config_obj.active is False:
+          model_profit_config_obj.entry     = len(entry_list)
+          model_profit_config_obj.target    = tr_price
+          if model_config_obj.current_gain > tr_price:
+            model_profit_config_obj.stoploss  = tr_price - 200
+            model_profit_config_obj.target    = tr_price + 500
+            model_profit_config_obj.count     += 1
+            model_profit_config_obj.active    = True
         elif model_profit_config_obj.active is True:
-          if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+          if len(entry_list) > model_profit_config_obj.entry:
+            model_profit_config_obj.entry     = len(entry_list)
+            model_profit_config_obj.target    = tr_price
+            model_profit_config_obj.active    = False
+          elif len(entry_list) < model_profit_config_obj.entry:
+            model_profit_config_obj.entry     = len(entry_list)
+            model_profit_config_obj.target    = tr_price
+          elif model_config_obj.current_gain > model_profit_config_obj.target:
+            model_profit_config_obj.stoploss  = model_profit_config_obj.target - 200
+            model_profit_config_obj.target    = model_profit_config_obj.target + 500
+          elif model_config_obj.current_gain < model_profit_config_obj.stoploss:
             # FREEZE PROFIT
             gain, p_l = freeze_all_30_temp.freeze_all(entry_list,kite_conn_var)
             models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit)).save()
