@@ -3,12 +3,14 @@ from kiteconnect import KiteConnect
 
 from Model_15M import models
 from Model_30M import models as models_30
+from algo import check_ltp_temp_btst
 from . import models as models_a
 from . import freeze_all_15
 from . import freeze_all_30
 from . import freeze_all_15_temp
 from . import freeze_all_30_temp
 from . import check_ltp
+from . import check_ltp_btst
 from . import check_ltp_crs_30
 from celery import shared_task
 from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS_15_MIN
@@ -18,6 +20,7 @@ from .CROSSOVER_30_MIN.utils import backbone as backbone_CRS_30_MIN
 from Model_15_temp import models as models_temp
 from Model_30M_temp import models as models_30_temp
 from . import check_ltp_temp
+from . import check_ltp_temp_btst
 from . import check_ltp_crs_30_temp
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 from .CROSSOVER_30_MIN_temp.utils import backbone as backbone_CRS_30_temp
@@ -161,6 +164,9 @@ def get_stocks_configs(self):
     # CREATE CONFIG IN FOR 15 MIN
     if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
       models.CONFIG_15M(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
+    # 15 MIN BTST
+    if not models.CONFIG_15M_BTST.objects.filter(symbol = stock_sym).exists():
+      models.CONFIG_15M_BTST(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
     # CREATE CONFIG IN FOR 30 MIN
     if not models_30.CONFIG_30M.objects.filter(symbol = stock_sym).exists():
       models_30.CONFIG_30M(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
@@ -169,6 +175,9 @@ def get_stocks_configs(self):
     # CREATE CONFIG IN FOR 15 MIN TEMP
     if not models_temp.CONFIG_15M_TEMP.objects.filter(symbol = stock_sym).exists():
       models_temp.CONFIG_15M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
+    # CREATE CONFIG IN FOR 15 MIN TEMP BTST
+    if not models_temp.CONFIG_15M_TEMP_BTST.objects.filter(symbol = stock_sym).exists():
+      models_temp.CONFIG_15M_TEMP_BTST(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
     # CREATE CONFIG IN FOR 30 MIN TEMP
     if not models_30_temp.CONFIG_30M_TEMP.objects.filter(symbol = stock_sym).exists():
       models_30_temp.CONFIG_30M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
@@ -250,6 +259,20 @@ def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_30': False, 'STATUS_30': 'NONE','ACTIVE_STOCKS_30': None}
   if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,17,00):
     kite_conn_var = connect_to_kite_connection()
+
+    # LTP CRS BTST
+    try:
+      status, active_stocks, gain = check_ltp_btst.get_stock_ltp(kite_conn_var)
+      response.update({'LTP_BTST': True, 'STATUS_BTST': status,'ACTIVE_STOCKS_BTST':active_stocks})
+    except Exception as e:
+      pass
+
+    # LTP CRS TEMP BTST
+    try:
+      status, active_stocks, gain = check_ltp_temp_btst.get_stock_ltp(kite_conn_var)
+      response.update({'LTP_BTST': True, 'STATUS_BTST': status,'ACTIVE_STOCKS_BTST':active_stocks})
+    except Exception as e:
+      pass
     
     # LTP CRS
     try:

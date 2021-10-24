@@ -35,6 +35,13 @@ class CROSSOVER_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol','date']
 
+@admin.register(models.CROSSOVER_15_MIN_BTST)
+class CROSSOVER_15_Min_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','order_status')
+    list_filter = ("created_on",)
+    list_per_page = 10
+    search_fields = ['symbol','date']
+
 @admin.register(models.CROSSOVER_30_MIN)
 class CROSSOVER_30_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','order_status')
@@ -45,6 +52,13 @@ class CROSSOVER_30_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
 # -------------------------------------- Not Active ---------------------------------------
 @admin.register(models.CROSSOVER_15_MIN_TEMP)
 class CROSSOVER_15_Min_TEMP_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','order_status')
+    list_filter = ("created_on",)
+    list_per_page = 10
+    search_fields = ['symbol','date']
+
+@admin.register(models.CROSSOVER_15_MIN_TEMP_BTST)
+class CROSSOVER_15_Min_TEMP_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','order_status')
     list_filter = ("created_on",)
     list_per_page = 10

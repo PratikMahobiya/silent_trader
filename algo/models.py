@@ -86,6 +86,26 @@ class CROSSOVER_15_MIN(models.Model):
     class Meta:
         db_table = 'CROSSOVER_15_MIN'
 
+class CROSSOVER_15_MIN_BTST(models.Model):
+    symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
+    indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
+    type           			= models.CharField(max_length=100, verbose_name='TYPE')
+    date                    = models.DateTimeField(auto_now_add=True)
+    price    				= models.FloatField(verbose_name='PRICE')
+    target   				= models.FloatField(verbose_name='TARGET')
+    stoploss   				= models.FloatField(verbose_name='STOPLOSS')
+    profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
+    order_id                = models.BigIntegerField(verbose_name='ORDER_ID',blank=True,null=True,default=None)
+    order_status            = models.TextField(verbose_name='ORDER_STATUS',max_length=1000)
+    difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
+    quantity                = models.BigIntegerField(verbose_name='QUANTITY')
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    def __int__(self):
+    	return self.id
+    class Meta:
+        db_table = 'CROSSOVER_15_MIN_BTST'
+
 class CROSSOVER_30_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
@@ -126,6 +146,26 @@ class CROSSOVER_15_MIN_TEMP(models.Model):
     	return self.id
     class Meta:
         db_table = 'CROSSOVER_15_MIN_TEMP'
+
+class CROSSOVER_15_MIN_TEMP_BTST(models.Model):
+    symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
+    indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
+    type           			= models.CharField(max_length=100, verbose_name='TYPE')
+    date                    = models.DateTimeField(auto_now_add=True)
+    price    				= models.FloatField(verbose_name='PRICE')
+    target   				= models.FloatField(verbose_name='TARGET')
+    stoploss   				= models.FloatField(verbose_name='STOPLOSS')
+    profit 				    = models.FloatField(verbose_name='PROFIT (%)',blank=True,null=True,default=None)
+    order_id                = models.BigIntegerField(verbose_name='ORDER_ID',blank=True,null=True,default=None)
+    order_status            = models.TextField(verbose_name='ORDER_STATUS',max_length=1000)
+    difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
+    quantity                = models.BigIntegerField(verbose_name='QUANTITY')
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    def __int__(self):
+    	return self.id
+    class Meta:
+        db_table = 'CROSSOVER_15_MIN_TEMP_BTST'
 
 class CROSSOVER_30_MIN_TEMP(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
