@@ -4,6 +4,10 @@ from kiteconnect import KiteConnect
 from Model_15M import models
 from Model_30M import models as models_30
 from . import models as models_a
+from . import freeze_all_15
+from . import freeze_all_30
+from . import freeze_all_15_temp
+from . import freeze_all_30_temp
 from . import check_ltp
 from . import check_ltp_crs_30
 from celery import shared_task
@@ -175,15 +179,17 @@ def get_stocks_configs(self):
     # if model not configure in Profit Table
     if not models_a.PROFIT.objects.filter(model_name = model_name, date = datetime.now().date()).exists():
       models_a.PROFIT(model_name = model_name, date = datetime.now().date()).save()
-    # else:
-    #   model_config_obj = models_a.PROFIT.objects.filter(model_name = model_name, date = datetime.now().date())
-    #   model_config_obj.top_gain = 0
-    #   model_config_obj.top_gain_time = datetime.now()
-    #   model_config_obj.top_loss = 0
-    #   model_config_obj.top_loss_time = datetime.now()
-    #   model_config_obj.current_gain = 0
-    #   model_config_obj.current_gain_time = datetime.now()
-    #   model_config_obj.save()
+    if not models_a.PROFIT_CONFIG.objects.filter(model_name = model_name).exists():
+      models_a.PROFIT_CONFIG(model_name = model_name).save()
+    else:
+      model_profit_config_obj = models_a.PROFIT_CONFIG.objects.filter(model_name = model_name)
+      model_profit_config_obj.day_hit   = 1
+      model_profit_config_obj.target    = 0
+      model_profit_config_obj.stoploss  = 0
+      model_profit_config_obj.count     = 0
+      model_profit_config_obj.active    = False
+      model_profit_config_obj.entry     = 0
+      model_profit_config_obj.save()
 
   # empty the trend list
   models.TREND_15M_A.objects.all().delete()
@@ -242,112 +248,242 @@ def Clear_Transactions(self):
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_30': False, 'STATUS_30': 'NONE','ACTIVE_STOCKS_30': None}
-  model_name_dict = {}
   if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,17,00):
     kite_conn_var = connect_to_kite_connection()
     
     # LTP CRS
     try:
       status, active_stocks, gain = check_ltp.get_stock_ltp(kite_conn_var)
-      model_name_dict.update({'CRS_MAIN': gain})
       response.update({'LTP': True, 'STATUS': status,'ACTIVE_STOCKS':active_stocks})
     except Exception as e:
       pass
+    # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+    model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN', date = datetime.now().date())
+    actual_gain_list  = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
+    total_sum = sum(actual_gain_list) + sum(gain)
+    model_config_obj.current_gain           = round(total_sum,2)
+    model_config_obj.current_gain_time      = datetime.now().time()
+    model_config_obj.current_gain_entry     = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
+    if len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+      model_config_obj.max_entry     = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
+    if total_sum > model_config_obj.top_gain:
+      model_config_obj.top_gain       = round(total_sum,2)
+      model_config_obj.top_gain_time  = datetime.now().time()
+      model_config_obj.top_gain_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
+    if total_sum < model_config_obj.top_loss:
+      model_config_obj.top_loss       = round(total_sum,2)
+      model_config_obj.top_loss_time  = datetime.now().time()
+      model_config_obj.top_loss_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
+    model_config_obj.save()
 
     # LTP CRS 30 MIN
     try:
       status, active_stocks, gain = check_ltp_crs_30.get_stock_ltp(kite_conn_var)
-      model_name_dict.update({'CRS_30_MIN': gain})
       response.update({'LTP_30': True, 'STATUS_30': status,'ACTIVE_STOCKS_30':active_stocks})
     except Exception as e:
       pass
+    # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+    model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN', date = datetime.now().date())
+    actual_gain_list  = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
+    total_sum = sum(actual_gain_list) + sum(gain)
+    model_config_obj.current_gain           = round(total_sum,2)
+    model_config_obj.current_gain_time      = datetime.now().time()
+    model_config_obj.current_gain_entry     = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
+    if len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+      model_config_obj.max_entry     = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
+    if total_sum > model_config_obj.top_gain:
+      model_config_obj.top_gain       = round(total_sum,2)
+      model_config_obj.top_gain_time  = datetime.now().time()
+      model_config_obj.top_gain_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
+    if total_sum < model_config_obj.top_loss:
+      model_config_obj.top_loss       = round(total_sum,2)
+      model_config_obj.top_loss_time  = datetime.now().time()
+      model_config_obj.top_loss_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
+    model_config_obj.save()
 
     # ----------------------------------------- NOT ACTIVE ---------------------------------
     # LTP CRS TEMP
     try:
       status, active_stocks, gain = check_ltp_temp.get_stock_ltp(kite_conn_var)
-      model_name_dict.update({'CRS_TEMP': gain})
       response.update({'LTP_TEMP': True, 'STATUS_TEMP': status,'ACTIVE_STOCKS_TEMP':active_stocks})
     except Exception as e:
       pass
+    # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+    model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_TEMP', date = datetime.now().date())
+    actual_gain_list  = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
+    total_sum = sum(actual_gain_list) + sum(gain)
+    model_config_obj.current_gain           = round(total_sum,2)
+    model_config_obj.current_gain_time      = datetime.now().time()
+    model_config_obj.current_gain_entry     = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
+    if len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+      model_config_obj.max_entry     = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
+    if total_sum > model_config_obj.top_gain:
+      model_config_obj.top_gain       = round(total_sum,2)
+      model_config_obj.top_gain_time  = datetime.now().time()
+      model_config_obj.top_gain_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
+    if total_sum < model_config_obj.top_loss:
+      model_config_obj.top_loss       = round(total_sum,2)
+      model_config_obj.top_loss_time  = datetime.now().time()
+      model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
+    model_config_obj.save()
 
     # LTP CRS 30 MIN TEMP
     try:
       status, active_stocks, gain = check_ltp_crs_30_temp.get_stock_ltp(kite_conn_var)
-      model_name_dict.update({'CRS_30_MIN_TEMP': gain})
       response.update({'LTP_30_TEMP': True, 'STATUS_30_TEMP': status,'ACTIVE_STOCKS_30_TEMP':active_stocks})
     except Exception as e:
       pass
+    # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+    model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN_TEMP', date = datetime.now().date())
+    actual_gain_list  = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
+    total_sum = sum(actual_gain_list) + sum(gain)
+    model_config_obj.current_gain           = round(total_sum,2)
+    model_config_obj.current_gain_time      = datetime.now().time()
+    model_config_obj.current_gain_entry     = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
+    if len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+      model_config_obj.max_entry     = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
+    if total_sum > model_config_obj.top_gain:
+      model_config_obj.top_gain       = round(total_sum,2)
+      model_config_obj.top_gain_time  = datetime.now().time()
+      model_config_obj.top_gain_entry = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
+    if total_sum < model_config_obj.top_loss:
+      model_config_obj.top_loss       = round(total_sum,2)
+      model_config_obj.top_loss_time  = datetime.now().time()
+      model_config_obj.top_loss_entry = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
+    model_config_obj.save()
     
-    # --------------------------------- Calculate Profit at each LTP ------------------------
-    for index, model_name in enumerate(model_name_dict):
-      model_config_obj = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-      # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+    # --------------------------------- FREEZE Profit at each LTP ------------------------
+    model_name_list = ['CRS_MAIN', 'CRS_30_MIN', 'CRS_TEMP', 'CRS_30_MIN_TEMP']
+    for index, model_name in enumerate(model_name_list):
+      # ---------------------------- FREEZE THE STOCK AT IT LIVE GAIN --------------------
       if index == 0:
-        actual_gain_list  = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
-        total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
-        model_config_obj.current_gain           = round(total_sum,2)
-        model_config_obj.current_gain_time      = datetime.now().time()
-        model_config_obj.current_gain_entry     = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
-        if len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
-          model_config_obj.max_entry     = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
-        if total_sum > model_config_obj.top_gain:
-          model_config_obj.top_gain       = round(total_sum,2)
-          model_config_obj.top_gain_time  = datetime.now().time()
-          model_config_obj.top_gain_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
-        if total_sum < model_config_obj.top_loss:
-          model_config_obj.top_loss       = round(total_sum,2)
-          model_config_obj.top_loss_time  = datetime.now().time()
-          model_config_obj.top_loss_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
+        model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
+        model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
+        entry_list                     = models.ENTRY_15M.objects.all().values_list('symbol',flat=True)
+        tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
+        model_profit_config_obj.target    = tr_price
+        model_profit_config_obj.entry     = len(entry_list)
+        if model_config_obj.current_gain > tr_price:
+          model_profit_config_obj.target    = tr_price + 500
+          model_profit_config_obj.stoploss  = tr_price - 200
+          model_profit_config_obj.count     += 1
+          model_profit_config_obj.active    = True
+        elif model_profit_config_obj.active is True:
+          if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+            # FREEZE PROFIT
+            gain, p_l = freeze_all_15.freeze_all(entry_list,kite_conn_var)
+            models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit)).save()
+            model_profit_config_obj.day_hit   += 1
+            model_profit_config_obj.target    = 0
+            model_profit_config_obj.stoploss  = 0
+            model_profit_config_obj.count     = 0
+            model_profit_config_obj.active    = False
+            model_profit_config_obj.entry     = 0
+            # PROFIT TABLE
+            model_config_obj.current_gain           = 0
+            model_config_obj.current_gain_entry     = 0
+            model_config_obj.top_gain               = 0
+            model_config_obj.top_gain_entry         = 0
+            model_config_obj.top_loss               = 0
+            model_config_obj.top_loss_entry         = 0
+        model_profit_config_obj.save()
+        model_config_obj.save()
       if index == 1:
-        actual_gain_list  = models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
-        total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
-        model_config_obj.current_gain           = round(total_sum,2)
-        model_config_obj.current_gain_time      = datetime.now().time()
-        model_config_obj.current_gain_entry     = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
-        if len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
-          model_config_obj.max_entry     = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
-        if total_sum > model_config_obj.top_gain:
-          model_config_obj.top_gain       = round(total_sum,2)
-          model_config_obj.top_gain_time  = datetime.now().time()
-          model_config_obj.top_gain_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
-        if total_sum < model_config_obj.top_loss:
-          model_config_obj.top_loss       = round(total_sum,2)
-          model_config_obj.top_loss_time  = datetime.now().time()
-          model_config_obj.top_loss_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
+        model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
+        model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
+        entry_list                     = models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True)
+        tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
+        model_profit_config_obj.target    = tr_price
+        model_profit_config_obj.entry     = len(entry_list)
+        if model_config_obj.current_gain > tr_price:
+          model_profit_config_obj.target    = tr_price + 500
+          model_profit_config_obj.stoploss  = tr_price - 200
+          model_profit_config_obj.count     += 1
+          model_profit_config_obj.active    = True
+        elif model_profit_config_obj.active is True:
+          if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+            # FREEZE PROFIT
+            gain, p_l = freeze_all_30.freeze_all(entry_list,kite_conn_var)
+            models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit)).save()
+            model_profit_config_obj.day_hit   += 1
+            model_profit_config_obj.target    = 0
+            model_profit_config_obj.stoploss  = 0
+            model_profit_config_obj.count     = 0
+            model_profit_config_obj.active    = False
+            model_profit_config_obj.entry     = 0
+            # PROFIT TABLE
+            model_config_obj.current_gain           = 0
+            model_config_obj.current_gain_entry     = 0
+            model_config_obj.top_gain               = 0
+            model_config_obj.top_gain_entry         = 0
+            model_config_obj.top_loss               = 0
+            model_config_obj.top_loss_entry         = 0
+        model_profit_config_obj.save()
+        model_config_obj.save()
       if index == 2:
-        actual_gain_list  = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
-        total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
-        model_config_obj.current_gain           = round(total_sum,2)
-        model_config_obj.current_gain_time      = datetime.now().time()
-        model_config_obj.current_gain_entry     = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
-        if len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
-          model_config_obj.max_entry     = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
-        if total_sum > model_config_obj.top_gain:
-          model_config_obj.top_gain       = round(total_sum,2)
-          model_config_obj.top_gain_time  = datetime.now().time()
-          model_config_obj.top_gain_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
-        if total_sum < model_config_obj.top_loss:
-          model_config_obj.top_loss       = round(total_sum,2)
-          model_config_obj.top_loss_time  = datetime.now().time()
-          model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
+        model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
+        model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
+        entry_list                     = models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True)
+        tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
+        model_profit_config_obj.target    = tr_price
+        model_profit_config_obj.entry     = len(entry_list)
+        if model_config_obj.current_gain > tr_price:
+          model_profit_config_obj.target    = tr_price + 500
+          model_profit_config_obj.stoploss  = tr_price - 200
+          model_profit_config_obj.count     += 1
+          model_profit_config_obj.active    = True
+        elif model_profit_config_obj.active is True:
+          if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+            # FREEZE PROFIT
+            gain, p_l = freeze_all_15_temp.freeze_all(entry_list,kite_conn_var)
+            models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit)).save()
+            model_profit_config_obj.day_hit   += 1
+            model_profit_config_obj.target    = 0
+            model_profit_config_obj.stoploss  = 0
+            model_profit_config_obj.count     = 0
+            model_profit_config_obj.active    = False
+            model_profit_config_obj.entry     = 0
+            # PROFIT TABLE
+            model_config_obj.current_gain           = 0
+            model_config_obj.current_gain_entry     = 0
+            model_config_obj.top_gain               = 0
+            model_config_obj.top_gain_entry         = 0
+            model_config_obj.top_loss               = 0
+            model_config_obj.top_loss_entry         = 0
+        model_profit_config_obj.save()
+        model_config_obj.save()
       if index == 3:
-        actual_gain_list  = models_a.CROSSOVER_30_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference', flat=True)
-        total_sum = sum(actual_gain_list) + sum(model_name_dict[model_name])
-        model_config_obj.current_gain           = round(total_sum,2)
-        model_config_obj.current_gain_time      = datetime.now().time()
-        model_config_obj.current_gain_entry     = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
-        if len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
-          model_config_obj.max_entry     = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
-        if total_sum > model_config_obj.top_gain:
-          model_config_obj.top_gain       = round(total_sum,2)
-          model_config_obj.top_gain_time  = datetime.now().time()
-          model_config_obj.top_gain_entry = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
-        if total_sum < model_config_obj.top_loss:
-          model_config_obj.top_loss       = round(total_sum,2)
-          model_config_obj.top_loss_time  = datetime.now().time()
-          model_config_obj.top_loss_entry = len(models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True))
-      model_config_obj.save()
+        model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
+        model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
+        entry_list                     = models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True)
+        tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
+        model_profit_config_obj.target    = tr_price
+        model_profit_config_obj.entry     = len(entry_list)
+        if model_config_obj.current_gain > tr_price:
+          model_profit_config_obj.target    = tr_price + 500
+          model_profit_config_obj.stoploss  = tr_price - 200
+          model_profit_config_obj.count     += 1
+          model_profit_config_obj.active    = True
+        elif model_profit_config_obj.active is True:
+          if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+            # FREEZE PROFIT
+            gain, p_l = freeze_all_30_temp.freeze_all(entry_list,kite_conn_var)
+            models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit)).save()
+            model_profit_config_obj.day_hit   += 1
+            model_profit_config_obj.target    = 0
+            model_profit_config_obj.stoploss  = 0
+            model_profit_config_obj.count     = 0
+            model_profit_config_obj.active    = False
+            model_profit_config_obj.entry     = 0
+            # PROFIT TABLE
+            model_config_obj.current_gain           = 0
+            model_config_obj.current_gain_entry     = 0
+            model_config_obj.top_gain               = 0
+            model_config_obj.top_gain_entry         = 0
+            model_config_obj.top_loss               = 0
+            model_config_obj.top_loss_entry         = 0
+        model_profit_config_obj.save()
+        model_config_obj.save()
 
   elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
     model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN', 'CRS_30_MIN_TEMP']
@@ -384,6 +520,7 @@ def ltp_of_entries(self):
       model_config_obj.save()
 
     response.update({'LTP': True, 'STATUS': 'SQUARED OFF','LTP_30_MIN': True, 'STATUS_30_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
+
   else:
     response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED','LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_30_MIN': True, 'STATUS_30_MIN': 'MARKET IS CLOSED.'})
   return response

@@ -19,6 +19,15 @@ class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','model_name','current_gain','current_gain_time','current_gain_entry','top_gain','top_gain_time','top_gain_entry','top_loss','top_loss_time','top_loss_entry','max_entry','p_l')
     list_filter = ("date",)
 
+@admin.register(models.PROFIT_CONFIG)
+class PROFIT_CONFIG_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('model_name','active','count','day_hit','target','stoploss','entry')
+
+@admin.register(models.FREEZE_PROFIT)
+class FREEZE_PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','model_name','time','indicate','price','p_l','day_hit','entry')
+    list_filter = ("date",'model_name')
+
 @admin.register(models.CROSSOVER_15_MIN)
 class CROSSOVER_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','order_status')

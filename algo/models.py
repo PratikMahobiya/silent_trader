@@ -6,7 +6,7 @@ class STOCK(models.Model):
     instrument_key          = models.BigIntegerField(verbose_name='INSTRUMENT KEY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     active_15               = models.BooleanField(verbose_name='ACTIVE 15 Minute',default=True)
-    active_30                = models.BooleanField(verbose_name='ACTIVE 30 Minute',default=True)
+    active_30               = models.BooleanField(verbose_name='ACTIVE 30 Minute',default=True)
     def __str__(self):
         return self.symbol
     class Meta:
@@ -39,6 +39,33 @@ class PROFIT(models.Model):
     	return self.id
     class Meta:
         db_table = 'PROFIT'
+
+class PROFIT_CONFIG(models.Model):
+    model_name              = models.CharField(max_length=100, verbose_name='MODEL NAME')
+    active                  = models.BooleanField(verbose_name='ACTIVE',default=False)
+    count                   = models.BigIntegerField(verbose_name='HIT_COUNT',default=0)
+    day_hit                 = models.BigIntegerField(verbose_name='DAY_HIT',default=1)
+    target                  = models.FloatField(verbose_name='TARGET',default=0)
+    stoploss                = models.FloatField(verbose_name='STOPLOSS',default=0)
+    entry                   = models.BigIntegerField(verbose_name='NUM. OF ENT',default=0)
+    def __int__(self):
+    	return self.id
+    class Meta:
+        db_table = 'PROFIT_CONFIG'
+
+class FREEZE_PROFIT(models.Model):
+    date                    = models.DateField(auto_now_add=True)
+    model_name              = models.CharField(max_length=100, verbose_name='MODEL NAME')
+    time                    = models.TimeField(auto_now_add=True)
+    indicate                = models.CharField(max_length=100, verbose_name='INDICATE')
+    price                   = models.FloatField(verbose_name='PRICE')
+    p_l                     = models.FloatField(verbose_name='PROFIT')
+    entry                   = models.BigIntegerField(verbose_name='NUM. OF ENT')
+    day_hit                 = models.CharField(max_length=100, verbose_name='DAY_HIT')
+    def __int__(self):
+    	return self.id
+    class Meta:
+        db_table = 'FREEZE_PROFIT'
 class CROSSOVER_15_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
