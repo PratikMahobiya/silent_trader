@@ -9,7 +9,7 @@ def download_trend_data_60(intervals,kite_conn_var):
   df_list = []
   df_key  = []
   if time(9,14,00) <= datetime.now().time() <= time(9,25,00):
-    sleep(70)
+    sleep(300)
   for_trend = models_a.STOCK.objects.filter(active_30 = True).values_list('symbol', flat=True)
   for stock_name in for_trend:
     sleep(0.3)
