@@ -21,7 +21,7 @@ app.conf.update(timezone = 'Asia/Kolkata')
 app.conf.beat_schedule = {
     'STOCKS_CONFIG_FILES':{
         'task': 'algo.tasks.get_stocks_configs',
-        'schedule': crontab(minute=50, hour=1, day_of_week='mon-fri'),
+        'schedule': crontab(minute=10, hour=2, day_of_week='mon-fri'),
     },
     'CLEAR_TRANSACTIONS':{
         'task': 'algo.tasks.Clear_Transactions',

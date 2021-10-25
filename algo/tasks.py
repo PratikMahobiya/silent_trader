@@ -191,7 +191,7 @@ def get_stocks_configs(self):
     if not models_a.PROFIT_CONFIG.objects.filter(model_name = model_name).exists():
       models_a.PROFIT_CONFIG(model_name = model_name).save()
     else:
-      model_profit_config_obj = models_a.PROFIT_CONFIG.objects.filter(model_name = model_name)
+      model_profit_config_obj = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
       model_profit_config_obj.day_hit   = 1
       model_profit_config_obj.target    = 5000
       model_profit_config_obj.stoploss  = 0
