@@ -381,7 +381,7 @@ def ltp_of_entries(self):
       # ---------------------------- FREEZE THE STOCK AT IT LIVE GAIN --------------------
       if index == 0:
         model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-        model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
+        model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
         entry_list                     = models.ENTRY_15M.objects.all().values_list('symbol',flat=True)
         tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
         if model_profit_config_obj.active is False:
@@ -426,7 +426,7 @@ def ltp_of_entries(self):
         model_config_obj.save()
       if index == 1:
         model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-        model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
+        model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
         entry_list                     = models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True)
         tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
         if model_profit_config_obj.active is False:
@@ -469,7 +469,7 @@ def ltp_of_entries(self):
         model_config_obj.save()
       if index == 2:
         model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-        model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
+        model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
         entry_list                     = models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True)
         tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
         if model_profit_config_obj.active is False:
@@ -512,7 +512,7 @@ def ltp_of_entries(self):
         model_config_obj.save()
       if index == 3:
         model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-        model_profit_config_obj        = models_a.PROFIT_CONFIG.get(model_name = model_name)
+        model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
         entry_list                     = models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol',flat=True)
         tr_price                       = len(entry_list)*1000 if len(entry_list) < 5 else 5000
         if model_profit_config_obj.active is False:
