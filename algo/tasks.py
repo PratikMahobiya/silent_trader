@@ -209,7 +209,7 @@ def get_stocks_configs(self):
     if stock not in model_30_entry_list:
       models_30.TREND_30M_A.objects.filter(symbol = stock).delete()
   model_30_temp_entry_list = models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol', flat=True)
-  model_30_temp_trend_list = models_30_temp.ENTRY_30M_TEMP.objects.all().values_list('symbol', flat=True)
+  model_30_temp_trend_list = models_30_temp.TREND_30M_A_TEMP.objects.all().values_list('symbol', flat=True)
   for stock in model_30_temp_trend_list:
     if stock not in model_30_temp_entry_list:
       models_30_temp.TREND_30M_A_TEMP.objects.filter(symbol = stock).delete()
