@@ -27,7 +27,6 @@ def freeze_all(stock_list, kite_conn_var):
     stocks_ltp = kite_conn_var.ltp(active_stocks)
     for stock_key in stocks_ltp:
       price = stocks_ltp[stock_key]['last_price']
-      gain.append(price)
       stock = stock_key.split(':')[-1]
       stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
       if stock_config_obj.order_id != 0:
@@ -45,6 +44,7 @@ def freeze_all(stock_list, kite_conn_var):
           diff          = price - stock_config_obj.buy_price
           profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
           diff          = round((diff * stock_config_obj.quantity),2)
+          gain.append(diff)
           p_l.append(profit)
 
           trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FREEZE','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
@@ -65,6 +65,7 @@ def freeze_all(stock_list, kite_conn_var):
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2)
+        gain.append(diff)
         p_l.append(profit)
 
         trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FREEZE','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.d_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
