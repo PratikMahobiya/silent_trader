@@ -25,7 +25,7 @@ class PROFIT_CONFIG_Admin(ExportActionMixin,admin.ModelAdmin):
 
 @admin.register(models.FREEZE_PROFIT)
 class FREEZE_PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','model_name','time','indicate','price','p_l','day_hit','entry')
+    list_display = ('date','model_name','time','indicate','price','p_l','top_price','stoploss','day_hit','entry')
     list_filter = ("date",'model_name')
 
 @admin.register(models.CROSSOVER_15_MIN)

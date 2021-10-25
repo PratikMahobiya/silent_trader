@@ -45,7 +45,7 @@ class PROFIT_CONFIG(models.Model):
     active                  = models.BooleanField(verbose_name='ACTIVE',default=False)
     count                   = models.BigIntegerField(verbose_name='HIT_COUNT',default=0)
     day_hit                 = models.BigIntegerField(verbose_name='DAY_HIT',default=1)
-    target                  = models.FloatField(verbose_name='TARGET',default=0)
+    target                  = models.FloatField(verbose_name='TARGET',default=5000)
     stoploss                = models.FloatField(verbose_name='STOPLOSS',default=0)
     entry                   = models.BigIntegerField(verbose_name='NUM. OF ENT',default=0)
     def __int__(self):
@@ -60,6 +60,8 @@ class FREEZE_PROFIT(models.Model):
     indicate                = models.CharField(max_length=100, verbose_name='INDICATE')
     price                   = models.FloatField(verbose_name='PRICE')
     p_l                     = models.FloatField(verbose_name='PROFIT')
+    top_price               = models.FloatField(verbose_name='TOP PRICE',default=0)
+    stoploss                = models.FloatField(verbose_name='STOPLOSS',default=0)
     entry                   = models.BigIntegerField(verbose_name='NUM. OF ENT')
     day_hit                 = models.CharField(max_length=100, verbose_name='DAY_HIT')
     def __int__(self):

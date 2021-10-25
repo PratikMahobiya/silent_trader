@@ -35,7 +35,7 @@ def model(intervals, kite_conn_var):
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.'
 
-  elif time(15,00,00) <= datetime.now().time() <= time(15,30,00):
+  elif time(15,00,00) <= datetime.now().time() < time(15,30,00):
     # Trend Update i every 15 and 45 interval
     trending_stocks_list = []
     if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
@@ -59,6 +59,6 @@ def model(intervals, kite_conn_var):
     else:
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.'
-  elif datetime.now().time() > time(15,30,00):
+  elif datetime.now().time() >= time(15,30,00):
     return 'MARKET ENDED.'
   return 'MARKET NOT STARTED.'
