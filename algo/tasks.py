@@ -257,6 +257,7 @@ def Clear_Transactions(self):
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_30': False, 'STATUS_30': 'NONE','ACTIVE_STOCKS_30': None}
+  # CALCULATE CURRENT RETURN OF ALL ACTIVE STOCKS
   if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,17,00):
     kite_conn_var = connect_to_kite_connection()
 
@@ -488,6 +489,7 @@ def ltp_of_entries(self):
         model_profit_config_obj.save()
         model_config_obj.save()
 
+  # CALCULATE THE RETURN OF ALL MODELS
   elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
     model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN', 'CRS_30_MIN_TEMP']
     for ind, m_name in enumerate(model_name_list):

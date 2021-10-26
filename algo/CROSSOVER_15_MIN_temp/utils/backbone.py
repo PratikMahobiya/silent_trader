@@ -9,7 +9,7 @@ def model(intervals, kite_conn_var):
     intervals          = Intervals for Trading and Trend Analysis
     kite_conn_var      = to place orders in zerodha
   '''
-  # Regular Trades Execution
+  # Regular Trades Execution DAY TIME
   if datetime.now().time() >= time(9,44,00) and datetime.now().time() < time(15,00,00):
     # Trend Update i every 15 and 45 interval
     trending_stocks_list = []
@@ -35,6 +35,7 @@ def model(intervals, kite_conn_var):
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.'
 
+  # TRADE FOR BTST
   elif time(15,00,00) <= datetime.now().time() < time(15,30,00):
     # Trend Update i every 15 and 45 interval
     trending_stocks_list = []
@@ -59,6 +60,8 @@ def model(intervals, kite_conn_var):
     else:
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.'
+  
+  # AFTER MARKET
   elif datetime.now().time() >= time(15,30,00):
     return 'MARKET ENDED.'
   return 'MARKET NOT STARTED.'

@@ -5,25 +5,25 @@ from import_export.admin import ExportActionMixin
 # Register your models here.
 @admin.register(models.TREND_15M_A)
 class TREND_15M_A_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol','rsi')
+    list_display = ('symbol','rsi','time')
     list_per_page = 10
     search_fields = ['symbol',]
 
 @admin.register(models.TREND_15M_A_BTST)
 class TREND_15M_A_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol','rsi')
+    list_display = ('symbol','rsi','time')
     list_per_page = 10
     search_fields = ['symbol',]
 
 @admin.register(models.ENTRY_15M)
 class ENTRY_15M_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol',)
+    list_display = ('symbol','time')
     list_per_page = 10
     search_fields = ['symbol',]
 
 @admin.register(models.ENTRY_15M_BTST)
 class ENTRY_15M_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol',)
+    list_display = ('symbol','time')
     list_per_page = 10
     search_fields = ['symbol',]
 

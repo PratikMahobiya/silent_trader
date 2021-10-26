@@ -4,22 +4,26 @@ from django.db import models
 class TREND_15M_A(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')
+    time                    = models.DateTimeField(auto_now_add=True,verbose_name='TIME',default=0)
     class Meta:
         db_table = 'TREND_15M_A'
 
 class TREND_15M_A_BTST(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')
+    time                    = models.DateTimeField(auto_now_add=True,verbose_name='TIME',default=0)
     class Meta:
         db_table = 'TREND_15M_A_BTST'
 
 class ENTRY_15M(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
+    time                    = models.DateTimeField(auto_now_add=True,verbose_name='TIME',default=0)
     class Meta:
         db_table = 'ENTRY_15M'
 
 class ENTRY_15M_BTST(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
+    time                    = models.DateTimeField(auto_now_add=True,verbose_name='TIME',default=0)
     class Meta:
         db_table = 'ENTRY_15M_BTST'
 

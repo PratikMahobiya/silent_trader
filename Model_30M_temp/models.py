@@ -4,11 +4,13 @@ from django.db import models
 class TREND_30M_A_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     rsi                     = models.FloatField(verbose_name='RSI')
+    time                    = models.DateTimeField(auto_now_add=True,verbose_name='TIME',default=0)
     class Meta:
         db_table = 'TREND_30M_A_TEMP'
 
 class ENTRY_30M_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
+    time                    = models.DateTimeField(auto_now_add=True,verbose_name='TIME',default=0)
     class Meta:
         db_table = 'ENTRY_30M_TEMP'
 

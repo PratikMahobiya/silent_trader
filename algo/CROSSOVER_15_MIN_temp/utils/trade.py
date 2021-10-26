@@ -124,6 +124,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
                   if transaction.is_valid():
                     transaction.save()
 
+# BTST TARDES
 def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var):
   for stock in for_trade_stocks:
     ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[4])
@@ -137,7 +138,7 @@ def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var)
       updatestoploss(stock, data_frame, atr)
   return 0
 
-  # BUYS STOCKS ; ENTRY
+# BUYS STOCKS ; ENTRY
 def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
