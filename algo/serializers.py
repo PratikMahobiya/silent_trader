@@ -31,8 +31,3 @@ class CROSSOVER_15_Min_Serializer_TEMP_BTST(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_15_MIN_TEMP_BTST
 		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')
-
-class CROSSOVER_30_MIN_Serializer_TEMP(serializers.ModelSerializer):
-	class Meta:
-		model 	= models.CROSSOVER_30_MIN_TEMP
-		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status')

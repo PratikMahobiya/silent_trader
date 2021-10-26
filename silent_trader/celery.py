@@ -23,10 +23,6 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.get_stocks_configs',
         'schedule': crontab(minute=0, hour=1, day_of_week='mon-fri'),
     },
-    # 'CLEAR_TRANSACTIONS':{
-    #     'task': 'algo.tasks.Clear_Transactions',
-    #     'schedule': crontab(minute=0, hour=1),
-    # },
     'LTD_5_SEC':{
         'task': 'algo.tasks.ltp_of_entries',
         'schedule': 5.0,
@@ -43,10 +39,6 @@ app.conf.beat_schedule = {
     'CRS_15_MIN_TEMP':{
         'task': 'algo.tasks.CROSS_OVER_RUNS_15_MIN_TEMP',
         'schedule': crontab(minute='*/15',hour='9-15', day_of_week='mon-fri'),
-    },
-    'CRS_30_MIN_TEMP':{
-        'task': 'algo.tasks.CROSS_OVER_RUNS_30_MIN_TEMP',
-        'schedule': crontab(minute='*/30',hour='9-15', day_of_week='mon-fri'),
     },
 }
 
