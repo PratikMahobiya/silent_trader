@@ -20,10 +20,10 @@ def stockrsi(fastk, fastd):
     flag.append(0)
   else:
     flag.append(1)
-  if flag.count(1) == 2:
-    return True
-  else:
+  if flag.count(0) == 2:
     return False
+  else:
+    return True
 
 def checking_close_ema_diff(stock,data_frame,ema_max):
   per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100
@@ -87,7 +87,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                 type_str         = 'BF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
                 stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
                 stock_config_obj.buy            = True
-                stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
+                stock_config_obj.f_stoploss     = checking_stoploss_fixed(data_frame[stock]['Close'].iloc[-2])
                 stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
                 stock_config_obj.target         = price + price * 0.005
                 stock_config_obj.quantity       = quantity
@@ -121,7 +121,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                     type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
                     stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
                     stock_config_obj.buy            = True
-                    stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
+                    stock_config_obj.f_stoploss     = checking_stoploss_fixed(data_frame[stock]['Close'].iloc[-2])
                     stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
                     stock_config_obj.target         = price + price * 0.005
                     stock_config_obj.quantity       = quantity

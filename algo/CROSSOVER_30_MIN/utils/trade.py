@@ -10,24 +10,9 @@ def place_ord(kite_conn_var,stock):
   # -------------------------------------------
   return order_id, order_status, price, quantity
 
-def stockrsi(fastk, fastd):
-  flag = []
-  if fastd[-1] >= 80:
-    flag.append(0)
-  else:
-    flag.append(1)
-  if fastk[-1] >= 80:
-    flag.append(0)
-  else:
-    flag.append(1)
-  if flag.count(1) == 2:
-    return True
-  else:
-    return False
-
 def checking_close_ema_diff(stock,data_frame,ema_max):
   per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/data_frame[stock]['Close'].iloc[-2])*100
-  if per < 0.7:
+  if per < 0.9:
     return True
   else:
     return False
@@ -50,10 +35,9 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[9])
     atr         = talib.ATR(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[10])
-    fastk, fastd = talib.STOCHRSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=14, fastk_period=3, fastd_period=3, fastd_matype=0)
     stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
-      buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var)
+      buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var)
     else:
       updatestoploss(stock, data_frame, atr)
   return 0
@@ -71,11 +55,10 @@ def updatestoploss(stock, data_frame, atr):
   return 0
 
 # BUYS STOCKS ; ENTRY
-def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var):
+def buys(stock, data_frame, ema_max, ema_min, rsi, atr, kite_conn_var):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
-    # if checking_close_ema_diff(stock,data_frame,ema_max):
-    if stockrsi(fastk, fastd):
+    if checking_close_ema_diff(stock,data_frame,ema_max):
       if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
@@ -107,8 +90,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
     if ema_min[-2] < ema_max[-2]:
-      # if checking_close_ema_diff(stock,data_frame,ema_max):
-      if stockrsi(fastk, fastd):
+      if checking_close_ema_diff(stock,data_frame,ema_max):
         if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
           if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
             if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
