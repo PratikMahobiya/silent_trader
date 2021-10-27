@@ -551,6 +551,7 @@ def ltp_of_entries(self):
         model_config_obj.current_gain_time       = datetime.now().time()
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = round(sum(profit),2)
+      model_config_obj.save()
 
     response.update({'LTP': True, 'STATUS': 'SQUARED OFF','LTP_30_MIN': True, 'STATUS_30_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
 
