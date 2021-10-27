@@ -47,19 +47,19 @@ def freeze_all(stock_list, kite_conn_var):
           gain.append(diff)
           p_l.append(profit)
 
-          trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FREEZE','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
-          transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
-          if transaction.is_valid():
-            transaction.save()
-          models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-          models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
-          stock_config_obj.buy                  = False
-          stock_config_obj.d_sl_flag            = False
-          stock_config_obj.fixed_target_flag    = False
-          stock_config_obj.trend                = False
-          stock_config_obj.count                = 0
-          stock_config_obj.order_id             = 0
-          stock_config_obj.save()
+          # trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FREEZE','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+          # transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
+          # if transaction.is_valid():
+          #   transaction.save()
+          # models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
+          # models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+          # stock_config_obj.buy                  = False
+          # stock_config_obj.d_sl_flag            = False
+          # stock_config_obj.fixed_target_flag    = False
+          # stock_config_obj.trend                = False
+          # stock_config_obj.count                = 0
+          # stock_config_obj.order_id             = 0
+          # stock_config_obj.save()
       else:
         order_id       = '0'
         order_status   = 'NOT PLACED'
@@ -69,17 +69,17 @@ def freeze_all(stock_list, kite_conn_var):
         gain.append(diff)
         p_l.append(profit)
 
-        trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FREEZE','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.d_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
-        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
-        if transaction.is_valid():
-          transaction.save()
-        models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-        models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
-        stock_config_obj.buy                  = False
-        stock_config_obj.d_sl_flag            = False
-        stock_config_obj.fixed_target_flag    = False
-        stock_config_obj.trend                = False
-        stock_config_obj.count                = 0
-        stock_config_obj.order_id             = 0
-        stock_config_obj.save()
+        # trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FREEZE','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.d_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+        # transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
+        # if transaction.is_valid():
+        #   transaction.save()
+        # models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
+        # models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+        # stock_config_obj.buy                  = False
+        # stock_config_obj.d_sl_flag            = False
+        # stock_config_obj.fixed_target_flag    = False
+        # stock_config_obj.trend                = False
+        # stock_config_obj.count                = 0
+        # stock_config_obj.order_id             = 0
+        # stock_config_obj.save()
   return gain, p_l
