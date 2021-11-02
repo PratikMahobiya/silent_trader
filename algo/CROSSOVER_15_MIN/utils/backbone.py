@@ -36,33 +36,33 @@ def model(intervals, kite_conn_var):
       return 'NO STOCK IS IN TRENDING.'
 
   # TRADE FOR BTST
-  elif time(14,44,00) <= datetime.now().time() < time(15,30,00):
-    # # Trend Update i every 15 and 45 interval
-    # trending_stocks_list = []
-    # if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
-    #   # DownLoad data for trend analysis
-    #   data_frame  = get_data.download_trend_data_30(intervals,kite_conn_var)
+  elif time(14,44,00) <= datetime.now().time() <= time(15,30,5):
+    # Trend Update i every 15 and 45 interval
+    trending_stocks_list = []
+    if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
+      # DownLoad data for trend analysis
+      data_frame  = get_data.download_trend_data_30(intervals,kite_conn_var)
 
-    #   # Get the list of Trending Stocks in 30 Minutes
-    #   trending_stocks.trending_30_BTST(data_frame,intervals)
-    #   trending_stocks_list        = models.TREND_15M_A_BTST.objects.all().values_list('symbol', flat=True)
-    # else:
-    #   # Get the list of those Trending Stocks who are in trend in 30 Minutes
-    #   trending_stocks_list    = models.TREND_15M_A_BTST.objects.all().values_list('symbol', flat=True)
+      # Get the list of Trending Stocks in 30 Minutes
+      trending_stocks.trending_30_BTST(data_frame,intervals)
+      trending_stocks_list        = models.TREND_15M_A_BTST.objects.all().values_list('symbol', flat=True)
+    else:
+      # Get the list of those Trending Stocks who are in trend in 30 Minutes
+      trending_stocks_list    = models.TREND_15M_A_BTST.objects.all().values_list('symbol', flat=True)
 
-    # if len(trending_stocks_list) != 0:
-    #   # DownLoad data for initiating Trades
-    #   trade_data_frame = get_data.download_trade_data(trending_stocks_list,intervals,kite_conn_var)
+    if len(trending_stocks_list) != 0:
+      # DownLoad data for initiating Trades
+      trade_data_frame = get_data.download_trade_data(trending_stocks_list,intervals,kite_conn_var)
 
-    #   # Initiating trades
-    #   trade.trade_execution_BTST(trade_data_frame, trending_stocks_list, intervals, kite_conn_var)
-    #   return 'SUCCESS'
-    # else:
-    #   # print('None of them is in Trending.')
-    #   return 'NO STOCK IS IN TRENDING.'
-    return 'ENTRY IS CLOSED.'
+      # Initiating trades
+      trade.trade_execution_BTST(trade_data_frame, trending_stocks_list, intervals, kite_conn_var)
+      return 'SUCCESS'
+    else:
+      # print('None of them is in Trending.')
+      return 'NO STOCK IS IN TRENDING.'
+    # return 'ENTRY IS CLOSED.'
 
   # AFTER MARKET
-  elif datetime.now().time() >= time(15,30,00):
+  elif datetime.now().time() > time(15,30,5):
     return 'MARKET ENDED.'
   return 'MARKET NOT STARTED.'

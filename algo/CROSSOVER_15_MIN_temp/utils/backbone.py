@@ -36,7 +36,7 @@ def model(intervals, kite_conn_var):
       return 'NO STOCK IS IN TRENDING.'
 
   # TRADE FOR BTST
-  if time(14,44,00) <= datetime.now().time() < time(15,30,00):
+  if time(14,44,00) <= datetime.now().time() <= time(15,30,5):
     # Trend Update i every 15 and 45 interval
     trending_stocks_list = []
     if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
@@ -62,6 +62,6 @@ def model(intervals, kite_conn_var):
       return 'NO STOCK IS IN TRENDING.'
   
   # AFTER MARKET
-  elif datetime.now().time() >= time(15,30,00):
+  elif datetime.now().time() > time(15,30,5):
     return 'MARKET ENDED.'
   return 'MARKET NOT STARTED.'

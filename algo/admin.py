@@ -21,7 +21,7 @@ class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
 
 @admin.register(models.PROFIT_CONFIG)
 class PROFIT_CONFIG_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('model_name','active','count','day_hit','target','stoploss','entry')
+    list_display = ('model_name','zerodha_entry','active','count','day_hit','target','stoploss','entry')
 
 @admin.register(models.FREEZE_PROFIT)
 class FREEZE_PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
@@ -44,6 +44,13 @@ class CROSSOVER_15_Min_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
 
 @admin.register(models.CROSSOVER_30_MIN)
 class CROSSOVER_30_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','order_status')
+    list_filter = ("created_on",)
+    list_per_page = 10
+    search_fields = ['symbol','date']
+
+@admin.register(models.CROSSOVER_30_MIN_BTST)
+class CROSSOVER_30_MIN_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','order_status')
     list_filter = ("created_on",)
     list_per_page = 10

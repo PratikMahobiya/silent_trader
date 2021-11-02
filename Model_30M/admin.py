@@ -9,14 +9,32 @@ class TREND_30M_A_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol',]
 
+@admin.register(models.TREND_30M_A_BTST)
+class TREND_30M_A_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('symbol','rsi','time')
+    list_per_page = 10
+    search_fields = ['symbol',]
+
 @admin.register(models.ENTRY_30M)
 class ENTRY_30M_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('symbol','time')
     list_per_page = 10
     search_fields = ['symbol',]
 
+@admin.register(models.ENTRY_30M_BTST)
+class ENTRY_30M_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('symbol','time')
+    list_per_page = 10
+    search_fields = ['symbol',]
+
 @admin.register(models.CONFIG_30M)
 class CONFIG_30M_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('symbol','buy','trend','d_sl_flag','count','buy_price','stoploss','target','f_stoploss','d_stoploss','sector','last_top','quantity','order_id','order_status')
+    list_per_page = 10
+    search_fields = ['symbol',]
+
+@admin.register(models.CONFIG_30M_BTST)
+class CONFIG_30M_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('symbol','buy','trend','d_sl_flag','count','buy_price','stoploss','target','f_stoploss','d_stoploss','sector','last_top','quantity','order_id','order_status')
     list_per_page = 10
     search_fields = ['symbol',]
