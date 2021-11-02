@@ -243,7 +243,7 @@ def ltp_of_entries(self):
     kite_conn_var = connect_to_kite_connection()
 
     # LTP CRS BTST
-    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,46,00):
+    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
       try:
         status, active_stocks, gain = check_ltp_btst.get_stock_ltp(kite_conn_var)
         response.update({'LTP_BTST': True, 'STATUS_BTST': status,'ACTIVE_STOCKS_BTST':active_stocks})
@@ -268,7 +268,7 @@ def ltp_of_entries(self):
       model_config_obj.save()
 
     # LTP CRS TEMP BTST
-    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,46,00):
+    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
       try:
         status, active_stocks, gain = check_ltp_temp_btst.get_stock_ltp(kite_conn_var)
         response.update({'LTP_BTST': True, 'STATUS_BTST': status,'ACTIVE_STOCKS_BTST':active_stocks})
@@ -293,7 +293,7 @@ def ltp_of_entries(self):
       model_config_obj.save()
 
     # LTP CRS 30 MIN BTST
-    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,46,00):
+    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
       try:
         status, active_stocks, gain = check_ltp_crs_30_btst.get_stock_ltp(kite_conn_var)
         response.update({'LTP_BTST': True, 'STATUS_BTST': status,'ACTIVE_STOCKS_BTST':active_stocks})

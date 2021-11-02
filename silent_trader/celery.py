@@ -23,9 +23,9 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.get_stocks_configs',
         'schedule': crontab(minute=0, hour=1, day_of_week='mon-fri'),
     },
-    'LTD_5_SEC':{
+    'LTP':{
         'task': 'algo.tasks.ltp_of_entries',
-        'schedule': 5.0,
+        'schedule': 3.0,
     },
     'CRS_15_MIN':{
         'task': 'algo.tasks.CROSS_OVER_RUNS_15_MIN',
