@@ -1,6 +1,6 @@
 from algo import serializers
 from Model_15M import models
-from . import models as models_a
+from algo import models as models_a
 import talib
 from . import zerodha_action
 
