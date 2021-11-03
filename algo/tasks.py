@@ -170,6 +170,9 @@ def get_stocks_configs(self):
     # CREATE CONFIG IN FOR 30 MIN
     if not models_30.CONFIG_30M.objects.filter(symbol = stock_sym).exists():
       models_30.CONFIG_30M(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
+    # 30 MIN BTST
+    if not models_30.CONFIG_30M_BTST.objects.filter(symbol = stock_sym).exists():
+      models_30.CONFIG_30M_BTST(symbol = stock_sym, sector = stock_dict[stock_sym][1]).save()
     
     # ----------------------------------- Not Ative ------------------------------------
     # CREATE CONFIG IN FOR 15 MIN TEMP
