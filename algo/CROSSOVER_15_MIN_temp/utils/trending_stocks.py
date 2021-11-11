@@ -8,6 +8,8 @@ def trending_30(data_frame,intervals):
   for_trend_stocks = models_a.STOCK.objects.filter(active_15 = True).values_list('symbol', flat=True)
   for stock in for_trend_stocks:
     rsi = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
+    ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=40)
+    ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=200)
     if rsi[-1] >= 50:
       models.TREND_15M_A_TEMP(symbol = stock, rsi = rsi[-1]).save()
       conf_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
