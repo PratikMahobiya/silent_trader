@@ -97,6 +97,7 @@ def get_stocks_configs(self):
     'IDFCFIRSTB':	[2863105,	'BANK'],
     'IGL':		[2883073,	'INFRA'],
     'INDIANB':	[3663105,	'BANK'],
+    'INDIGO': [2865921,'nill'],
     'INDUSINDBK':	[1346049,	'BANK'],
     'INDUSTOWER':	[7458561,	'INFRA'],
     'INFY':		[408065,	'IT'],

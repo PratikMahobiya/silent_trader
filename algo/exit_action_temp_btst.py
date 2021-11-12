@@ -43,7 +43,7 @@ def sell(stock, price, gain, kite_conn_var):
 
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-        diff          = round((diff * stock_config_obj.quantity),2)
+        diff          = round((diff * stock_config_obj.quantity),2) - 100
         gain.pop()
         trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'HIT_0.5','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
         transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
@@ -75,7 +75,7 @@ def sell(stock, price, gain, kite_conn_var):
 
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-        diff          = round((diff * stock_config_obj.quantity),2)
+        diff          = round((diff * stock_config_obj.quantity),2) - 100
         gain.pop()
         trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FIXED SL','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
         transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
@@ -108,7 +108,7 @@ def sell(stock, price, gain, kite_conn_var):
 
           diff          = price - stock_config_obj.buy_price
           profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-          diff          = round((diff * stock_config_obj.quantity),2)
+          diff          = round((diff * stock_config_obj.quantity),2) - 100
           gain.pop()
           trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'OT_SL','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
           transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
@@ -151,7 +151,7 @@ def sell(stock, price, gain, kite_conn_var):
 
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-        diff          = round((diff * stock_config_obj.quantity),2)
+        diff          = round((diff * stock_config_obj.quantity),2) - 100
         gain.pop()
         type_str = 'HIT'
         if 0 < stock_config_obj.count < 8:
@@ -188,7 +188,7 @@ def sell(stock, price, gain, kite_conn_var):
 
       diff          = price - stock_config_obj.buy_price
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-      diff          = round((diff * stock_config_obj.quantity),2)
+      diff          = round((diff * stock_config_obj.quantity),2) - 100
       gain.pop()
       trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'FIXED SL','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
       transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
@@ -221,7 +221,7 @@ def sell(stock, price, gain, kite_conn_var):
 
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-        diff          = round((diff * stock_config_obj.quantity),2)
+        diff          = round((diff * stock_config_obj.quantity),2) - 100
         gain.pop()
         trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'OT_SL','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
         transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
@@ -255,7 +255,7 @@ def square_off(stock, price, kite_conn_var):
 
       diff          = price - stock_config_obj.buy_price
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-      diff          = round((diff * stock_config_obj.quantity),2)
+      diff          = round((diff * stock_config_obj.quantity),2) - 100
 
       trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'Square_Off','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
       transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
@@ -275,7 +275,7 @@ def square_off(stock, price, kite_conn_var):
     order_status   = 'NOT PLACED'
     diff          = price - stock_config_obj.buy_price
     profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-    diff          = round((diff * stock_config_obj.quantity),2)
+    diff          = round((diff * stock_config_obj.quantity),2) - 100
 
     trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Exit','type':'Square_Off','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.d_stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
     transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
