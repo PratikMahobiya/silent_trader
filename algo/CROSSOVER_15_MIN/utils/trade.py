@@ -142,7 +142,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
 
 # BTST TARDES
 def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var):
-  zerodha_entry_flag = False
+  zerodha_entry_flag = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_15_MAIN_BTST').zerodha_entry
   for stock in for_trade_stocks:
     ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[4])
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
