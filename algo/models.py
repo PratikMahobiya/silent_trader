@@ -43,6 +43,7 @@ class PROFIT(models.Model):
 class PROFIT_CONFIG(models.Model):
     model_name              = models.CharField(max_length=100, verbose_name='MODEL NAME')
     zerodha_entry           = models.BooleanField(verbose_name='ZERODHA ENTRY',default=False)
+    stock_amount            = models.BigIntegerField(verbose_name='STOCK_AMOUNT',default=100000)
     active                  = models.BooleanField(verbose_name='ACTIVE',default=False)
     count                   = models.BigIntegerField(verbose_name='HIT_COUNT',default=0)
     day_hit                 = models.BigIntegerField(verbose_name='DAY_HIT',default=1)

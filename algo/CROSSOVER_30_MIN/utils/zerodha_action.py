@@ -1,5 +1,5 @@
 
-def place_regular_buy_order(kite_conn_var,symbol, zerodha_entry_flag):
+def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
   # Place an order
   quantity  = 1
   ltp       = 0
@@ -10,11 +10,11 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_entry_flag):
     ltp        = stocks_ltp['NSE:'+symbol]['last_price']
     while True:
       price = ltp * quantity
-      if price >= 100000:
+      if price >= zerodha_flag_obj.stock_amount:
         quantity = quantity - 1
         break
       quantity += 1
-    if zerodha_entry_flag is True:
+    if zerodha_flag_obj.zerodha_entry is True:
       order_id = kite_conn_var.place_order(tradingsymbol=symbol,
                                   exchange=kite_conn_var.EXCHANGE_NSE,
                                   transaction_type=kite_conn_var.TRANSACTION_TYPE_BUY,

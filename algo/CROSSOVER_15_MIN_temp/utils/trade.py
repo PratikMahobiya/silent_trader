@@ -4,10 +4,10 @@ from algo import models as models_a
 import talib
 from . import zerodha_action
 
-def place_ord(kite_conn_var,stock, zerodha_entry_flag):
+def place_ord(kite_conn_var,stock, zerodha_flag_obj):
   # Place Order in ZERODHA.
   # -------------------------------------------
-  order_id, order_status, price, quantity = zerodha_action.place_regular_buy_order(kite_conn_var,stock, zerodha_entry_flag)
+  order_id, order_status, price, quantity = zerodha_action.place_regular_buy_order(kite_conn_var,stock, zerodha_flag_obj)
   # -------------------------------------------
   return order_id, order_status, price, quantity
 
@@ -46,7 +46,7 @@ def checking_stoploss_tu(price):
   return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
-  zerodha_entry_flag = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_TEMP').zerodha_entry
+  zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_TEMP')
   for stock in for_trade_stocks:
     ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[4])
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
@@ -55,7 +55,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
     fastk, fastd = talib.STOCHRSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=14, fastk_period=3, fastd_period=3, fastd_matype=0)
     stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
-      buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_entry_flag)
+      buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj)
     else:
       updatestoploss(stock, data_frame, atr)
   return 0
@@ -73,7 +73,7 @@ def updatestoploss(stock, data_frame, atr):
   return 0
 
 # BUYS STOCKS ; ENTRY
-def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_entry_flag):
+def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
     # if stockrsi(fastk, fastd):
@@ -83,7 +83,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
             if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
               if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
                 # Place Order in ZERODHA.
-                order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_entry_flag)
+                order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                 # UPDATE CONFIG
                 type_str         = 'BF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
                 stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
@@ -119,7 +119,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                 if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
                   if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                     # Place Order in ZERODHA.
-                    order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_entry_flag)
+                    order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                     # UPDATE CONFIG
                     type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
                     stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
@@ -146,7 +146,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
 
 # BTST TARDES
 def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var):
-  zerodha_entry_flag = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_15_TEMP_BTST').zerodha_entry
+  zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_15_TEMP_BTST')
   for stock in for_trade_stocks:
     ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[4])
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
@@ -155,13 +155,13 @@ def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var)
     fastk, fastd = talib.STOCHRSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=14, fastk_period=3, fastd_period=3, fastd_matype=0)
     stock_config_obj = models.CONFIG_15M_TEMP_BTST.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
-      buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_entry_flag)
+      buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj)
     else:
       updatestoploss(stock, data_frame, atr)
   return 0
 
 # BUYS STOCKS ; ENTRY
-def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_entry_flag):
+def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
     # if stockrsi(fastk, fastd):
@@ -171,7 +171,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
             if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
               if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
                 # Place Order in ZERODHA.
-                order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_entry_flag)
+                order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                 # UPDATE CONFIG
                 type_str         = 'BF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
                 stock_config_obj = models.CONFIG_15M_TEMP_BTST.objects.get(symbol = stock)
@@ -207,7 +207,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                 if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
                   if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                     # Place Order in ZERODHA.
-                    order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_entry_flag)
+                    order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                     # UPDATE CONFIG
                     type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
                     stock_config_obj = models.CONFIG_15M_TEMP_BTST.objects.get(symbol = stock)

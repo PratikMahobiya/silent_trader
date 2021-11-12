@@ -21,7 +21,7 @@ class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
 
 @admin.register(models.PROFIT_CONFIG)
 class PROFIT_CONFIG_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('model_name','zerodha_entry','active','count','day_hit','target','stoploss','entry')
+    list_display = ('model_name','zerodha_entry','stock_amount','active','count','day_hit','target','stoploss','entry')
 
 @admin.register(models.FREEZE_PROFIT)
 class FREEZE_PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
