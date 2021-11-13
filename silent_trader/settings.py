@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
     # Downloaded Apps -------
     'rest_framework',
+    'corsheaders',
     'django_celery_results',
     'django_celery_beat',
     'import_export',
@@ -62,6 +63,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Allow Access to All Domain
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'silent_trader.urls'
 

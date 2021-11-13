@@ -1,6 +1,10 @@
-from algo import models
+from algo import models, serializers
+from django.http import JsonResponse, response
 from django.shortcuts import render
 from kiteconnect import KiteConnect
+from datetime import datetime, date, timedelta
+
+from rest_framework.decorators import api_view
 
 # Create your views here.
 def Index(request):
@@ -45,3 +49,14 @@ def check(request):
   except Exception as  e:
     context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':e}
   return render(request, 'check.html', context)
+
+@api_view(['GET',])
+def transactions(request):
+  response = {'success': False, 'data': None}
+  if request.method == 'GET':
+    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=1)))
+    serializer    = serializers.CROSSOVER_15_Min_Serializer(queryset, many = True)
+    response.update({'success': True, 'data': serializer.data})
+    return JsonResponse(response)
+  return JsonResponse(response)
+  
