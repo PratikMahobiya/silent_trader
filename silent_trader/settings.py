@@ -65,7 +65,7 @@ MIDDLEWARE = [
 ]
 
 # Allow Access to All Domain
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'silent_trader.urls'
 
