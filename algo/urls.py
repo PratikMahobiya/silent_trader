@@ -9,5 +9,7 @@ urlpatterns = [
 	path('check/', views.check, name='check'),
 	path('generate_token/', views.generate_acc_token, name='generate_token'),
 
-	path('transactions/', views.transactions, name='transactions'),
+	path('transactions/', views.Transactions, name='transactions'),
+	path('active_stocks/', views.Active_Stocks, name='Active Stocks'),
+	path('place_order/', views.PLACE_ORDER, name='Place Order'),
 ]
