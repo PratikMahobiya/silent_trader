@@ -57,6 +57,10 @@ def PLACE_ORDER(request):
   response = {'success': True, 'status': 'Your Order is PLACED.'}
   return JsonResponse(response)
 
+@api_view(['GET',])
+def EXIT_ORDER(request):
+  response = {'success': True, 'status': 'Your Order is EXITED.'}
+  return JsonResponse(response)
 
 @api_view(['GET',])
 def Active_Stocks(request):

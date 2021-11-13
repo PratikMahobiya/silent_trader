@@ -12,4 +12,5 @@ urlpatterns = [
 	path('transactions/', views.Transactions, name='transactions'),
 	path('active_stocks/', views.Active_Stocks, name='Active Stocks'),
 	path('place_order/', views.PLACE_ORDER, name='Place Order'),
+	path('exit_order/', views.EXIT_ORDER, name='Exit Order'),
 ]
