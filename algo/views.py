@@ -52,6 +52,9 @@ def check(request):
     context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':e}
   return render(request, 'check.html', context)
 
+def CRS_MAIN_VIEW(request):
+  return render(request, 'crs_main.html')
+
 @api_view(['GET',])
 def PLACE_ORDER(request):
   response = {'success': True, 'status': 'Your Order is PLACED.'}
