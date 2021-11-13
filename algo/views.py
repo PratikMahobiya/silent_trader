@@ -62,7 +62,7 @@ def PLACE_ORDER(request):
 def Active_Stocks(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=1)), indicate = 'Entry')
+    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=1)), indicate = 'Entry').json()
     # serializer    = serializers.CROSSOVER_15_Min_Serializer(queryset, many = True)
     # response.update({'success': True, 'data': serializer.data})
     response.update({'success': True, 'data': queryset})
@@ -73,7 +73,7 @@ def Active_Stocks(request):
 def Transactions(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=1)))
+    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=1))).json()
     # serializer    = serializers.CROSSOVER_15_Min_Serializer(queryset, many = True)
     # response.update({'success': True, 'data': serializer.data})
     response.update({'success': True, 'data': queryset})
