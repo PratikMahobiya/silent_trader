@@ -79,7 +79,7 @@ def Active_Stocks(request):
 def Transactions(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=2)))
+    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=3)))
     serializer    = serializers.CROSSOVER_15_Min_Serializer(queryset, many = True)
     response.update({'success': True, 'data': serializer.data})
     return JsonResponse(response)
