@@ -17,8 +17,8 @@ async function TransactionAPI() {
         type:transaction.type,
         price: transaction.price,
         profit:transaction.profit,
-        pricedifference:transaction.difference,
-        sector: transaction.sector.toUpperCase(),
+        // pricedifference:transaction.difference,
+        // sector: transaction.sector.toUpperCase(),
         NiftyType:"NA"
 
     }));
