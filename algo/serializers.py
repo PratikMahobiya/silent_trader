@@ -9,7 +9,7 @@ class ZERODHA_KEYS_Serializer(serializers.ModelSerializer):
 class CROSSOVER_15_Min_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_15_MIN
-		fields 	= ('symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status','date')
+		fields 	= ('id','symbol','sector','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status','date')
 
 class CROSSOVER_15_Min_BTST_Serializer(serializers.ModelSerializer):
 	class Meta:
