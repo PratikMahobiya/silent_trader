@@ -75,7 +75,7 @@ def PLACE_ORDER(request):
     # order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
-      models_15_MAIN.CONFIG_15M.objects.filter(model_name = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
+      models_15_MAIN.CONFIG_15M.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
       models.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
