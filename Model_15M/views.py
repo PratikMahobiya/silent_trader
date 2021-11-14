@@ -68,10 +68,10 @@ def place_regular_sell_order(symbol, stock_config_obj):
 @api_view(['GET','POST'])
 def PLACE_ORDER(request):
   if request.method == 'POST':
-    reference_id  = request.POST.get('reference_id', None)
-    symbol        = request.POST.get('symbol', None)
-    price         = request.POST.get('price', None)
-    quantity      = request.POST.get('quantity', None)
+    reference_id  = request.data['reference_id']
+    symbol        = request.data['symbol']
+    price         = request.data['price']
+    quantity      = request.data['quantity']
     # order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     # if order_id != 0:
     #   models_15_MAIN.CONFIG_15M.objects.filter(model_name = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
@@ -79,7 +79,7 @@ def PLACE_ORDER(request):
     #   response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
     #   return JsonResponse(response)
     # response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
-    response = {'success': False, 'status': ' {}, {}, {}, {}'.format(request.data, symbol, price,quantity)}
+    response = {'success': False, 'status': ' {}, {}, {}, {}'.format(reference_id, symbol, price,quantity)}
     return JsonResponse(response)
   response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
   return JsonResponse(response)
