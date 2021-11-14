@@ -113,8 +113,10 @@ def EXIT_ORDER(request):
         return JsonResponse(response)
       response = {'success': False, 'status': '"{}" is NOT EXITED. ..TRY AGAIN..'.format(symbol)}
       return JsonResponse(response)
-    response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
+    response = {'success': False, 'status': 'ALREADY EXITED {}.'.format(symbol)}
     return JsonResponse(response)
+  response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
+  return JsonResponse(response)
 
 @api_view(['GET',])
 def Active_Stocks(request):
