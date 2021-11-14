@@ -79,7 +79,7 @@ def PLACE_ORDER(request):
     #   response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
     #   return JsonResponse(response)
     # response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
-    response = {'success': False, 'status': ' {}, {}, {}, {}'.format(reference_id, symbol, price,quantity)}
+    response = {'success': False, 'status': ' {}, {}, {}, {}'.format(request, symbol, price,quantity)}
     return JsonResponse(response)
   response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
   return JsonResponse(response)
