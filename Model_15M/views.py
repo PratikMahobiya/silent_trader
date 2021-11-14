@@ -122,7 +122,7 @@ def EXIT_ORDER(request):
 def Active_Stocks(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    active_entry  = models_15_MAIN.ENTRY_15M.objects.all().values_list('symbol', 'reference_id', flat=True)
+    active_entry  = models_15_MAIN.ENTRY_15M.objects.all().values_list('symbol', 'reference_id')
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models_15_MAIN.CONFIG_15M.objects.get(symbol = sym_list[0])
