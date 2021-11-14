@@ -72,13 +72,14 @@ def PLACE_ORDER(request):
     symbol        = request.POST.get('symbol', None)
     price         = request.POST.get('price', None)
     quantity      = request.POST.get('quantity', None)
-    order_id, order_status = place_regular_buy_order(symbol, price, quantity)
-    if order_id != 0:
-      models_15_MAIN.CONFIG_15M.objects.filter(model_name = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
-      models.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
-      response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
-      return JsonResponse(response)
-    response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
+    # order_id, order_status = place_regular_buy_order(symbol, price, quantity)
+    # if order_id != 0:
+    #   models_15_MAIN.CONFIG_15M.objects.filter(model_name = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
+    #   models.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
+    #   response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
+    #   return JsonResponse(response)
+    # response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
+    response = {'success': False, 'status': ' {}, {}, {}, {}'.format(reference_id, symbol, price,quantity)}
     return JsonResponse(response)
   response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
   return JsonResponse(response)
