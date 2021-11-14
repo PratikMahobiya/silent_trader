@@ -1,8 +1,8 @@
 async function TransactionAPI() {
     //let response = await fetch('https://jsonplaceholder.typicode.com/users')
-    // let response = await fetch('http://139.59.54.145/place_order/')
-    // let response = await fetch('http://139.59.54.145/active_stocks/')
-    let response = await fetch('http://139.59.54.145/transactions/')
+    // let response = await fetch('http://139.59.54.145/crs15m/place_order/')
+    // let response = await fetch('http://139.59.54.145/crs15m/active_stocks/')
+    let response = await fetch('http://139.59.54.145/crs15m/transactions/')
 
     let data = await response.json();
 
@@ -27,7 +27,7 @@ async function TransactionAPI() {
 
 async function PlaceOrderAPI() {
 
-    let response = await fetch('http://139.59.54.145/place_order/')
+    let response = await fetch('http://139.59.54.145/crs15m/place_order/')
     let data = await response.json();
     //console.log(data);
     return data;
@@ -35,7 +35,7 @@ async function PlaceOrderAPI() {
 
 
 async function ExitOrderAPI() {
-    let response = await fetch('http://139.59.54.145/exit_order/')
+    let response = await fetch('http://139.59.54.145/crs15m/exit_order/')
     let data = await response.json();
     //console.log(data);
     return data;
@@ -45,7 +45,7 @@ async function ExitOrderAPI() {
 
 async function ActiveStocksAPI() {
 
-    let response = await fetch('http://139.59.54.145/active_stocks/')
+    let response = await fetch('http://139.59.54.145/crs15m/active_stocks/')
 
     let data = await response.json();
 
