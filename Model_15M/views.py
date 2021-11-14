@@ -65,7 +65,7 @@ def place_regular_sell_order(symbol, stock_config_obj):
     error_status = 'PROBLEM AT ZERODHA END.'
   return order_id, error_status, ltp
 
-@api_view(['GET',])
+@api_view(['GET','POST'])
 def PLACE_ORDER(request):
   if request.method == 'POST':
     reference_id  = request.POST.get('reference_id', None)
@@ -84,7 +84,7 @@ def PLACE_ORDER(request):
   response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
   return JsonResponse(response)
 
-@api_view(['GET',])
+@api_view(['GET','POST'])
 def EXIT_ORDER(request):
   if request.method == 'POST':
     symbol        = request.POST.get('symbol', None)
