@@ -73,13 +73,13 @@ def PLACE_ORDER(request):
     price         = request.data['price']
     quantity      = request.data['quantity']
     # order_id, order_status = place_regular_buy_order(symbol, price, quantity)
-    # if order_id != 0:
-    #   models_15_MAIN.CONFIG_15M.objects.filter(model_name = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
-    #   models.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
-    #   response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
-    #   return JsonResponse(response)
-    # response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
-    response = {'success': False, 'status': ' {}, {}, {}, {}'.format(reference_id, symbol, price,quantity)}
+    order_id, order_status = 1 , 'NOT ACTIVE'
+    if order_id != 0:
+      models_15_MAIN.CONFIG_15M.objects.filter(model_name = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
+      models.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
+      response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
+      return JsonResponse(response)
+    response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
     return JsonResponse(response)
   response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
   return JsonResponse(response)
@@ -87,10 +87,11 @@ def PLACE_ORDER(request):
 @api_view(['GET','POST'])
 def EXIT_ORDER(request):
   if request.method == 'POST':
-    symbol        = request.POST.get('symbol', None)
+    symbol        = request.data['symbol']
     stock_config_obj = models_15_MAIN.CONFIG_15M.objects.get(symbol = symbol)
     if stock_config_obj.buy is True:
-      order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
+      # order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
+      order_id, order_status, price  = 1 , 'NOT ACTIVE', 200
       if order_id != 0:
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
