@@ -1,12 +1,6 @@
-from algo import models, serializers
-from django.http import JsonResponse, response
+from algo import models
 from django.shortcuts import render
 from kiteconnect import KiteConnect
-from datetime import datetime, date, timedelta
-
-from Model_15M import models as models_15_MAIN
-
-from rest_framework.decorators import api_view
 
 # Create your views here.
 def Index(request):
@@ -51,36 +45,3 @@ def check(request):
   except Exception as  e:
     context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':e}
   return render(request, 'check.html', context)
-
-def CRS_MAIN_VIEW(request):
-  return render(request, 'crs_main.html')
-
-@api_view(['GET',])
-def PLACE_ORDER(request):
-  response = {'success': True, 'status': 'Your Order is PLACED.'}
-  return JsonResponse(response)
-
-@api_view(['GET',])
-def EXIT_ORDER(request):
-  response = {'success': True, 'status': 'Your Order is EXITED.'}
-  return JsonResponse(response)
-
-@api_view(['GET',])
-def Active_Stocks(request):
-  response = {'success': False, 'data': None}
-  if request.method == 'GET':
-    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=4)), indicate = 'Entry')
-    serializer    = serializers.CROSSOVER_15_Min_Serializer(queryset, many = True)
-    response.update({'success': True, 'data': serializer.data})
-    return JsonResponse(response)
-  return JsonResponse(response)
-
-@api_view(['GET',])
-def Transactions(request):
-  response = {'success': False, 'data': None}
-  if request.method == 'GET':
-    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = (date.today() - timedelta(days=4)))
-    serializer    = serializers.CROSSOVER_15_Min_Serializer(queryset, many = True)
-    response.update({'success': True, 'data': serializer.data})
-    return JsonResponse(response)
-  return JsonResponse(response)

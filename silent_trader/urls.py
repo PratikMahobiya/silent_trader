@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from algo import urls as aurls
+from Model_15M import urls as MODEL_15M_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(aurls)),
+    path('crs15m/', include(MODEL_15M_urls)),
 ]

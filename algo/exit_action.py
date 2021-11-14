@@ -65,6 +65,7 @@ def sell(stock, price, gain, kite_conn_var):
         models.ENTRY_15M.objects.filter(symbol = stock).delete()
         models.TREND_15M_A.objects.filter(symbol = stock).delete()
         stock_config_obj.buy          = False
+        stock_config_obj.placed       = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
         stock_config_obj.count        = 0
@@ -95,6 +96,7 @@ def sell(stock, price, gain, kite_conn_var):
       models.ENTRY_15M.objects.filter(symbol = stock).delete()
       models.TREND_15M_A.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
+      stock_config_obj.placed       = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
       stock_config_obj.count        = 0
@@ -126,6 +128,7 @@ def sell(stock, price, gain, kite_conn_var):
         models.ENTRY_15M.objects.filter(symbol = stock).delete()
         models.TREND_15M_A.objects.filter(symbol = stock).delete()
         stock_config_obj.buy          = False
+        stock_config_obj.placed       = False
         stock_config_obj.d_sl_flag    = False
         stock_config_obj.trend        = False
         stock_config_obj.count        = 0
@@ -159,6 +162,7 @@ def square_off(stock, price, kite_conn_var):
       models.ENTRY_15M.objects.filter(symbol = stock).delete()
       models.TREND_15M_A.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
+      stock_config_obj.placed       = False
       stock_config_obj.d_sl_flag    = False
       stock_config_obj.trend        = False
       stock_config_obj.count        = 0
@@ -178,6 +182,7 @@ def square_off(stock, price, kite_conn_var):
     models.ENTRY_15M.objects.filter(symbol = stock).delete()
     models.TREND_15M_A.objects.filter(symbol = stock).delete()
     stock_config_obj.buy          = False
+    stock_config_obj.placed       = False
     stock_config_obj.d_sl_flag    = False
     stock_config_obj.trend        = False
     stock_config_obj.count        = 0
