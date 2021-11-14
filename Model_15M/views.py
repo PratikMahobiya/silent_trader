@@ -13,7 +13,7 @@ def CRS_MAIN_VIEW(request):
   return render(request, 'dashboard_15_main.html')
 
 def connect_to_kite_connection():
-  api_key = open('../algo/config/api_key.txt','r').read()
+  api_key = open('algo/config/api_key.txt','r').read()
   access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
   try:
     kite = KiteConnect(api_key=api_key)
