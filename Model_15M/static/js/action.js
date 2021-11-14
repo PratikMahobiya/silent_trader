@@ -97,7 +97,7 @@ function getData() {
     ActiveStocksAPI().then(data =>
         CreateTableFromJSONActiveStocks(data) // this function will convert the json response to html table
     );
-    //setTimeout(function () { getData();}, 1000);
+    setTimeout(function () { getData();}, 1000);
 }
 
 function CreateTableFromJSON(data) {
