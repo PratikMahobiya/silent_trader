@@ -25,19 +25,34 @@ async function TransactionAPI() {
     return userData;
 }
 
-async function PlaceOrderAPI() {
-
-    let response = await fetch('http://139.59.54.145/crs15m/place_order/')
+async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
+    const data_place_order = { reference_id: reference_id ,symbol: symbol ,price: price ,quantity: quantity};
+    // console.log(data_place_order);
+    let response = await fetch('http://139.59.54.145/crs15m/place_order/', {
+    method: 'POST', // or 'PUT'
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data_place_order),
+    })
     let data = await response.json();
-    //console.log(data);
+    // console.log(data);
     return data;
 }
 
 
-async function ExitOrderAPI() {
-    let response = await fetch('http://139.59.54.145/crs15m/exit_order/')
+async function ExitOrderAPI(symbol) {
+    const data_exit_order = {symbol: symbol};
+    // console.log(data_exit_order);
+    let response = await fetch('http://139.59.54.145/crs15m/exit_order/', {
+    method: 'POST', // or 'PUT'
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data_exit_order),
+    })
     let data = await response.json();
-    //console.log(data);
+    // console.log(data);
     return data;
 }
 
@@ -66,9 +81,9 @@ async function ActiveStocksAPI() {
 
 function button_binding(index, Active) {
     if (Active.placed == true) {
-        return "<button type='submit' id='btn" + index + "' class='btn btn-sm' style='width:max-content; background-color:#FF0000;color:white' value='Submit' onclick=Exitmsg('" + Active.symbol + "')>Exit Order</button>";
+        return "<button type='submit' id='btn" + index + "' class='btn btn-sm' style='width:max-content; background-color:#FF0000;color:white' value='Submit' onclick=Exitmsg('" + Active.symbol + "')>EXIT_ Order</button>";
     } else {
-        return "<button type='submit' id='btn" + index + "' class='btn btn-sm btn-primary' style='width:max-content' value='Submit' onclick=Successmsg(this,'" + Active.symbol + "','" + Active.price + "','" + Active.quantity + "')>Place Order</button>";
+        return "<button type='submit' id='btn" + index + "' class='btn btn-sm btn-primary' style='width:max-content' value='Submit' onclick=Successmsg(this,'" + Active.symbol + "','" + Active.price + "','" + Active.quantity + "','" + Active.reference_id + "')>Place Order</button>";
     }
 }
 
@@ -131,6 +146,11 @@ function CreateTableFromJSON(data) {
                 tabCell.setAttribute("style", "font-weight:900");
             }
 
+            if (j === 1) {
+                tabCell.innerHTML = data[i][col[j]];
+                tabCell.setAttribute("style", "font-weight:700");
+            }
+            
             if (j === 3) {
                 if (data[i][col[j]] === "Entry") {
                     tabCell.innerHTML = data[i][col[j]];
@@ -140,7 +160,11 @@ function CreateTableFromJSON(data) {
                     tabCell.innerHTML = data[i][col[j]];
                     tabCell.setAttribute("style", "color:Red;font-weight:900;text-transform: uppercase");
                 }
-
+                
+            }
+            if (j === 5) {
+                tabCell.innerHTML = data[i][col[j]];
+                tabCell.setAttribute("style", "font-weight:bold");
             }
             if (j === 6) {
                 var v = parseFloat(data[i][col[j]])
@@ -214,6 +238,14 @@ function CreateTableFromJSONActiveStocks(data) {
                 tabCell.innerHTML = data[i][col[j]];
                 tabCell.setAttribute("style", "font-weight:900");
             }
+            if (j === 2) {
+                tabCell.innerHTML = data[i][col[j]];
+                tabCell.setAttribute("style", "font-weight:700");
+            }
+            if (j === 5) {
+                tabCell.innerHTML = data[i][col[j]];
+                tabCell.setAttribute("style", "font-weight:bold");
+            }
             else {
                 tabCell.innerHTML = data[i][col[j]];
             }
@@ -248,7 +280,7 @@ function titleCase(str) {
     return splitStr.join(' ');
 }
 
-function Successmsg(button, symbol, price, quantity) {
+function Successmsg(button, symbol, price, quantity, reference_id) {
     Swal.fire({
 
         title: "Are you sure, you want to place an order for <b>" + symbol + "</b> ?",
@@ -272,7 +304,7 @@ function Successmsg(button, symbol, price, quantity) {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
 
-            PlaceOrderAPI().then(data => {
+            PlaceOrderAPI(reference_id, symbol, price, quantity).then(data => {
                 Swal.fire(
                     {
                         title: data.status,
@@ -307,7 +339,7 @@ function Exitmsg(symbol) {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
 
-            ExitOrderAPI().then(data => {
+            ExitOrderAPI(symbol).then(data => {
                 Swal.fire(
                     {
                         title: data.status,
