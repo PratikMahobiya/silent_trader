@@ -126,7 +126,7 @@ def Active_Stocks(request):
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models_15_MAIN.CONFIG_15M.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models.CROSSOVER_15_MIN.objects.get(id = sym_list[1]).date,"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
+      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models.CROSSOVER_15_MIN.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)
