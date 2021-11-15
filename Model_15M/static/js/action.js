@@ -107,6 +107,7 @@ function getData() {
 function SetModelStatus(data){
     for (var i = 0; i < data.length; i++) {
         var elem = document.getElementById(data[i].model_name);
+        var elem_P_l = document.getElementById(data[i].model_name + '_%');
         if (data[i].current_gain > 0){
             elem.setAttribute("style", "color:#2dc407;font-weight:500");
         }
