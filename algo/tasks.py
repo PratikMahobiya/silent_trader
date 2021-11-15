@@ -159,27 +159,27 @@ def get_stocks_configs(self):
   # Create stocks and config's for trade in stock and config table
   for stock_sym in stock_dict:
     # STORE IN STOCK TABLE
-    if not models_a.STOCK.objects.get(symbol = stock_sym, niftytype = stock_dict[stock_sym][2]).exists():
+    if not models_a.STOCK.objects.filter(symbol = stock_sym).exists():
       models_a.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym][0], sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
     # CREATE CONFIG IN FOR 15 MIN
-    if not models.CONFIG_15M.objects.get(symbol = stock_sym, niftytype = stock_dict[stock_sym][2]).exists():
+    if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
       models.CONFIG_15M(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
     # 15 MIN BTST
-    if not models.CONFIG_15M_BTST.objects.get(symbol = stock_sym, niftytype = stock_dict[stock_sym][2]).exists():
+    if not models.CONFIG_15M_BTST.objects.filter(symbol = stock_sym).exists():
       models.CONFIG_15M_BTST(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
     # CREATE CONFIG IN FOR 30 MIN
-    if not models_30.CONFIG_30M.objects.get(symbol = stock_sym, niftytype = stock_dict[stock_sym][2]).exists():
+    if not models_30.CONFIG_30M.objects.filter(symbol = stock_sym).exists():
       models_30.CONFIG_30M(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
     # 30 MIN BTST
-    if not models_30.CONFIG_30M_BTST.objects.get(symbol = stock_sym, niftytype = stock_dict[stock_sym][2]).exists():
+    if not models_30.CONFIG_30M_BTST.objects.filter(symbol = stock_sym).exists():
       models_30.CONFIG_30M_BTST(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
     
     # ----------------------------------- Not Ative ------------------------------------
     # CREATE CONFIG IN FOR 15 MIN TEMP
-    if not models_temp.CONFIG_15M_TEMP.objects.get(symbol = stock_sym, niftytype = stock_dict[stock_sym][2]).exists():
+    if not models_temp.CONFIG_15M_TEMP.objects.filter(symbol = stock_sym).exists():
       models_temp.CONFIG_15M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
     # CREATE CONFIG IN FOR 15 MIN TEMP BTST
-    if not models_temp.CONFIG_15M_TEMP_BTST.objects.get(symbol = stock_sym, niftytype = stock_dict[stock_sym][2]).exists():
+    if not models_temp.CONFIG_15M_TEMP_BTST.objects.filter(symbol = stock_sym).exists():
       models_temp.CONFIG_15M_TEMP_BTST(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
 
   # Config Model to Profit Tables
