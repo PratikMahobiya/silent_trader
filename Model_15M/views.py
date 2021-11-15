@@ -124,7 +124,7 @@ def Active_Stocks(request):
   if request.method == 'GET':
     active_entry  = models_15_MAIN.ENTRY_15M.objects.all().values_list('symbol', 'reference_id')
     active_entry_list = []
-    for sym_list in active_entry:
+    for sym_list in active_entry.reverse():
       stock_config_obj = models_15_MAIN.CONFIG_15M.objects.get(symbol = sym_list[0])
       active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models.CROSSOVER_15_MIN.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
     response.update({'success': True, 'data': active_entry_list})
@@ -247,7 +247,7 @@ def Active_Stocks_BTST(request):
   if request.method == 'GET':
     active_entry  = models_15_MAIN.ENTRY_15M_BTST.objects.all().values_list('symbol', 'reference_id')
     active_entry_list = []
-    for sym_list in active_entry:
+    for sym_list in active_entry.reverse():
       stock_config_obj = models_15_MAIN.CONFIG_15M_BTST.objects.get(symbol = sym_list[0])
       active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models.CROSSOVER_15_MIN_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
     response.update({'success': True, 'data': active_entry_list})
