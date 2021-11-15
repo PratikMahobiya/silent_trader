@@ -269,7 +269,7 @@ def ltp_of_entries(self):
         model_config_obj.top_loss       = round(total_sum,2)
         model_config_obj.top_loss_time  = datetime.now().time()
         model_config_obj.top_loss_entry = len(models.ENTRY_15M_BTST.objects.all().values_list('symbol',flat=True))
-      model_config_obj.p_l = sum(models_a.CROSSOVER_15_MIN_BTST.objects.filter(created_on = date.today()).values_list('profit', flat=True))
+      model_config_obj.p_l = sum(models_a.CROSSOVER_15_MIN_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
       model_config_obj.save()
 
     # LTP CRS TEMP BTST
@@ -295,7 +295,7 @@ def ltp_of_entries(self):
         model_config_obj.top_loss       = round(total_sum,2)
         model_config_obj.top_loss_time  = datetime.now().time()
         model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol',flat=True))
-      model_config_obj.p_l = sum(models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(created_on = date.today()).values_list('profit', flat=True))
+      model_config_obj.p_l = sum(models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
       model_config_obj.save()
 
     # LTP CRS 30 MIN BTST
@@ -321,7 +321,7 @@ def ltp_of_entries(self):
         model_config_obj.top_loss       = round(total_sum,2)
         model_config_obj.top_loss_time  = datetime.now().time()
         model_config_obj.top_loss_entry = len(models_30.ENTRY_30M_BTST.objects.all().values_list('symbol',flat=True))
-      model_config_obj.p_l = sum(models_a.CROSSOVER_30_MIN_BTST.objects.filter(created_on = date.today()).values_list('profit', flat=True))
+      model_config_obj.p_l = sum(models_a.CROSSOVER_30_MIN_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
       model_config_obj.save()
         
     # LTP CRS
@@ -346,7 +346,7 @@ def ltp_of_entries(self):
       model_config_obj.top_loss       = round(total_sum,2)
       model_config_obj.top_loss_time  = datetime.now().time()
       model_config_obj.top_loss_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
-    model_config_obj.p_l = sum(models_a.CROSSOVER_15_MIN.objects.filter(created_on = date.today()).values_list('profit', flat=True))
+    model_config_obj.p_l = sum(models_a.CROSSOVER_15_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
 
     # LTP CRS 30 MIN
@@ -371,7 +371,7 @@ def ltp_of_entries(self):
       model_config_obj.top_loss       = round(total_sum,2)
       model_config_obj.top_loss_time  = datetime.now().time()
       model_config_obj.top_loss_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
-    model_config_obj.p_l = sum(models_a.CROSSOVER_30_MIN.objects.filter(created_on = date.today()).values_list('profit', flat=True))
+    model_config_obj.p_l = sum(models_a.CROSSOVER_30_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
 
     # ----------------------------------------- NOT ACTIVE ---------------------------------
@@ -397,7 +397,7 @@ def ltp_of_entries(self):
       model_config_obj.top_loss       = round(total_sum,2)
       model_config_obj.top_loss_time  = datetime.now().time()
       model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
-    model_config_obj.p_l = sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(created_on = date.today()).values_list('profit', flat=True))
+    model_config_obj.p_l = sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
 
     # # --------------------------------- FREEZE Profit at each LTP ------------------------
