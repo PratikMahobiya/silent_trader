@@ -99,7 +99,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                 stock_config_obj.order_status   = order_status
                 stock_config_obj.save()
                 # TRANSACTION TABLE UPDATE
-                trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                 transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
                 if transaction.is_valid():
                   transaction.save()
@@ -133,7 +133,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                     stock_config_obj.order_status   = order_status
                     stock_config_obj.save()
                     # TRANSACTION TABLE UPDATE
-                    trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                    trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                     transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
                     if transaction.is_valid():
                       transaction.save()
@@ -183,7 +183,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                 stock_config_obj.order_status   = order_status
                 stock_config_obj.save()
                 # TRANSACTION TABLE UPDATE
-                trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                 transaction   = serializers.CROSSOVER_15_Min_BTST_Serializer(data=trans_data)
                 if transaction.is_valid():
                   transaction.save()
@@ -217,7 +217,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                     stock_config_obj.order_status   = order_status
                     stock_config_obj.save()
                     # TRANSACTION TABLE UPDATE
-                    trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                    trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                     transaction   = serializers.CROSSOVER_15_Min_BTST_Serializer(data=trans_data)
                     if transaction.is_valid():
                       transaction.save()

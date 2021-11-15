@@ -5,6 +5,7 @@ class STOCK(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     instrument_key          = models.BigIntegerField(verbose_name='INSTRUMENT KEY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     active_15               = models.BooleanField(verbose_name='ACTIVE 15 Minute',default=True)
     active_30               = models.BooleanField(verbose_name='ACTIVE 30 Minute',default=True)
     def __str__(self):
@@ -84,6 +85,7 @@ class CROSSOVER_15_MIN(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     def __int__(self):
     	return self.id
@@ -104,6 +106,7 @@ class CROSSOVER_15_MIN_BTST(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     def __int__(self):
     	return self.id
@@ -124,6 +127,7 @@ class CROSSOVER_30_MIN(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     def __int__(self):
     	return self.id
@@ -144,6 +148,7 @@ class CROSSOVER_30_MIN_BTST(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     def __int__(self):
     	return self.id
@@ -165,6 +170,7 @@ class CROSSOVER_15_MIN_TEMP(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     def __int__(self):
     	return self.id
@@ -185,6 +191,7 @@ class CROSSOVER_15_MIN_TEMP_BTST(models.Model):
     difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
     quantity                = models.BigIntegerField(verbose_name='QUANTITY')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     def __int__(self):
     	return self.id

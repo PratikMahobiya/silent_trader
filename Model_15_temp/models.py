@@ -32,6 +32,7 @@ class ENTRY_15M_TEMP_BTST(models.Model):
 class CONFIG_15M_TEMP(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     buy                     = models.BooleanField(verbose_name='BUY',default=False)
     trend                   = models.BooleanField(verbose_name='IN_TREND',default=False)
     d_sl_flag               = models.BooleanField(verbose_name='D_SL_FLAG',default=False)
@@ -54,6 +55,7 @@ class CONFIG_15M_TEMP(models.Model):
 class CONFIG_15M_TEMP_BTST(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     buy                     = models.BooleanField(verbose_name='BUY',default=False)
     trend                   = models.BooleanField(verbose_name='IN_TREND',default=False)
     d_sl_flag               = models.BooleanField(verbose_name='D_SL_FLAG',default=False)

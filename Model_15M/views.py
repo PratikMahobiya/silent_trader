@@ -96,7 +96,7 @@ def EXIT_ORDER(request):
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
-        trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+        trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
         transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
         if transaction.is_valid():
           transaction.save()
@@ -126,7 +126,7 @@ def Active_Stocks(request):
     active_entry_list = []
     for sym_list in active_entry.reverse():
       stock_config_obj = models.CONFIG_15M.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
+      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)
@@ -219,7 +219,7 @@ def EXIT_ORDER_BTST(request):
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
-        trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+        trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
         transaction   = serializers.CROSSOVER_15_Min_BTST_Serializer(data=trans_data)
         if transaction.is_valid():
           transaction.save()
@@ -249,7 +249,7 @@ def Active_Stocks_BTST(request):
     active_entry_list = []
     for sym_list in active_entry.reverse():
       stock_config_obj = models.CONFIG_15M_BTST.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
+      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)

@@ -11,7 +11,7 @@ async function TransactionAPI() {
         type: transaction.type,
         price: transaction.price,
         profit: transaction.profit,
-        NiftyType: "NA"
+        NiftyType:transaction.niftytype,
     }));
     //console.log(userData);
     return userData;
@@ -72,7 +72,7 @@ async function ActiveStocksAPI() {
         Action: button_binding(index, Active),
         Time: convertFromStringToDate(Active.date),
         Symbol: Active.symbol,
-        NiftyType: 'nifty 50',
+        NiftyType: Active.niftytype,
         quantity: Active.quantity,
         price: Active.price,
         sector: Active.sector.toUpperCase()
