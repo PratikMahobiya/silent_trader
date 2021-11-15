@@ -2,7 +2,7 @@
 <html>
 {% load static %}
 <head>
-    <title>CRS 15M BTST DASHBOARD</title>
+    <title>CRS 30M MAIN DASHBOARD</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
     <div class="container-fluid p-2 mt-2 text-white text-center" style="overflow: hidden;">
         <div class="row container-fluid">
             <div class="col-sm-2">
-                <h6><a href="http://139.59.54.145/crs15m/dashboard_btst/" class="active">CRS 15 BTST</a></h6>
+                <h6><a href="http://139.59.54.145/crs15m/dashboard_btst/">CRS 15 BTST</a></h6>
                 <h6 id="CRS_15_MAIN_BTST"></h6><h6 id="CRS_15_MAIN_BTST_%"></h6>
             </div>
 
@@ -48,7 +48,7 @@
             </div>
 
             <div class="col-sm-2">
-                <h6><a href="http://139.59.54.145/crs30m/dashboard/">CRS 30</a></h6>
+                <h6><a href="http://139.59.54.145/crs30m/dashboard/" class="active">CRS 30</a></h6>
                 <h6 id="CRS_30_MIN"></h6><h6 id="CRS_30_MIN_%"></h6>
             </div>
 
@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    <script src="{% static 'js/action_15M_btst.js' %}"></script>
+    <script src="{% static 'js/action_30M.js' %}"></script>
 
     <script src="{% static 'js/sweetalertmin.js' %}"></script>
 

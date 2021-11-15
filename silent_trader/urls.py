@@ -17,9 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from algo import urls as aurls
 from Model_15M import urls as MODEL_15M_urls
+from Model_15_temp import urls as MODEL_15M_TEMP_urls
+from Model_30M import urls as MODEL_30M_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(aurls)),
     path('crs15m/', include(MODEL_15M_urls)),
+    path('crs15mtemp/', include(MODEL_15M_TEMP_urls)),
+    path('crs30m/', include(MODEL_30M_urls)),
 ]

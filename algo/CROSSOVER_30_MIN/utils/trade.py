@@ -98,13 +98,13 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                 stock_config_obj.order_id       = order_id
                 stock_config_obj.order_status   = order_status
                 stock_config_obj.save()
-                # UPDATE CURRENT ENTRY TABLE
-                models.ENTRY_30M(symbol = stock).save()
                 # TRANSACTION TABLE UPDATE
                 trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                 transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
                 if transaction.is_valid():
                   transaction.save()
+                # UPDATE CURRENT ENTRY TABLE
+                models.ENTRY_30M(symbol = stock, reference_id = transaction.data['id']).save()
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -132,13 +132,13 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                     stock_config_obj.order_id       = order_id
                     stock_config_obj.order_status   = order_status
                     stock_config_obj.save()
-                    # UPDATE CURRENT ENTRY TABLE
-                    models.ENTRY_30M(symbol = stock).save()
                     # TRANSACTION TABLE UPDATE
                     trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                     transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
                     if transaction.is_valid():
                       transaction.save()
+                    # UPDATE CURRENT ENTRY TABLE
+                    models.ENTRY_30M(symbol = stock, reference_id = transaction.data['id']).save()
 
 def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var):
   zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN_BTST')
@@ -180,13 +180,13 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                 stock_config_obj.order_id       = order_id
                 stock_config_obj.order_status   = order_status
                 stock_config_obj.save()
-                # UPDATE CURRENT ENTRY TABLE
-                models.ENTRY_30M_BTST(symbol = stock).save()
                 # TRANSACTION TABLE UPDATE
                 trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                 transaction   = serializers.CROSSOVER_30_MIN_BTST_Serializer(data=trans_data)
                 if transaction.is_valid():
                   transaction.save()
+                # UPDATE CURRENT ENTRY TABLE
+                models.ENTRY_30M_BTST(symbol = stock, reference_id = transaction.data['id']).save()
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -214,10 +214,10 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                     stock_config_obj.order_id       = order_id
                     stock_config_obj.order_status   = order_status
                     stock_config_obj.save()
-                    # UPDATE CURRENT ENTRY TABLE
-                    models.ENTRY_30M_BTST(symbol = stock).save()
                     # TRANSACTION TABLE UPDATE
                     trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
                     transaction   = serializers.CROSSOVER_30_MIN_BTST_Serializer(data=trans_data)
                     if transaction.is_valid():
                       transaction.save()
+                    # UPDATE CURRENT ENTRY TABLE
+                    models.ENTRY_30M_BTST(symbol = stock, reference_id = transaction.data['id']).save()

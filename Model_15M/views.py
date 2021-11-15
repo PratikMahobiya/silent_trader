@@ -1,20 +1,20 @@
-from algo import models, serializers
+from algo import models as models_a, serializers
 from django.http import JsonResponse
 from django.shortcuts import render
 from kiteconnect import KiteConnect
 from datetime import datetime, date, timedelta
 
-from Model_15M import models as models_15_MAIN
+from Model_15M import models as models
 
 from rest_framework.decorators import api_view
 
 # Create your views here.
-def CRS_15M_VIEW(request):
+def CRS_VIEW(request):
   return render(request, 'dashboard_15_main.html')
 
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
-  access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
+  access_token = models_a.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
   try:
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)
@@ -75,8 +75,8 @@ def PLACE_ORDER(request):
     order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
-      models_15_MAIN.CONFIG_15M.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
-      models.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
+      models.CONFIG_15M.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
+      models_a.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
     response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
@@ -88,7 +88,7 @@ def PLACE_ORDER(request):
 def EXIT_ORDER(request):
   if request.method == 'POST':
     symbol        = request.data['symbol']
-    stock_config_obj = models_15_MAIN.CONFIG_15M.objects.get(symbol = symbol)
+    stock_config_obj = models.CONFIG_15M.objects.get(symbol = symbol)
     if stock_config_obj.buy is True:
       order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
       # order_id, order_status, price  = 1 , 'NOT ACTIVE', 200
@@ -122,11 +122,11 @@ def EXIT_ORDER(request):
 def Active_Stocks(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    active_entry  = models_15_MAIN.ENTRY_15M.objects.all().values_list('symbol', 'reference_id')
+    active_entry  = models.ENTRY_15M.objects.all().values_list('symbol', 'reference_id')
     active_entry_list = []
     for sym_list in active_entry.reverse():
-      stock_config_obj = models_15_MAIN.CONFIG_15M.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models.CROSSOVER_15_MIN.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
+      stock_config_obj = models.CONFIG_15M.objects.get(symbol = sym_list[0])
+      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)
@@ -135,14 +135,14 @@ def Active_Stocks(request):
 def Transactions(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    queryset      = models.CROSSOVER_15_MIN.objects.filter(created_on = date.today()).order_by('-date')
+    queryset      = models_a.CROSSOVER_15_MIN.objects.filter(created_on = date.today()).order_by('-date')
     serializer    = serializers.CROSSOVER_15_Min_Serializer(queryset, many = True)
     response.update({'success': True, 'data': serializer.data})
     return JsonResponse(response)
   return JsonResponse(response)
 
 # 15M BTST -------------------------------
-def CRS_15M_BTST_VIEW(request):
+def CRS_BTST_VIEW(request):
   return render(request, 'dashboard_15_main_btst.html')
 
 def place_regular_buy_order_BTST(symbol, price, quantity):
@@ -198,8 +198,8 @@ def PLACE_ORDER_BTST(request):
     order_id, order_status = place_regular_buy_order_BTST(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
-      models_15_MAIN.CONFIG_15M_BTST.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
-      models.CROSSOVER_15_MIN_BTST.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
+      models.CONFIG_15M_BTST.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
+      models_a.CROSSOVER_15_MIN_BTST.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
     response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
@@ -211,7 +211,7 @@ def PLACE_ORDER_BTST(request):
 def EXIT_ORDER_BTST(request):
   if request.method == 'POST':
     symbol        = request.data['symbol']
-    stock_config_obj = models_15_MAIN.CONFIG_15M_BTST.objects.get(symbol = symbol)
+    stock_config_obj = models.CONFIG_15M_BTST.objects.get(symbol = symbol)
     if stock_config_obj.buy is True:
       order_id, order_status, price = place_regular_sell_order_BTST(symbol, stock_config_obj)
       # order_id, order_status, price  = 1 , 'NOT ACTIVE', 200
@@ -223,8 +223,8 @@ def EXIT_ORDER_BTST(request):
         transaction   = serializers.CROSSOVER_15_Min_BTST_Serializer(data=trans_data)
         if transaction.is_valid():
           transaction.save()
-        models_15_MAIN.ENTRY_15M_BTST.objects.filter(symbol = symbol).delete()
-        models_15_MAIN.TREND_15M_A_BTST.objects.filter(symbol = symbol).delete()
+        models.ENTRY_15M_BTST.objects.filter(symbol = symbol).delete()
+        models.TREND_15M_A_BTST.objects.filter(symbol = symbol).delete()
         stock_config_obj.buy          = False
         stock_config_obj.placed       = False
         stock_config_obj.d_sl_flag    = False
@@ -245,11 +245,11 @@ def EXIT_ORDER_BTST(request):
 def Active_Stocks_BTST(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    active_entry  = models_15_MAIN.ENTRY_15M_BTST.objects.all().values_list('symbol', 'reference_id')
+    active_entry  = models.ENTRY_15M_BTST.objects.all().values_list('symbol', 'reference_id')
     active_entry_list = []
     for sym_list in active_entry.reverse():
-      stock_config_obj = models_15_MAIN.CONFIG_15M_BTST.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models.CROSSOVER_15_MIN_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
+      stock_config_obj = models.CONFIG_15M_BTST.objects.get(symbol = sym_list[0])
+      active_entry_list.append({"symbol": sym_list[0], "sector": stock_config_obj.sector,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)
@@ -258,7 +258,7 @@ def Active_Stocks_BTST(request):
 def Transactions_BTST(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    queryset      = models.CROSSOVER_15_MIN_BTST.objects.filter(created_on = date.today()).order_by('-date')
+    queryset      = models_a.CROSSOVER_15_MIN_BTST.objects.filter(created_on = date.today()).order_by('-date')
     serializer    = serializers.CROSSOVER_15_Min_BTST_Serializer(queryset, many = True)
     response.update({'success': True, 'data': serializer.data})
     return JsonResponse(response)

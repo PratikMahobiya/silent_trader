@@ -52,6 +52,7 @@ def sell(stock, price, gain, kite_conn_var):
         models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
         models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
         stock_config_obj.buy                  = False
+        stock_config_obj.placed               = False
         stock_config_obj.d_sl_flag            = False
         stock_config_obj.fixed_target_flag    = False
         stock_config_obj.trend                = False
@@ -84,6 +85,7 @@ def sell(stock, price, gain, kite_conn_var):
         models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
         models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
         stock_config_obj.buy                  = False
+        stock_config_obj.placed               = False
         stock_config_obj.d_sl_flag            = False
         stock_config_obj.fixed_target_flag    = False
         stock_config_obj.trend                = False
@@ -117,6 +119,7 @@ def sell(stock, price, gain, kite_conn_var):
           models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
           models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
           stock_config_obj.buy                  = False
+          stock_config_obj.placed               = False
           stock_config_obj.d_sl_flag            = False
           stock_config_obj.fixed_target_flag    = False
           stock_config_obj.trend                = False
@@ -165,6 +168,7 @@ def sell(stock, price, gain, kite_conn_var):
         models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
         models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
         stock_config_obj.buy                  = False
+        stock_config_obj.placed               = False
         stock_config_obj.d_sl_flag            = False
         stock_config_obj.fixed_target_flag    = False
         stock_config_obj.trend                = False
@@ -197,6 +201,7 @@ def sell(stock, price, gain, kite_conn_var):
       models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
       models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
       stock_config_obj.buy                  = False
+      stock_config_obj.placed               = False
       stock_config_obj.d_sl_flag            = False
       stock_config_obj.fixed_target_flag    = False
       stock_config_obj.trend                = False
@@ -230,6 +235,7 @@ def sell(stock, price, gain, kite_conn_var):
         models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
         models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
         stock_config_obj.buy                  = False
+        stock_config_obj.placed               = False
         stock_config_obj.d_sl_flag            = False
         stock_config_obj.fixed_target_flag    = False
         stock_config_obj.trend                = False
@@ -264,6 +270,7 @@ def square_off(stock, price, kite_conn_var):
       models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
       models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
       stock_config_obj.buy                  = False
+      stock_config_obj.placed               = False
       stock_config_obj.d_sl_flag            = False
       stock_config_obj.fixed_target_flag    = False
       stock_config_obj.trend                = False
@@ -284,6 +291,7 @@ def square_off(stock, price, kite_conn_var):
     models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
     models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
     stock_config_obj.buy                  = False
+    stock_config_obj.placed               = False
     stock_config_obj.d_sl_flag            = False
     stock_config_obj.fixed_target_flag    = False
     stock_config_obj.trend                = False
