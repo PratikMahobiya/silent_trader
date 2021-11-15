@@ -109,6 +109,8 @@ function SetModelStatus(data){
     for (var i = 0; i < data.length; i++) {
         var elem = document.getElementById(data[i].model_name);
         var elem_P_l = document.getElementById(data[i].model_name + '_%');
+        var today_date = document.getElementById('TODAY_DATE');
+        today_date.innerHTML = data[i].date;
         if (data[i].current_gain > 0){
             elem.setAttribute("style", "color:#2dc407;font-weight:500");
         }
@@ -120,13 +122,13 @@ function SetModelStatus(data){
         }
         
         if (data[i].p_l > 0){
-            elem.setAttribute("style", "color:#2dc407;font-weight:500");
+            elem_P_l.setAttribute("style", "color:#2dc407;font-weight:500");
         }
         else if (data[i].p_l < 0){
-            elem.setAttribute("style", "color:Red;font-weight:500");
+            elem_P_l.setAttribute("style", "color:Red;font-weight:500");
         }
         else if (data[i].p_l == 0){
-            elem.setAttribute("style", "font-weight:500");
+            elem_P_l.setAttribute("style", "font-weight:500");
         }
         elem.innerHTML = data[i].current_gain + ' ₹';
         elem_P_l.innerHTML = data[i].p_l + ' %';
