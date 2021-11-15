@@ -1,6 +1,10 @@
 from algo import models
+from django.http import JsonResponse
 from django.shortcuts import render
 from kiteconnect import KiteConnect
+from datetime import date
+
+from rest_framework.decorators import api_view
 
 # Create your views here.
 def Index(request):
@@ -45,3 +49,15 @@ def check(request):
   except Exception as  e:
     context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':e}
   return render(request, 'check.html', context)
+
+@api_view(['GET',])
+def MODEL_STATUS(request):
+  response = {'success': False, 'data': None}
+  if request.method == 'GET':
+    queryset      = models.PROFIT.objects.filter(date = date.today()).values_list('model_name', 'current_gain', 'date')
+    data = []
+    for query_list in queryset:
+      data.append({'model_name': query_list[0],'current_gain': query_list[1],'date': query_list[2]})
+    response.update({'success': True, 'data': data})
+    return JsonResponse(response)
+  return JsonResponse(response)

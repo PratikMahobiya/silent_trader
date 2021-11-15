@@ -8,4 +8,6 @@ urlpatterns = [
 	path('index/', views.Index, name='index'),
 	path('check/', views.check, name='check'),
 	path('generate_token/', views.generate_acc_token, name='generate_token'),
+
+	path('model_status/', views.MODEL_STATUS, name='Model Status'),
 ]
