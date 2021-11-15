@@ -3,13 +3,10 @@ async function TransactionAPI() {
     // let response = await fetch('http://139.59.54.145/crs15m/place_order/')
     // let response = await fetch('http://139.59.54.145/crs15m/active_stocks/')
     let response = await fetch('http://139.59.54.145/crs15m/transactions/')
-
     let data = await response.json();
-
     //returning the selected fields from the object getting from the response
 
     var userData = data.data.map(transaction => ({
-
         Time: convertFromStringToDate(transaction.date),
         Symbol: transaction.symbol,
         quantity: transaction.quantity,
@@ -17,9 +14,7 @@ async function TransactionAPI() {
         type: transaction.type,
         price: transaction.price,
         profit: transaction.profit,
-
         NiftyType: "NA"
-
     }));
     //console.log(userData);
     return userData;
@@ -59,11 +54,8 @@ async function ExitOrderAPI(symbol) {
 
 
 async function ActiveStocksAPI() {
-
     let response = await fetch('http://139.59.54.145/crs15m/active_stocks/')
-
     let data = await response.json();
-
     //returning the selected fields from the object getting from the response
     var userData = data.data.map((Active, index) => ({
         Action: button_binding(index, Active),
@@ -93,7 +85,6 @@ function getData() {
     TransactionAPI().then(data =>
         CreateTableFromJSON(data) // this function will convert the json response to html table
     );
-
     ActiveStocksAPI().then(data =>
         CreateTableFromJSONActiveStocks(data) // this function will convert the json response to html table
     );
@@ -117,9 +108,7 @@ function CreateTableFromJSON(data) {
     table.setAttribute("style", "font-size:12px;width:48vw; margin-left:-9px");
 
     // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-
     var tr = table.insertRow(-1);                   // TABLE ROW.
-
     for (var i = 0; i < col.length; i++) {
         var th = document.createElement("th");      // TABLE HEADER.
         th.setAttribute("scope", "col");
@@ -136,21 +125,17 @@ function CreateTableFromJSON(data) {
 
     // ADD JSON DATA TO THE TABLE AS ROWS.
     for (var i = 0; i < data.length; i++) {
-
         tr = table.insertRow(-1);
-
         for (var j = 0; j < col.length; j++) {
             var tabCell = tr.insertCell(-1);
             if (j === 0) {
                 tabCell.innerHTML = data[i][col[j]];
                 tabCell.setAttribute("style", "font-weight:900");
             }
-
             if (j === 1) {
                 tabCell.innerHTML = data[i][col[j]];
                 tabCell.setAttribute("style", "font-weight:700");
             }
-            
             if (j === 3) {
                 if (data[i][col[j]] === "Entry") {
                     tabCell.innerHTML = data[i][col[j]];
@@ -185,7 +170,6 @@ function CreateTableFromJSON(data) {
             else {
                 tabCell.innerHTML = data[i][col[j]];
             }
-
         }
     }
     // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
@@ -210,9 +194,7 @@ function CreateTableFromJSONActiveStocks(data) {
     table.setAttribute("style", "font-size:12px;width: 30vw;");
 
     // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-
     var tr = table.insertRow(-1);                   // TABLE ROW.
-
     for (var i = 0; i < col.length; i++) {
         var th = document.createElement("th");      // TABLE HEADER.
         th.setAttribute("scope", "col");
@@ -229,9 +211,7 @@ function CreateTableFromJSONActiveStocks(data) {
 
     // ADD JSON DATA TO THE TABLE AS ROWS.
     for (var i = 0; i < data.length; i++) {
-
         tr = table.insertRow(-1);
-
         for (var j = 0; j < col.length; j++) {
             var tabCell = tr.insertCell(-1);
             if (j === 1) {
@@ -262,7 +242,6 @@ function convertFromStringToDate(responseDate) {
     let datePieces = dateComponents[0].split("-");
     let timePieces = dateComponents[1].split(":");
     let SecondPieces = timePieces[2].split(".");
-
     var x = new Date(datePieces[2], (datePieces[1] - 1), datePieces[0],
         timePieces[0], timePieces[1], SecondPieces[0])
     var time = (x.getHours() < 10 ? '0' : '') + x.getHours() + ":" + (x.getMinutes() < 10 ? '0' : '') + x.getMinutes() + ":" + (x.getSeconds() < 10 ? '0' : '') + x.getSeconds()
@@ -282,10 +261,8 @@ function titleCase(str) {
 
 function Successmsg(button, symbol, price, quantity, reference_id) {
     Swal.fire({
-
         title: "Are you sure, you want to place an order for <b>" + symbol + "</b> ?",
         html:
-
             "<table style='text-align:left' cellpadding='6'>" +
             '<tr>' +
             '<td><b>Price</b></td>' + '<td><b>:</b></td>' + "<td><input type='text' class='form-control' id='price' value=" + price + "></tr>" +
@@ -312,14 +289,12 @@ function Successmsg(button, symbol, price, quantity, reference_id) {
                         confirmButtonColor: '#0d6efd',
                     }
                 )
-
                 // document.getElementById(button.id).classList.remove("btn");
                 // document.getElementById(button.id).classList.remove("btn-sm");
                 // document.getElementById(button.id).classList.remove("btn-primary");
 
                 // button.innerText = "Exit Order";
                 // button.setAttribute("class", "btn btn-sm btn-danger");
-
             }
             );
         } else if (result.isDenied) {
@@ -338,7 +313,6 @@ function Exitmsg(symbol) {
     }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-
             ExitOrderAPI(symbol).then(data => {
                 Swal.fire(
                     {
