@@ -17,6 +17,20 @@ async function TransactionAPI() {
     return userData;
 }
 
+async function ModelStatusAPI() {
+    let response = await fetch('http://139.59.54.145/model_status/')
+    let data = await response.json();
+    //returning the selected fields from the object getting from the response
+
+    var userData = data.data.map(status => ({
+        model_name:         status.model_name,
+        current_gain:       status.current_gain,
+        date:               status.date
+    }));
+    // console.log(userData);
+    return userData;
+}
+
 async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
     const data_place_order = { reference_id: reference_id ,symbol: symbol ,price: price ,quantity: quantity};
     // console.log(data_place_order);
@@ -47,7 +61,6 @@ async function ExitOrderAPI(symbol) {
     // console.log(data);
     return data;
 }
-
 
 
 async function ActiveStocksAPI() {
@@ -85,7 +98,26 @@ function getData() {
     ActiveStocksAPI().then(data =>
         CreateTableFromJSONActiveStocks(data) // this function will convert the json response to html table
     );
+    ModelStatusAPI().then(data =>
+        SetModelStatus(data) // this function will convert the json response to html table
+    );
     setTimeout(function () { getData();}, 1000);
+}
+
+function SetModelStatus(data){
+    for (var i = 0; i < data.length; i++) {
+        var elem = document.getElementById(data[i].model_name);
+        if (data[i].current_gain > 0){
+            elem.setAttribute("style", "color:#2dc407;font-weight:500");
+        }
+        else if (data[i].current_gain < 0){
+            elem.setAttribute("style", "color:Red;font-weight:500");
+        }
+        else if (data[i].current_gain = 0){
+            elem.setAttribute("style", "font-weight:500");
+        }
+        elem.innerHTML = data[i].current_gain;
+    }
 }
 
 function CreateTableFromJSON(data) {
