@@ -31,7 +31,7 @@ def get_stocks_configs(self):
   response = {'stock_table': False, 'config_table_15': False, 'config_table_30': False}
   # Stock dict
   stock_dict = {
-    'AARTIIND':	[1793,		'COMMODITY'],
+    'AARTIIND':	[1793,		'COMMODITY', ],
     'ABFRL':	[7707649,	'nill'],
     'ACC':		[5633,		'INFRA,COMMODITY'],
     'ADANIENT':	[6401,		'METAL'],
