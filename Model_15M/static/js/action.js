@@ -25,7 +25,8 @@ async function ModelStatusAPI() {
     var userData = data.data.map(status => ({
         model_name:         status.model_name,
         current_gain:       status.current_gain,
-        date:               status.date
+        date:               status.date,
+        p_l:                status.p_l
     }));
     // console.log(userData);
     return userData;
@@ -124,7 +125,7 @@ function SetModelStatus(data){
         else if (data[i].p_l < 0){
             elem.setAttribute("style", "color:Red;font-weight:500");
         }
-        else if (data[i].p_l = 0){
+        else if (data[i].p_l == 0){
             elem.setAttribute("style", "font-weight:500");
         }
         elem.innerHTML = data[i].current_gain + ' ₹';
