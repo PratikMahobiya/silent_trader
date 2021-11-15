@@ -129,7 +129,7 @@ def sell(stock, price, gain, kite_conn_var):
   #   if stock_config_obj.buy is True:
   #     if stock_config_obj.count == 0:
   #       stock_config_obj.last_top     = price
-  #       stock_config_obj.d_stoploss   = price
+  #       stock_config_obj.d_stoploss   = stock_config_obj.buy_price
   #       stock_config_obj.d_sl_flag    = True
   #       stock_config_obj.count        += 1
   #       stock_config_obj.save()
@@ -137,7 +137,7 @@ def sell(stock, price, gain, kite_conn_var):
     if stock_config_obj.buy is True:
       if stock_config_obj.count == 0:
         stock_config_obj.target       = price + price*0.0025
-        stock_config_obj.d_stoploss   = price
+        stock_config_obj.d_stoploss   = stock_config_obj.buy_price
         stock_config_obj.d_sl_flag    = True
         stock_config_obj.count        += 1
         stock_config_obj.save()
