@@ -22,7 +22,7 @@ async function TransactionAPI() {
 
 async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
     const data_place_order = { reference_id: reference_id ,symbol: symbol ,price: price ,quantity: quantity};
-    // console.log(data_place_order);
+    console.log('DATA_PLACE_ORDER:- ' + data_place_order);
     let response = await fetch('http://139.59.54.145/crs15m/place_order/', {
     method: 'POST', // or 'PUT'
     headers: {
@@ -31,7 +31,7 @@ async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
     body: JSON.stringify(data_place_order),
     })
     let data = await response.json();
-    // console.log(data);
+    console.log('RESPONCE:- ' + data);
     return data;
 }
 
