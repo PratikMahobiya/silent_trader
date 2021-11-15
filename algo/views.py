@@ -57,7 +57,7 @@ def MODEL_STATUS(request):
     queryset      = models.PROFIT.objects.filter(date = date.today()).values_list('model_name', 'current_gain', 'date', 'p_l')
     data = []
     for query_list in queryset:
-      data.append({'model_name': query_list[0],'current_gain': query_list[1],'date': query_list[2],'p_l': query_list[3]})
+      data.append({'model_name': query_list[0],'current_gain': query_list[1],'date': query_list[2],'p_l': query_list})
     response.update({'success': True, 'data': data})
     return JsonResponse(response)
   return JsonResponse(response)
