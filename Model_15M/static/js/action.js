@@ -116,7 +116,18 @@ function SetModelStatus(data){
         else if (data[i].current_gain = 0){
             elem.setAttribute("style", "font-weight:500");
         }
-        elem.innerHTML = data[i].current_gain;
+        
+        if (data[i].p_l > 0){
+            elem.setAttribute("style", "color:#2dc407;font-weight:500");
+        }
+        else if (data[i].p_l < 0){
+            elem.setAttribute("style", "color:Red;font-weight:500");
+        }
+        else if (data[i].p_l = 0){
+            elem.setAttribute("style", "font-weight:500");
+        }
+        elem.innerHTML = data[i].current_gain + ' ₹';
+        elem_P_l.innerHTML = data[i].p_l + ' %';
     }
 }
 
