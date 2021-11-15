@@ -70,7 +70,7 @@ def PLACE_ORDER(request):
   if request.method == 'POST':
     reference_id  = int(request.data['reference_id'])
     symbol        = request.data['symbol']
-    price         = int(request.data['price'])
+    price         = float(request.data['price'])
     quantity      = int(request.data['quantity'])
     order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
