@@ -191,7 +191,7 @@ function CreateTableFromJSONActiveStocks(data) {
     var table = document.createElement("table");
 
     table.setAttribute("class", "table table-striped table-hover");
-    table.setAttribute("style", "font-size:12px;width: 30vw;");
+    table.setAttribute("style", "font-size:14px;");
 
     // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
     var tr = table.insertRow(-1);                   // TABLE ROW.
