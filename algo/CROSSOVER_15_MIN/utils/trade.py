@@ -104,7 +104,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                 if transaction.is_valid():
                   transaction.save()
                 # UPDATE CURRENT ENTRY TABLE
-                models.ENTRY_15M(symbol = stock, reference_id = transaction.id).save()
+                models.ENTRY_15M(symbol = stock, reference_id = transaction.data['id']).save()
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -138,7 +138,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                     if transaction.is_valid():
                       transaction.save()
                     # UPDATE CURRENT ENTRY TABLE
-                    models.ENTRY_15M(symbol = stock, reference_id = transaction.id).save()
+                    models.ENTRY_15M(symbol = stock, reference_id = transaction.data['id']).save()
 
 # BTST TARDES
 def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var):
@@ -188,7 +188,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                 if transaction.is_valid():
                   transaction.save()
                 # UPDATE CURRENT ENTRY TABLE
-                models.ENTRY_15M_BTST(symbol = stock, reference_id = transaction.id).save()
+                models.ENTRY_15M_BTST(symbol = stock, reference_id = transaction.data['id']).save()
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] > ema_max[-1]:
@@ -222,4 +222,4 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                     if transaction.is_valid():
                       transaction.save()
                     # UPDATE CURRENT ENTRY TABLE
-                    models.ENTRY_15M_BTST(symbol = stock, reference_id = transaction.id).save()
+                    models.ENTRY_15M_BTST(symbol = stock, reference_id = transaction.data['id']).save()
