@@ -1,18 +1,3 @@
-function getCookie(name) {
-    if (!document.cookie) {
-      return null;
-    }
-  
-    const xsrfCookies = document.cookie.split(';')
-      .map(c => c.trim())
-      .filter(c => c.startsWith(name + '='));
-  
-    if (xsrfCookies.length === 0) {
-      return null;
-    }
-    return decodeURIComponent(xsrfCookies[0].split('=')[1]);
-  }
-
 async function TransactionAPI() {
     let response = await fetch('http://139.59.54.145/crs15m/transactions/')
     let data = await response.json();
@@ -51,19 +36,18 @@ async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
     const data_place_order = { reference_id: reference_id ,symbol: symbol ,price: price ,quantity: quantity};
     // console.log(data_place_order);
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    // const csrfToken = getCookie('CSRF-TOKEN');
-    console.log(csrftoken);
+    console.log('csrToken:- ', csrftoken);
     let response = await fetch('http://139.59.54.145/crs15m/place_order/', {
     credentials: 'include',
     method: 'POST', // or 'PUT'
     headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrftoken,
+        'X-CSRFToken': csrftoken
     },
     body: JSON.stringify(data_place_order),
     })
     let data = await response.json();
-    console.log(data);
+    console.log('resopnce:- ',data);
     return data;
 }
 
@@ -71,14 +55,14 @@ async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
 async function ExitOrderAPI(symbol) {
     const data_exit_order = {symbol: symbol};
     // console.log(data_exit_order);
-    const csrfToken = getCookie('CSRF-TOKEN');
-    console.log(csrfToken);
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    console.log('csrToken:- ', csrftoken);
     let response = await fetch('http://139.59.54.145/crs15m/exit_order/', {
     credentials: 'include',
     method: 'POST', // or 'PUT'
     headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrfToken,
+        'X-CSRFToken': csrftoken
     },
     body: JSON.stringify(data_exit_order),
     })
