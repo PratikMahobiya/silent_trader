@@ -91,7 +91,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(data_frame[stock]['Close'].iloc[-2])
                 stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                stock_config_obj.target         = data_frame[stock]['Close'].iloc[-2] + data_frame[stock]['Close'].iloc[-2] * 0.005
+                stock_config_obj.target         = data_frame[stock]['Close'].iloc[-2] + data_frame[stock]['Close'].iloc[-2] * 0.006
                 stock_config_obj.quantity       = quantity
                 stock_config_obj.buy_price      = price
                 stock_config_obj.last_top       = price
@@ -125,7 +125,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                     stock_config_obj.buy            = True
                     stock_config_obj.f_stoploss     = checking_stoploss_fixed(data_frame[stock]['Close'].iloc[-2])
                     stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                    stock_config_obj.target         = data_frame[stock]['Close'].iloc[-2] + data_frame[stock]['Close'].iloc[-2] * 0.005
+                    stock_config_obj.target         = data_frame[stock]['Close'].iloc[-2] + data_frame[stock]['Close'].iloc[-2] * 0.006
                     stock_config_obj.quantity       = quantity
                     stock_config_obj.buy_price      = price
                     stock_config_obj.last_top       = price
@@ -175,7 +175,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(data_frame[stock]['Close'].iloc[-2])
                 stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                stock_config_obj.target         = data_frame[stock]['Close'].iloc[-2] + data_frame[stock]['Close'].iloc[-2] * 0.005
+                stock_config_obj.target         = data_frame[stock]['Close'].iloc[-2] + data_frame[stock]['Close'].iloc[-2] * 0.006
                 stock_config_obj.quantity       = quantity
                 stock_config_obj.buy_price      = price
                 stock_config_obj.last_top       = price
@@ -209,7 +209,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                     stock_config_obj.buy            = True
                     stock_config_obj.f_stoploss     = checking_stoploss_fixed(data_frame[stock]['Close'].iloc[-2])
                     stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                    stock_config_obj.target         = data_frame[stock]['Close'].iloc[-2] + data_frame[stock]['Close'].iloc[-2] * 0.005
+                    stock_config_obj.target         = data_frame[stock]['Close'].iloc[-2] + data_frame[stock]['Close'].iloc[-2] * 0.006
                     stock_config_obj.quantity       = quantity
                     stock_config_obj.buy_price      = price
                     stock_config_obj.last_top       = price
