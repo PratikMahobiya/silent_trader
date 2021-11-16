@@ -50,14 +50,15 @@ async function ModelStatusAPI() {
 async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
     const data_place_order = { reference_id: reference_id ,symbol: symbol ,price: price ,quantity: quantity};
     // console.log(data_place_order);
-    const csrfToken = getCookie('CSRF-TOKEN');
-    console.log(csrfToken);
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    // const csrfToken = getCookie('CSRF-TOKEN');
+    console.log(csrftoken);
     let response = await fetch('http://139.59.54.145/crs15m/place_order/', {
     credentials: 'include',
     method: 'POST', // or 'PUT'
     headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrfToken,
+        'X-CSRF-TOKEN': csrftoken,
     },
     body: JSON.stringify(data_place_order),
     })
