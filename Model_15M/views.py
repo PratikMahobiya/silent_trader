@@ -79,7 +79,7 @@ def PLACE_ORDER(request):
       models_a.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
-    response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(request.data)}
+    response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
     return JsonResponse(response)
   response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
   return JsonResponse(response)
@@ -111,7 +111,7 @@ def EXIT_ORDER(request):
         stock_config_obj.save()
         response      = {'success': True, 'status': '"{}" is EXITED. ORDER ID:- {}'.format(symbol,order_id)}
         return JsonResponse(response)
-      response = {'success': False, 'status': '"{}" is NOT EXITED. ..TRY AGAIN..'.format(request.data)}
+      response = {'success': False, 'status': '"{}" is NOT EXITED. ..TRY AGAIN..'.format(symbol)}
       return JsonResponse(response)
     response = {'success': False, 'status': 'ALREADY EXITED {}.'.format(symbol)}
     return JsonResponse(response)
