@@ -66,9 +66,9 @@ def updatestoploss(stock, data_frame, atr):
   if data_frame[stock]['Close'].iloc[-2] > stock_config_obj.last_top:
     stock_config_obj.last_top = data_frame[stock]['Close'].iloc[-2]
     stock_config_obj.stoploss = checking_stoploss_ot(data_frame[stock]['Close'].iloc[-2],atr)
-    # if stock_config_obj.d_sl_flag is True:
-    #   stock_config_obj.d_stoploss = checking_stoploss_tu(data_frame[stock]['Close'].iloc[-2])
-    #   stock_config_obj.count        += 1
+    if stock_config_obj.d_sl_flag is True:
+      stock_config_obj.d_stoploss = checking_stoploss_tu(data_frame[stock]['Close'].iloc[-2])
+      stock_config_obj.count        += 1
     stock_config_obj.save()
   return 0
 
