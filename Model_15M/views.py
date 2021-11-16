@@ -1,4 +1,3 @@
-from django.views.decorators.csrf import csrf_exempt
 from algo import models as models_a, serializers
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -66,7 +65,6 @@ def place_regular_sell_order(symbol, stock_config_obj):
     error_status = 'PROBLEM AT ZERODHA END.'
   return order_id, error_status, ltp
 
-@csrf_exempt
 @api_view(['GET','POST'])
 def PLACE_ORDER(request):
   if request.method == 'POST':
@@ -86,7 +84,6 @@ def PLACE_ORDER(request):
   response = {'success': False, 'status': 'WORNG METHOD {}.'.format(request.method)}
   return JsonResponse(response)
 
-@csrf_exempt
 @api_view(['GET','POST'])
 def EXIT_ORDER(request):
   if request.method == 'POST':
