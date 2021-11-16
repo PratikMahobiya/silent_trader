@@ -90,8 +90,8 @@ def EXIT_ORDER(request):
     symbol        = request.data['symbol']
     stock_config_obj = models.CONFIG_15M.objects.get(symbol = symbol)
     if stock_config_obj.buy is True:
-      order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
-      # order_id, order_status, price  = 1 , 'NOT ACTIVE', 200
+      # order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
+      order_id, order_status, price  = 0 , 'NOT ACTIVE', 200
       if order_id != 0:
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
@@ -111,7 +111,7 @@ def EXIT_ORDER(request):
         stock_config_obj.save()
         response      = {'success': True, 'status': '"{}" is EXITED. ORDER ID:- {}'.format(symbol,order_id)}
         return JsonResponse(response)
-      response = {'success': False, 'status': '"{}" is NOT EXITED. ..TRY AGAIN..'.format(symbol)}
+      response = {'success': False, 'status': '"{}" is NOT EXITED. ..TRY AGAIN..'.format(request.data)}
       return JsonResponse(response)
     response = {'success': False, 'status': 'ALREADY EXITED {}.'.format(symbol)}
     return JsonResponse(response)
