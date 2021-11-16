@@ -35,10 +35,13 @@ async function ModelStatusAPI() {
 async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
     const data_place_order = { reference_id: reference_id ,symbol: symbol ,price: price ,quantity: quantity};
     // console.log(data_place_order);
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    // console.log('csrToken:- ', csrftoken);
     let response = await fetch('http://139.59.54.145/crs15mtemp/place_order_btst/', {
     method: 'POST', // or 'PUT'
     headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
     },
     body: JSON.stringify(data_place_order),
     })
@@ -51,10 +54,13 @@ async function PlaceOrderAPI(reference_id, symbol, price, quantity) {
 async function ExitOrderAPI(symbol) {
     const data_exit_order = {symbol: symbol};
     // console.log(data_exit_order);
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    // console.log('csrToken:- ', csrftoken);
     let response = await fetch('http://139.59.54.145/crs15mtemp/exit_order_btst/', {
     method: 'POST', // or 'PUT'
     headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
     },
     body: JSON.stringify(data_exit_order),
     })

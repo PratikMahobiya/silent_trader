@@ -72,8 +72,8 @@ def PLACE_ORDER(request):
     symbol        = request.data['symbol']
     price         = float(request.data['price'])
     quantity      = int(request.data['quantity'])
-    # order_id, order_status = place_regular_buy_order(symbol, price, quantity)
-    order_id, order_status = 0 , 'NOT ACTIVE'
+    order_id, order_status = place_regular_buy_order(symbol, price, quantity)
+    # order_id, order_status = 0 , 'NOT ACTIVE'
     if order_id != 0:
       models.CONFIG_15M.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
       models_a.CROSSOVER_15_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
@@ -90,8 +90,8 @@ def EXIT_ORDER(request):
     symbol        = request.data['symbol']
     stock_config_obj = models.CONFIG_15M.objects.get(symbol = symbol)
     if stock_config_obj.buy is True:
-      # order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
-      order_id, order_status, price  = 0 , 'NOT ACTIVE', 200
+      order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
+      # order_id, order_status, price  = 0 , 'NOT ACTIVE', 200
       if order_id != 0:
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
