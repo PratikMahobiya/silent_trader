@@ -88,7 +88,7 @@ def PLACE_ORDER(request):
 def EXIT_ORDER(request):
   if request.method == 'POST':
     symbol        = request.data['symbol']
-    stock_config_obj = models.CONFIG_15M.objects.get(symbol = symbol)
+    stock_config_obj = models.CONFIG_15M.objects.get(symbol = symbol.split('/')[0])
     if stock_config_obj.buy is True:
       order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
       # order_id, order_status, price  = 0 , 'NOT ACTIVE', 200
@@ -211,7 +211,7 @@ def PLACE_ORDER_BTST(request):
 def EXIT_ORDER_BTST(request):
   if request.method == 'POST':
     symbol        = request.data['symbol']
-    stock_config_obj = models.CONFIG_15M_BTST.objects.get(symbol = symbol)
+    stock_config_obj = models.CONFIG_15M_BTST.objects.get(symbol = symbol.split('/')[0])
     if stock_config_obj.buy is True:
       order_id, order_status, price = place_regular_sell_order_BTST(symbol, stock_config_obj)
       # order_id, order_status, price  = 1 , 'NOT ACTIVE', 200
