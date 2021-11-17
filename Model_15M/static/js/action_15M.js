@@ -332,7 +332,8 @@ function Successmsg(button, symbol, price, quantity, reference_id) {
     }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-
+            var price = document.getElementById('price').value;
+            var quantity = document.getElementById('quantity').value;
             PlaceOrderAPI(reference_id, symbol, price, quantity).then(data => {
                 Swal.fire(
                     {
