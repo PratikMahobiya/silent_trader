@@ -69,7 +69,7 @@ def place_regular_sell_order(symbol, stock_config_obj):
 def PLACE_ORDER(request):
   if request.method == 'POST':
     reference_id  = int(request.data['reference_id'])
-    symbol        = request.data['symbol']
+    symbol        = request.data['symbol'].split('/')[0]
     price         = float(request.data['price'])
     quantity      = int(request.data['quantity'])
     order_id, order_status = place_regular_buy_order(symbol, price, quantity)
