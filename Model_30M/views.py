@@ -75,7 +75,9 @@ def PLACE_ORDER(request):
     order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
-      models.CONFIG_30M.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
+      target_p = price + price * 0.006
+      sl_fixed = price - price * 0.004
+      models.CONFIG_30M.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False, target = target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_30_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
@@ -122,11 +124,16 @@ def EXIT_ORDER(request):
 def Active_Stocks(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    active_entry  = models.ENTRY_30M.objects.all().values_list('symbol', 'reference_id').reverse()
+    active_entry  = models.ENTRY_30M.objects.all().values_list('symbol', 'reference_id')
+    active_stocks = []
+    for stock in active_entry:
+      active_stocks.append('NSE:'+stock[0])
+    kite_conn_var = connect_to_kite_connection()
+    stocks_ltp = kite_conn_var.ltp(active_stocks)
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models.CONFIG_30M.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_30_MIN.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
+      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_30_MIN.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stocks_ltp['NSE:'+sym_list[0]]['last_price']})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)
@@ -198,7 +205,9 @@ def PLACE_ORDER_BTST(request):
     order_id, order_status = place_regular_buy_order_BTST(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
-      models.CONFIG_30M_BTST.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status)
+      target_p = price + price * 0.006
+      sl_fixed = price - price * 0.004
+      models.CONFIG_30M_BTST.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False, target = target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_30_MIN_BTST.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
@@ -245,11 +254,16 @@ def EXIT_ORDER_BTST(request):
 def Active_Stocks_BTST(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    active_entry  = models.ENTRY_30M_BTST.objects.all().values_list('symbol', 'reference_id').reverse()
+    active_entry  = models.ENTRY_30M_BTST.objects.all().values_list('symbol', 'reference_id')
+    active_stocks = []
+    for stock in active_entry:
+      active_stocks.append('NSE:'+stock[0])
+    kite_conn_var = connect_to_kite_connection()
+    stocks_ltp = kite_conn_var.ltp(active_stocks)
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models.CONFIG_30M_BTST.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_30_MIN_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1]})
+      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_30_MIN_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stocks_ltp['NSE:'+sym_list[0]]['last_price']})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)

@@ -78,9 +78,9 @@ async function ActiveStocksAPI() {
         Action: button_binding(index, Active),
         Time: convertFromStringToDate(Active.date),
         Symbol: Active.symbol,
+        price: Active.price + '/' + Active.ltp,
         NiftyType: Active.niftytype,
         quantity: Active.quantity,
-        price: Active.price,
         sector: Active.sector.toUpperCase()
     }));
     //console.log(userData);
