@@ -103,7 +103,7 @@ function button_binding(index, Active) {
     if (Active.placed == true) {
         return "<button type='submit' id='btn" + index + "' class='btn btn-sm' style='width:max-content; background-color:#FF0000;color:white' value='Submit' onclick=Exitmsg('" + Active.symbol + "')>EXIT_ Order</button>";
     } else {
-        return "<button type='submit' id='btn" + index + "' class='btn btn-sm btn-primary' style='width:max-content' value='Submit' onclick=Successmsg(this,'" + Active.symbol + "','" + Active.price + "','" + Active.quantity + "','" + Active.reference_id + "')>Place Order</button>";
+        return "<button type='submit' id='btn" + index + "' class='btn btn-sm btn-primary' style='width:max-content' value='Submit' onclick=Successmsg(this,'" + Active.symbol + "','" + Active.ltp+ "','" + Active.quantity + "','" + Active.reference_id + "')>Place Order</button>";
     }
 }
 
