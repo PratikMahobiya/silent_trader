@@ -23,7 +23,8 @@ def sell(stock, price, gain, kite_conn_var):
   stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
   # get the p&l
   gain_val = round(((price - stock_config_obj.buy_price) * stock_config_obj.quantity),2)
-  gain.append(gain_val)
+  gain_percent = round((((price - stock_config_obj.buy_price)/stock_config_obj.buy_price)*100),2)
+  gain.append((gain_val, gain_percent))
 
   # if price hits First Target Starts TU.
   if ((price >= stock_config_obj.target) and (stock_config_obj.d_sl_flag is False)):
