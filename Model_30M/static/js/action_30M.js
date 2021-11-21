@@ -69,6 +69,17 @@ async function ExitOrderAPI(symbol) {
     return data;
 }
 
+function ltp_color(Active){
+    if (Active.price > Active.ltp){
+        return "<b style='color:red;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
+    }
+    else if (Active.price < Active.ltp){
+        return "<b style='color:green;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
+    }
+    if (Active.price == Active.ltp){
+        return "<b style='color:black;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
+    }
+}
 
 async function ActiveStocksAPI() {
     let response = await fetch('http://139.59.54.145/crs30m/active_stocks/')
@@ -87,17 +98,6 @@ async function ActiveStocksAPI() {
     return userData;
 }
 
-function ltp_color(Active){
-    if (Active.price > Active.ltp){
-        return "<b style='color:red;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
-    }
-    else if (Active.price < Active.ltp){
-        return "<b style='color:green;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
-    }
-    if (Active.price == Active.ltp){
-        return "<b style='color:black;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
-    }
-}
 
 function button_binding(index, Active) {
     if (Active.placed == true) {
