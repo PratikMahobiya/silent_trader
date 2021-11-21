@@ -202,7 +202,7 @@ def PLACE_ORDER_BTST(request):
     symbol        = request.data['symbol']
     price         = float(request.data['price'])
     quantity      = int(request.data['quantity'])
-    order_id, order_status = place_regular_buy_order_BTST(symbol, price, quantity)
+    order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
       target_p = price + price * 0.006
@@ -222,7 +222,7 @@ def EXIT_ORDER_BTST(request):
     symbol        = request.data['symbol']
     stock_config_obj = models.CONFIG_15M_TEMP_BTST.objects.get(symbol = symbol.split('/')[0])
     if stock_config_obj.buy is True:
-      order_id, order_status, price = place_regular_sell_order_BTST(symbol, stock_config_obj)
+      order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
       # order_id, order_status, price  = 1 , 'NOT ACTIVE', 200
       if order_id != 0:
         diff          = price - stock_config_obj.buy_price
