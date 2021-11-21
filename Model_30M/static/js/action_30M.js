@@ -78,7 +78,7 @@ async function ActiveStocksAPI() {
         Action: button_binding(index, Active),
         Time: convertFromStringToDate(Active.date),
         Symbol: Active.symbol,
-        price: Active.price + '/' + Active.ltp,
+        price: Active.price + '/' + ltp_color(Active),
         NiftyType: Active.niftytype,
         quantity: Active.quantity,
         sector: Active.sector.toUpperCase()
@@ -87,6 +87,17 @@ async function ActiveStocksAPI() {
     return userData;
 }
 
+function ltp_color(Active){
+    if (Active.price > Active.ltp){
+        return "<b style='color:red;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
+    }
+    else if (Active.price < Active.ltp){
+        return "<b style='color:green;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
+    }
+    if (Active.price == Active.ltp){
+        return "<b style='color:black;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active/price)*100).toFixed(2) + "</b>"
+    }
+}
 
 function button_binding(index, Active) {
     if (Active.placed == true) {
