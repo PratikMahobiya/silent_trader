@@ -36,3 +36,13 @@ class CROSSOVER_15_Min_Serializer_TEMP_BTST(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_15_MIN_TEMP_BTST
 		fields 	= ('id','symbol','sector','niftytype','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status','date')
+
+class CROSSOVER_15_Min_Serializer_TEMP_DOWN(serializers.ModelSerializer):
+	class Meta:
+		model 	= models.CROSSOVER_15_MIN_TEMP_DOWN
+		fields 	= ('id','symbol','sector','niftytype','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status','date')
+
+class CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(serializers.ModelSerializer):
+	class Meta:
+		model 	= models.CROSSOVER_15_MIN_TEMP_BTST_DOWN
+		fields 	= ('id','symbol','sector','niftytype','indicate','type','price','quantity','stoploss','target','difference','profit','order_id','order_status','date')

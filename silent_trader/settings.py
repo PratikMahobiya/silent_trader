@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'Model_30M.apps.Model30MConfig',
     # ---- NA ----------
     'Model_15_temp.apps.Model15TempConfig',
+    'Model_15_temp_down.apps.Model15TempDownConfig',
 
     # Downloaded Apps -------
     'rest_framework',

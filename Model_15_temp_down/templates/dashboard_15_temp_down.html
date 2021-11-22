@@ -2,7 +2,7 @@
 <html>
 {% load static %}
 <head>
-    <title>CRS 15M MAIN DASHBOARD</title>
+    <title>CRS 15M TEMP DASHBOARD</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="{% static 'css/style_2.css' %}">
 
 </head>
+
 <body style="background-image:url(http://139.59.54.145/static/images/banner2.jpg);color: white;">
     {% csrf_token %}
     <div class="container-fluid p-2 mt-2 text-white text-center" style="overflow: hidden;">
@@ -33,17 +34,17 @@
             </div>
 
             <div class="col-sm-2">
-                <h3 class="font-effect-emboss" style="color: blanchedalmond;"><a href="http://139.59.54.145/crs15mtempdown/dashboard/" style="color: rgb(245, 214, 157);">Trade Bros DOWN</a></h3>
+                <h3 class="font-effect-emboss" style="color: blanchedalmond;"><a href="http://139.59.54.145/crs15mtemp/dashboard_btst/" style="color: rgb(245, 214, 157);">Trade Bros BTST</a></h3>
                 <h6 id="TODAY_DATE" style="color: rgb(0, 255, 255);"></h6>
             </div>
 
             <div class="col-sm-2">
-                <h6><a href="http://139.59.54.145/crs15m/dashboard/" class="active">CRS 15</a></h6>
+                <h6><a href="http://139.59.54.145/crs15m/dashboard/">CRS 15</a></h6>
                 <h6 id="CRS_MAIN"></h6><h6 id="CRS_MAIN_%"></h6>
             </div>
 
             <div class="col-sm-1">
-                <h6><a href="http://139.59.54.145/crs15mtemp/dashboard/">CRS 15 TEMP</a></h6>
+                <h6><a href="http://139.59.54.145/crs15mtemp/dashboard/" class="active">CRS 15 TEMP</a></h6>
                 <h6 id="CRS_TEMP"></h6><h6 id="CRS_TEMP_%"></h6>
             </div>
 
@@ -61,7 +62,7 @@
 
                 <div style="width: 15px;">&nbsp;</div>
                 <div class="col-sm-5">
-                    <h4 style="background-color: black;">Active Transaction</h4>
+                    <h4 style="background-color: black;">Active Transaction</h4><span id='CRS_TEMP_DOWN'></span><span id='CRS_TEMP_DOWN_%'></span>
                 </div>
 
                 <div style="width: 2px;">&nbsp;</div>
@@ -84,7 +85,7 @@
         </div>
     </div>
 
-    <script src="{% static 'js/action_15M.js' %}"></script>
+    <script src="{% static 'js/action_15M_temp_down.js' %}"></script>
 
     <script src="{% static 'js/sweetalertmin.js' %}"></script>
 

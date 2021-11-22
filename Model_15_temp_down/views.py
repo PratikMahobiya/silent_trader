@@ -4,13 +4,13 @@ from django.shortcuts import render
 from kiteconnect import KiteConnect
 from datetime import datetime, date, timedelta
 
-from Model_15_temp import models as models
+from Model_15_temp_down import models as models
 
 from rest_framework.decorators import api_view
 
 # Create your views here.
 def CRS_VIEW(request):
-  return render(request, 'dashboard_15_temp.html')
+  return render(request, 'dashboard_15_temp_down.html')
 
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
@@ -30,7 +30,7 @@ def place_regular_buy_order(symbol, price, quantity):
     kite_conn_var = connect_to_kite_connection()
     order_id = kite_conn_var.place_order(tradingsymbol=symbol,
                                 exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_BUY,
+                                transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
                                 quantity=quantity,
                                 variety=kite_conn_var.VARIETY_REGULAR,
                                 order_type=kite_conn_var.ORDER_TYPE_LIMIT,
@@ -53,7 +53,7 @@ def place_regular_sell_order(symbol, stock_config_obj):
     ltp        = stocks_ltp['NSE:'+symbol]['last_price']
     order_id = kite_conn_var.place_order(tradingsymbol=symbol,
                                 exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
+                                transaction_type=kite_conn_var.TRANSACTION_TYPE_BUY,
                                 quantity=stock_config_obj.quantity,
                                 variety=kite_conn_var.VARIETY_REGULAR,
                                 order_type=kite_conn_var.ORDER_TYPE_MARKET,
@@ -75,8 +75,8 @@ def PLACE_ORDER(request):
     order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
-      target_p = price + price * 0.006
-      sl_fixed = price - price * 0.004
+      target_p = price - price * 0.006
+      sl_fixed = price + price * 0.004
       models.CONFIG_15M_TEMP.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False, target = target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_15_MIN_TEMP.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
@@ -99,7 +99,7 @@ def EXIT_ORDER(request):
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
         trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
-        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP(data=trans_data)
+        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_DOWN(data=trans_data)
         if transaction.is_valid():
           transaction.save()
         models.ENTRY_15M_TEMP.objects.filter(symbol = symbol).delete()
@@ -143,14 +143,14 @@ def Transactions(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
     queryset      = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(created_on = date.today()).order_by('-date')
-    serializer    = serializers.CROSSOVER_15_Min_Serializer_TEMP(queryset, many = True)
+    serializer    = serializers.CROSSOVER_15_Min_Serializer_TEMP_DOWN(queryset, many = True)
     response.update({'success': True, 'data': serializer.data})
     return JsonResponse(response)
   return JsonResponse(response)
 
 # 15M BTST -------------------------------
 def CRS_BTST_VIEW(request):
-  return render(request, 'dashboard_15_temp_btst.html')
+  return render(request, 'dashboard_15_temp_btst_down.html')
 
 def place_regular_buy_order_BTST(symbol, price, quantity):
   # Place an order
@@ -160,7 +160,7 @@ def place_regular_buy_order_BTST(symbol, price, quantity):
     kite_conn_var = connect_to_kite_connection()
     order_id = kite_conn_var.place_order(tradingsymbol=symbol,
                                 exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_BUY,
+                                transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
                                 quantity=quantity,
                                 variety=kite_conn_var.VARIETY_REGULAR,
                                 order_type=kite_conn_var.ORDER_TYPE_LIMIT,
@@ -183,7 +183,7 @@ def place_regular_sell_order_BTST(symbol, stock_config_obj):
     ltp        = stocks_ltp['NSE:'+symbol]['last_price']
     order_id = kite_conn_var.place_order(tradingsymbol=symbol,
                                 exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
+                                transaction_type=kite_conn_var.TRANSACTION_TYPE_BUY,
                                 quantity=stock_config_obj.quantity,
                                 variety=kite_conn_var.VARIETY_REGULAR,
                                 order_type=kite_conn_var.ORDER_TYPE_MARKET,
@@ -205,8 +205,8 @@ def PLACE_ORDER_BTST(request):
     order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
-      target_p = price + price * 0.006
-      sl_fixed = price - price * 0.004
+      target_p = price - price * 0.006
+      sl_fixed = price + price * 0.004
       models.CONFIG_15M_TEMP_BTST.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False, target = target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
@@ -229,7 +229,7 @@ def EXIT_ORDER_BTST(request):
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
         trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
-        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(data=trans_data)
+        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_DOWN_BTST(data=trans_data)
         if transaction.is_valid():
           transaction.save()
         models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = symbol).delete()
@@ -273,7 +273,7 @@ def Transactions_BTST(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
     queryset      = models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(created_on = date.today()).order_by('-date')
-    serializer    = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST(queryset, many = True)
+    serializer    = serializers.CROSSOVER_15_Min_Serializer_TEMP_DOWN_BTST(queryset, many = True)
     response.update({'success': True, 'data': serializer.data})
     return JsonResponse(response)
   return JsonResponse(response)

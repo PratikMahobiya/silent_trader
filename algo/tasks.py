@@ -21,9 +21,13 @@ from .CROSSOVER_30_MIN.utils import backbone as backbone_CRS_30_MIN
 
 # -------------------- Not ------------------
 from Model_15_temp import models as models_temp
+from Model_15_temp_down import models as models_temp_down
 from . import check_ltp_temp
 from . import check_ltp_temp_btst
+from . import check_ltp_temp_down
+from . import check_ltp_temp_btst_down
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
+from .DOWN_CROSSOVER_15_MIN_temp.utils import backbone as backbone_DOWN_CRS_temp
 
 @shared_task(bind=True,max_retries=3)
 # initial_setup on DATABASE -------------------------------------
@@ -185,8 +189,15 @@ def get_stocks_configs(self):
     if not models_temp.CONFIG_15M_TEMP_BTST.objects.filter(symbol = stock_sym).exists():
       models_temp.CONFIG_15M_TEMP_BTST(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
 
+    # CREATE CONFIG IN FOR 15 MIN TEMP DOWN
+    if not models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(symbol = stock_sym).exists():
+      models_temp_down.CONFIG_15M_TEMP_DOWN(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
+    # CREATE CONFIG IN FOR 15 MIN TEMP BTST DOWN
+    if not models_temp_down.CONFIG_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock_sym).exists():
+      models_temp_down.CONFIG_15M_TEMP_BTST_DOWN(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
+
   # Config Model to Profit Tables
-  model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST']
+  model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST','CRS_15_TEMP_BTST_DOWN']
   for model_name in model_name_list:
     # if model not configure in Profit Table
     if not models_a.PROFIT.objects.filter(model_name = model_name, date = datetime.now().date()).exists():
@@ -310,6 +321,37 @@ def ltp_of_entries(self):
       model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
       model_config_obj.save()
 
+    # LTP CRS TEMP BTST DOWN
+    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
+      try:
+        status, active_stocks, gain = check_ltp_temp_btst_down.get_stock_ltp(kite_conn_var)
+        response.update({'LTP_BTST_DOWN': True, 'STATUS_BTST_DOWN': status,'ACTIVE_STOCKS_BTST_DOWN':active_stocks})
+      except Exception as e:
+        pass
+      # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+      model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_15_TEMP_BTST_DOWN', date = datetime.now().date())
+      gain_val = []
+      gain_per = []
+      for val, per in gain:
+        gain_val.append(val)
+        gain_per.append(per)
+      total_sum = sum(gain_val)
+      model_config_obj.current_gain           = round(total_sum,2)
+      model_config_obj.current_gain_time      = datetime.now().time()
+      model_config_obj.current_gain_entry     = len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True))
+      if len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+        model_config_obj.max_entry     = len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True))
+      if total_sum > model_config_obj.top_gain:
+        model_config_obj.top_gain       = round(total_sum,2)
+        model_config_obj.top_gain_time  = datetime.now().time()
+        model_config_obj.top_gain_entry = len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True))
+      if total_sum < model_config_obj.top_loss:
+        model_config_obj.top_loss       = round(total_sum,2)
+        model_config_obj.top_loss_time  = datetime.now().time()
+        model_config_obj.top_loss_entry = len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True))
+      model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
+      model_config_obj.save()
+
     # LTP CRS 30 MIN BTST
     if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
       try:
@@ -430,6 +472,36 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_time  = datetime.now().time()
       model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
+    model_config_obj.save()
+
+    # LTP CRS TEMP DOWN
+    try:
+      status, active_stocks, gain = check_ltp_temp_down.get_stock_ltp(kite_conn_var)
+      response.update({'LTP_TEMP_DOWN': True, 'STATUS_TEMP_DOWN': status,'ACTIVE_STOCKS_TEMP_DOWN':active_stocks})
+    except Exception as e:
+      pass
+    # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+    model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_TEMP_DOWN', date = datetime.now().date())
+    gain_val = []
+    gain_per = []
+    for val, per in gain:
+      gain_val.append(val)
+      gain_per.append(per)
+    total_sum = sum(gain_val)
+    model_config_obj.current_gain           = round(total_sum,2)
+    model_config_obj.current_gain_time      = datetime.now().time()
+    model_config_obj.current_gain_entry     = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
+    if len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+      model_config_obj.max_entry     = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
+    if total_sum > model_config_obj.top_gain:
+      model_config_obj.top_gain       = round(total_sum,2)
+      model_config_obj.top_gain_time  = datetime.now().time()
+      model_config_obj.top_gain_entry = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
+    if total_sum < model_config_obj.top_loss:
+      model_config_obj.top_loss       = round(total_sum,2)
+      model_config_obj.top_loss_time  = datetime.now().time()
+      model_config_obj.top_loss_entry = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
+    model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
 
     # # --------------------------------- FREEZE Profit at each LTP ------------------------
@@ -613,7 +685,7 @@ def ltp_of_entries(self):
 
   # CALCULATE THE RETURN OF ALL MODELS
   elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
-    model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST']
+    model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST', 'CRS_TEMP_DOWN','CRS_15_TEMP_BTST_DOWN']
     for ind, m_name in enumerate(model_name_list):
       models_a.PROFIT_CONFIG.objects.filter(model_name = m_name).update(zerodha_entry = False)
       model_config_obj = models_a.PROFIT.objects.get(model_name = m_name, date = datetime.now().date())
@@ -655,6 +727,20 @@ def ltp_of_entries(self):
       if ind == 5:
         profit = models_a.CROSSOVER_30_MIN_BTST.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         total_sum = models_a.CROSSOVER_30_MIN_BTST.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
+        model_config_obj.current_gain            = round(sum(total_sum),2)
+        model_config_obj.current_gain_time       = datetime.now().time()
+        model_config_obj.current_gain_entry      = len(profit)
+        model_config_obj.p_l                     = round(sum(profit),2)
+      if ind == 6:
+        profit = models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
+        total_sum = models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
+        model_config_obj.current_gain            = round(sum(total_sum),2)
+        model_config_obj.current_gain_time       = datetime.now().time()
+        model_config_obj.current_gain_entry      = len(profit)
+        model_config_obj.p_l                     = round(sum(profit),2)
+      if ind == 7:
+        profit = models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
+        total_sum = models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
         model_config_obj.current_gain            = round(sum(total_sum),2)
         model_config_obj.current_gain_time       = datetime.now().time()
         model_config_obj.current_gain_entry      = len(profit)
@@ -720,4 +806,22 @@ def CROSS_OVER_RUNS_15_MIN_TEMP(self):
   '''
   status = backbone_CRS_temp.model(intervals, kite_conn_var)
   response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))})
+  return response
+
+@shared_task(bind=True,max_retries=3)
+def DOWN_CROSS_OVER_RUNS_15_MIN_TEMP(self):
+  response = {'CRS': False, 'STATUS': 'NONE'}
+
+  # Initialize Kite Connections
+  kite_conn_var       = connect_to_kite_connection()
+  '''
+    -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
+  '''
+  intervals      = ['15minute',5,60,55,16,8,'30minute',30,14,14,14]
+  '''
+  -> Intervals:-
+    ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
+  '''
+  status = backbone_DOWN_CRS_temp.model(intervals, kite_conn_var)
+  response.update({'CRS': True, 'STATUS': status, 'ENTRY':list(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))})
   return response
