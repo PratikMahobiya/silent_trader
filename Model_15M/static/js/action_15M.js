@@ -126,6 +126,9 @@ function getData() {
 
 function SetModelStatus(data){
     for (var i = 0; i < data.length; i++) {
+        if ((data[i].model_name === 'CRS_TEMP_DOWN') || (data[i].model_name === 'CRS_15_TEMP_BTST_DOWN')){
+
+        }
         var elem = document.getElementById(data[i].model_name);
         var elem_P_l = document.getElementById(data[i].model_name + '_%');
         var today_date = document.getElementById('TODAY_DATE');
