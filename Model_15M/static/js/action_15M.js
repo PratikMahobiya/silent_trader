@@ -136,7 +136,7 @@ function SetModelStatus(data){
         else if (data[i].current_gain < 0){
             elem.setAttribute("style", "color:Red;font-weight:500");
         }
-        else if (data[i].current_gain = 0){
+        else if (data[i].current_gain == 0){
             elem.setAttribute("style", "font-weight:500");
         }
         
