@@ -95,7 +95,7 @@ async function ActiveStocksAPI() {
         sector: Active.sector.toUpperCase()
     }));
     //console.log(userData);
-    return userData;
+    return userData.reverse();
 }
 
 
