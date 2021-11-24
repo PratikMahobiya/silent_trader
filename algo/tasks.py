@@ -1,5 +1,6 @@
 from datetime import date, datetime, time
 from kiteconnect import KiteConnect
+from time import sleep
 
 from Model_15M import models
 from Model_30M import models as models_30
