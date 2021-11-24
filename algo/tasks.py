@@ -269,8 +269,11 @@ def ltp_of_entries(self):
         pass
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_15_MAIN_BTST', date = datetime.now().date())
-      gain_val = gain[0]
-      gain_per = gain[1]
+      gain_val = []
+      gain_per = []
+      for val, per in gain:
+        gain_val.append(val)
+        gain_per.append(per)
       total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
       model_config_obj.current_gain           = round(total_sum,2)
       model_config_obj.current_gain_time      = datetime.now().time()
@@ -297,8 +300,11 @@ def ltp_of_entries(self):
         pass
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_15_TEMP_BTST', date = datetime.now().date())
-      gain_val = gain[0]
-      gain_per = gain[1]
+      gain_val = []
+      gain_per = []
+      for val, per in gain:
+        gain_val.append(val)
+        gain_per.append(per)
       total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
       model_config_obj.current_gain           = round(total_sum,2)
       model_config_obj.current_gain_time      = datetime.now().time()
@@ -325,8 +331,11 @@ def ltp_of_entries(self):
         pass
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_15_TEMP_BTST_DOWN', date = datetime.now().date())
-      gain_val = gain[0]
-      gain_per = gain[1]
+      gain_val = []
+      gain_per = []
+      for val, per in gain:
+        gain_val.append(val)
+        gain_per.append(per)
       total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
       model_config_obj.current_gain           = round(total_sum,2)
       model_config_obj.current_gain_time      = datetime.now().time()
@@ -353,8 +362,11 @@ def ltp_of_entries(self):
         pass
       # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
       model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN_BTST', date = datetime.now().date())
-      gain_val = gain[0]
-      gain_per = gain[1]
+      gain_val = []
+      gain_per = []
+      for val, per in gain:
+        gain_val.append(val)
+        gain_per.append(per)
       total_sum = sum(gain_val) + sum(models_a.CROSSOVER_30_MIN_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
       model_config_obj.current_gain           = round(total_sum,2)
       model_config_obj.current_gain_time      = datetime.now().time()
@@ -380,8 +392,11 @@ def ltp_of_entries(self):
       pass
     # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
     model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN', date = datetime.now().date())
-    gain_val = gain[0]
-    gain_per = gain[1]
+    gain_val = []
+    gain_per = []
+    for val, per in gain:
+      gain_val.append(val)
+      gain_per.append(per)
     total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
     model_config_obj.current_gain           = round(total_sum,2)
     model_config_obj.current_gain_time      = datetime.now().time()
@@ -407,8 +422,11 @@ def ltp_of_entries(self):
       pass
     # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
     model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN', date = datetime.now().date())
-    gain_val = gain[0]
-    gain_per = gain[1]
+    gain_val = []
+    gain_per = []
+    for val, per in gain:
+      gain_val.append(val)
+      gain_per.append(per)
     total_sum = sum(gain_val) + sum(models_a.CROSSOVER_30_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
     model_config_obj.current_gain           = round(total_sum,2)
     model_config_obj.current_gain_time      = datetime.now().time()
@@ -435,8 +453,11 @@ def ltp_of_entries(self):
       pass
     # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
     model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_TEMP', date = datetime.now().date())
-    gain_val = gain[0]
-    gain_per = gain[1]
+    gain_val = []
+    gain_per = []
+    for val, per in gain:
+      gain_val.append(val)
+      gain_per.append(per)
     total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
     model_config_obj.current_gain           = round(total_sum,2)
     model_config_obj.current_gain_time      = datetime.now().time()
@@ -462,8 +483,11 @@ def ltp_of_entries(self):
       pass
     # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
     model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_TEMP_DOWN', date = datetime.now().date())
-    gain_val = gain[0]
-    gain_per = gain[1]
+    gain_val = []
+    gain_per = []
+    for val, per in gain:
+      gain_val.append(val)
+      gain_per.append(per)
     total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
     model_config_obj.current_gain           = round(total_sum,2)
     model_config_obj.current_gain_time      = datetime.now().time()

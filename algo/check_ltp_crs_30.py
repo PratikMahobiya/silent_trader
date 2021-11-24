@@ -7,7 +7,7 @@ def get_stock_ltp(kite_conn_var):
   # GET ACTIVE STOCK LIST
   stock_list = models.ENTRY_30M.objects.all().values_list('symbol', flat=True)
   active_stocks = []
-  gain = [[0,][0,],]
+  gain = [(0,0),]
   for stock in stock_list:
     active_stocks.append('NSE:'+stock)
   if len(active_stocks) != 0:
