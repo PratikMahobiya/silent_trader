@@ -46,7 +46,7 @@ def checking_stoploss_tu(price):
   return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
-  zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_TEMP')
+  zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_TEMP_DOWN')
   for stock in for_trade_stocks:
     ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[4])
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
@@ -146,7 +146,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
 
 # BTST TARDES
 def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var):
-  zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_15_TEMP_BTST')
+  zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_15_TEMP_BTST_DOWN')
   for stock in for_trade_stocks:
     ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[4])
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])

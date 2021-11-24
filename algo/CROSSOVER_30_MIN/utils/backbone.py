@@ -11,7 +11,6 @@ def model(intervals, kite_conn_var):
     kite_conn_var      = to place orders in zerodha
   '''
   # Regular Trades Execution
-  sleep(901)
   if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,00,00):
     # Trend Update i every 15 interval
     trending_stocks_list    = []

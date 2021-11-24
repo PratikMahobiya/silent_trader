@@ -371,11 +371,6 @@ def ltp_of_entries(self):
       pass
     # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
     model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN', date = datetime.now().date())
-    gain_val = []
-    gain_per = []
-    for val, per in gain:
-      gain_val.append(val)
-      gain_per.append(per)
     total_sum = sum(gain[0]) + sum(models_a.CROSSOVER_15_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
     model_config_obj.current_gain           = round(total_sum,2)
     model_config_obj.current_gain_time      = datetime.now().time()
@@ -401,11 +396,6 @@ def ltp_of_entries(self):
       pass
     # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
     model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN', date = datetime.now().date())
-    gain_val = []
-    gain_per = []
-    for val, per in gain:
-      gain_val.append(val)
-      gain_per.append(per)
     total_sum = sum(gain[0]) + sum(models_a.CROSSOVER_30_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
     model_config_obj.current_gain           = round(total_sum,2)
     model_config_obj.current_gain_time      = datetime.now().time()
@@ -432,11 +422,6 @@ def ltp_of_entries(self):
       pass
     # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
     model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_TEMP', date = datetime.now().date())
-    gain_val = []
-    gain_per = []
-    for val, per in gain:
-      gain_val.append(val)
-      gain_per.append(per)
     total_sum = sum(gain[0]) + sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
     model_config_obj.current_gain           = round(total_sum,2)
     model_config_obj.current_gain_time      = datetime.now().time()
@@ -462,11 +447,6 @@ def ltp_of_entries(self):
       pass
     # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
     model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_TEMP_DOWN', date = datetime.now().date())
-    gain_val = []
-    gain_per = []
-    for val, per in gain:
-      gain_val.append(val)
-      gain_per.append(per)
     total_sum = sum(gain[0]) + sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
     model_config_obj.current_gain           = round(total_sum,2)
     model_config_obj.current_gain_time      = datetime.now().time()
@@ -754,6 +734,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
 @shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_30_MIN(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
+  sleep(901)
 
   # Initialize Kite Connections
   kite_conn_var       = connect_to_kite_connection()
