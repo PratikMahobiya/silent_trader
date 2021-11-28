@@ -29,12 +29,12 @@ class ENTRY_15M_TEMP_BTST_Admin_DOWN(ExportActionMixin,admin.ModelAdmin):
 
 @admin.register(models.CONFIG_15M_TEMP_DOWN)
 class CONFIG_15M_TEMP_Admin_DOWN(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol','buy','trend','fixed_target_flag','d_sl_flag','placed','count','buy_price','stoploss','target','fixed_target','f_stoploss','d_stoploss','sector','niftytype','last_top','quantity','order_id','order_status')
+    list_display = ('symbol','buy','trend','fixed_target_flag','d_sl_flag','placed','count','buy_price','stoploss','target','fixed_target','f_stoploss','d_stoploss','sector','niftytype','last_top','quantity','return_price','order_id','order_status')
     list_per_page = 10
     search_fields = ['symbol',]
 
 @admin.register(models.CONFIG_15M_TEMP_BTST_DOWN)
 class CONFIG_15M_TEMP_BTST_Admin_DOWN(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol','buy','trend','fixed_target_flag','d_sl_flag','placed','count','buy_price','stoploss','target','fixed_target','f_stoploss','d_stoploss','sector','niftytype','last_top','quantity','order_id','order_status')
+    list_display = ('symbol','buy','trend','fixed_target_flag','d_sl_flag','placed','count','buy_price','stoploss','target','fixed_target','f_stoploss','d_stoploss','sector','niftytype','last_top','quantity','return_price','order_id','order_status')
     list_per_page = 10
     search_fields = ['symbol',]
