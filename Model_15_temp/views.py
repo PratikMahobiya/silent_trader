@@ -77,7 +77,7 @@ def PLACE_ORDER(request):
     if order_id != 0:
       target_p = price + price * 0.006
       sl_fixed = price - price * 0.004
-      models.CONFIG_15M_TEMP.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False, target = target_p, f_stoploss = sl_fixed)
+      models.CONFIG_15M_TEMP.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_15_MIN_TEMP.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
@@ -207,7 +207,7 @@ def PLACE_ORDER_BTST(request):
     if order_id != 0:
       target_p = price + price * 0.006
       sl_fixed = price - price * 0.004
-      models.CONFIG_15M_TEMP_BTST.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False, target = target_p, f_stoploss = sl_fixed)
+      models.CONFIG_15M_TEMP_BTST.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
