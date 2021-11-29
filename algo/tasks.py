@@ -255,6 +255,9 @@ def connect_to_kite_connection():
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
   response = {'LTP': False, 'STATUS': 'NONE','ACTIVE_STOCKS': None,'LTP_30': False, 'STATUS_30': 'NONE','ACTIVE_STOCKS_30': None}
+  gain_placed_price = 0
+  active_placed_entry = 0
+
   # CALCULATE CURRENT RETURN OF ALL ACTIVE STOCKS
   if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,17,00):
     kite_conn_var = connect_to_kite_connection()
@@ -412,23 +415,8 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
-    gain_placed_price = sum(models.CONFIG_15M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
-    if len(models.CONFIG_15M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True)) != 0:
-      model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
-      model_config_obj.current_gain           = round(gain_placed_price,2)
-      model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if gain_placed_price > model_config_obj.top_gain:
-        model_config_obj.top_gain       = round(gain_placed_price,2)
-        model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if gain_placed_price < model_config_obj.top_loss:
-        model_config_obj.top_loss       = round(gain_placed_price,2)
-        model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      model_config_obj.save()
+    gain_placed_price += sum(models.CONFIG_15M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    active_placed_entry += len(models.CONFIG_15M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
 
     # LTP CRS 30 MIN
     try:
@@ -459,23 +447,8 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_30_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
-    gain_placed_price = sum(models_30.CONFIG_30M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
-    if len(models_30.CONFIG_30M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True)) != 0:
-      model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
-      model_config_obj.current_gain           = round(gain_placed_price,2)
-      model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if gain_placed_price > model_config_obj.top_gain:
-        model_config_obj.top_gain       = round(gain_placed_price,2)
-        model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if gain_placed_price < model_config_obj.top_loss:
-        model_config_obj.top_loss       = round(gain_placed_price,2)
-        model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      model_config_obj.save()
+    gain_placed_price += sum(models_30.CONFIG_30M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    active_placed_entry += len(models_30.CONFIG_30M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
 
     # ----------------------------------------- NOT ACTIVE ---------------------------------
     # LTP CRS TEMP
@@ -507,23 +480,8 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
-    gain_placed_price = sum(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
-    if len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True,placed = True).values_list('return_price', flat=True)) != 0:
-      model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
-      model_config_obj.current_gain           = round(gain_placed_price,2)
-      model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if gain_placed_price > model_config_obj.top_gain:
-        model_config_obj.top_gain       = round(gain_placed_price,2)
-        model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if gain_placed_price < model_config_obj.top_loss:
-        model_config_obj.top_loss       = round(gain_placed_price,2)
-        model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      model_config_obj.save()
+    gain_placed_price += sum(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    active_placed_entry += len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
 
     # LTP CRS TEMP DOWN
     try:
@@ -554,23 +512,25 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_entry = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
-    gain_placed_price = sum(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
-    if len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True)) != 0:
-      model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
-      model_config_obj.current_gain           = round(gain_placed_price,2)
-      model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if gain_placed_price > model_config_obj.top_gain:
-        model_config_obj.top_gain       = round(gain_placed_price,2)
-        model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if gain_placed_price < model_config_obj.top_loss:
-        model_config_obj.top_loss       = round(gain_placed_price,2)
-        model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      model_config_obj.save()
+    gain_placed_price += sum(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    active_placed_entry += len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+
+    # OVER_ALL MODEL UPDATES ----------------------------------------
+    model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
+    model_config_obj.current_gain           = round(gain_placed_price,2)
+    model_config_obj.current_gain_time      = datetime.now().time()
+    model_config_obj.current_gain_entry     = active_placed_entry
+    if active_placed_entry > model_config_obj.max_entry:
+      model_config_obj.max_entry     = active_placed_entry
+    if gain_placed_price > model_config_obj.top_gain:
+      model_config_obj.top_gain       = round(gain_placed_price,2)
+      model_config_obj.top_gain_time  = datetime.now().time()
+      model_config_obj.top_gain_entry = active_placed_entry
+    if gain_placed_price < model_config_obj.top_loss:
+      model_config_obj.top_loss       = round(gain_placed_price,2)
+      model_config_obj.top_loss_time  = datetime.now().time()
+      model_config_obj.top_loss_entry = active_placed_entry
+    model_config_obj.save()
 
     # --------------------------------- FREEZE Profit at each LTP ------------------------
     crs_main_entry_list = models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
