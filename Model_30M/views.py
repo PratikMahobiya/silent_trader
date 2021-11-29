@@ -78,7 +78,7 @@ def PLACE_ORDER(request):
       target_p = price + price * 0.006
       sl_fixed = price - price * 0.004
       models.CONFIG_30M.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p, f_stoploss = sl_fixed)
-      models_a.CROSSOVER_30_MIN.objects.filter(symbol = symbol, id = reference_id).update(placed = True,order_id = order_id, order_status = order_status, price = price, quantity = quantity)
+      models_a.CROSSOVER_30_MIN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain_entry     += 1
       model_config_obj.save()
@@ -101,7 +101,7 @@ def EXIT_ORDER(request):
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
-        trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+        trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status,'placed' : True}
         transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
         if transaction.is_valid():
           transaction.save()
@@ -211,7 +211,7 @@ def PLACE_ORDER_BTST(request):
       target_p = price + price * 0.006
       sl_fixed = price - price * 0.004
       models.CONFIG_30M_BTST.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p, f_stoploss = sl_fixed)
-      models_a.CROSSOVER_30_MIN_BTST.objects.filter(symbol = symbol, id = reference_id).update(placed = True,order_id = order_id, order_status = order_status, price = price, quantity = quantity)
+      models_a.CROSSOVER_30_MIN_BTST.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain_entry     += 1
       model_config_obj.save()
@@ -234,7 +234,7 @@ def EXIT_ORDER_BTST(request):
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
-        trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+        trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status,'placed' : True}
         transaction   = serializers.CROSSOVER_30_MIN_BTST_Serializer(data=trans_data)
         if transaction.is_valid():
           transaction.save()
