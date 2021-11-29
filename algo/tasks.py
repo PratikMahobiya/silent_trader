@@ -516,19 +516,33 @@ def ltp_of_entries(self):
     active_placed_entry += len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
 
     # OVER_ALL MODEL UPDATES ----------------------------------------
-    model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
-    model_config_obj.current_gain           = round(gain_placed_price,2)
-    model_config_obj.current_gain_time      = datetime.now().time()
-    if active_placed_entry > model_config_obj.max_entry:
-      model_config_obj.max_entry     = active_placed_entry
-    if gain_placed_price > model_config_obj.top_gain:
-      model_config_obj.top_gain       = round(gain_placed_price,2)
-      model_config_obj.top_gain_time  = datetime.now().time()
-      model_config_obj.top_gain_entry = active_placed_entry
-    if gain_placed_price < model_config_obj.top_loss:
-      model_config_obj.top_loss       = round(gain_placed_price,2)
-      model_config_obj.top_loss_time  = datetime.now().time()
-      model_config_obj.top_loss_entry = active_placed_entry
+    if active_placed_entry != 0:
+      model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
+      model_config_obj.current_gain           = round(gain_placed_price,2)
+      model_config_obj.current_gain_time      = datetime.now().time()
+      if active_placed_entry > model_config_obj.max_entry:
+        model_config_obj.max_entry     = active_placed_entry
+      if gain_placed_price > model_config_obj.top_gain:
+        model_config_obj.top_gain       = round(gain_placed_price,2)
+        model_config_obj.top_gain_time  = datetime.now().time()
+        model_config_obj.top_gain_entry = active_placed_entry
+      if gain_placed_price < model_config_obj.top_loss:
+        model_config_obj.top_loss       = round(gain_placed_price,2)
+        model_config_obj.top_loss_time  = datetime.now().time()
+        model_config_obj.top_loss_entry = active_placed_entry
+    else:
+      model_profit_config_obj           = models_a.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
+      model_profit_config_obj.target    = 4000
+      model_profit_config_obj.stoploss  = 0
+      model_profit_config_obj.count     = 0
+      model_profit_config_obj.active    = False
+      model_profit_config_obj.entry     = 0
+      model_profit_config_obj.save()
+      # PROFIT TABLE
+      model_config_obj.current_gain           = 0
+      model_config_obj.top_gain               = 0
+      model_config_obj.top_loss               = 0
+      model_config_obj.p_l                    = 0
     model_config_obj.save()
 
     # --------------------------------- FREEZE Profit at each LTP ------------------------
