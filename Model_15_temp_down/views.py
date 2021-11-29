@@ -79,6 +79,9 @@ def PLACE_ORDER(request):
       sl_fixed = price + price * 0.004
       models.CONFIG_15M_TEMP_DOWN.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
+      model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
+      model_config_obj.current_gain_entry     += 1
+      model_config_obj.save()
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
     response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}
@@ -209,6 +212,9 @@ def PLACE_ORDER_BTST(request):
       sl_fixed = price + price * 0.004
       models.CONFIG_15M_TEMP_BTST_DOWN.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
+      model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
+      model_config_obj.current_gain_entry     += 1
+      model_config_obj.save()
       response      = {'success': True, 'status': '"{}" is PLACED. ORDER ID:- {}'.format(symbol,order_id)}
       return JsonResponse(response)
     response = {'success': False, 'status': '"{}" is NOT PLACED. ..TRY AGAIN..'.format(symbol)}

@@ -519,7 +519,6 @@ def ltp_of_entries(self):
     model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
     model_config_obj.current_gain           = round(gain_placed_price,2)
     model_config_obj.current_gain_time      = datetime.now().time()
-    model_config_obj.current_gain_entry     = active_placed_entry
     if active_placed_entry > model_config_obj.max_entry:
       model_config_obj.max_entry     = active_placed_entry
     if gain_placed_price > model_config_obj.top_gain:
@@ -564,11 +563,8 @@ def ltp_of_entries(self):
         model_profit_config_obj.entry     = 0
         # PROFIT TABLE
         model_config_obj.current_gain           = 0
-        model_config_obj.current_gain_entry     = 0
         model_config_obj.top_gain               = 0
-        model_config_obj.top_gain_entry         = 0
         model_config_obj.top_loss               = 0
-        model_config_obj.top_loss_entry         = 0
         model_config_obj.p_l                    = 0
     model_profit_config_obj.save()
     model_config_obj.save()
