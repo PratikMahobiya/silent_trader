@@ -87,6 +87,7 @@ class CROSSOVER_15_MIN(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
     	return self.id
     class Meta:
@@ -108,6 +109,7 @@ class CROSSOVER_15_MIN_BTST(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
     	return self.id
     class Meta:
@@ -129,6 +131,7 @@ class CROSSOVER_30_MIN(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
     	return self.id
     class Meta:
@@ -150,6 +153,7 @@ class CROSSOVER_30_MIN_BTST(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
     	return self.id
     class Meta:
@@ -172,6 +176,7 @@ class CROSSOVER_15_MIN_TEMP(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
     	return self.id
     class Meta:
@@ -193,6 +198,7 @@ class CROSSOVER_15_MIN_TEMP_BTST(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
     	return self.id
     class Meta:
@@ -213,6 +219,7 @@ class CROSSOVER_15_MIN_TEMP_DOWN(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
     	return self.id
     class Meta:
@@ -235,6 +242,7 @@ class CROSSOVER_15_MIN_TEMP_BTST_DOWN(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
     	return self.id
     class Meta:
