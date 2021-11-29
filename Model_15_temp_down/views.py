@@ -95,7 +95,7 @@ def EXIT_ORDER(request):
       order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
       # order_id, order_status, price  = 1 , 'NOT ACTIVE', 200
       if order_id != 0:
-        diff          = price - stock_config_obj.buy_price
+        diff          = stock_config_obj.buy_price - price 
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
         trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
@@ -225,7 +225,7 @@ def EXIT_ORDER_BTST(request):
       order_id, order_status, price = place_regular_sell_order(symbol, stock_config_obj)
       # order_id, order_status, price  = 1 , 'NOT ACTIVE', 200
       if order_id != 0:
-        diff          = price - stock_config_obj.buy_price
+        diff          = stock_config_obj.buy_price - price 
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
         trans_data = {'symbol':symbol,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':'M_Exit','price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
