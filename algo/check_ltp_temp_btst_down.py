@@ -5,7 +5,7 @@ from datetime import datetime, time
 
 def get_stock_ltp(kite_conn_var):
   # GET ACTIVE STOCK LIST
-  stock_list = models.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol', flat=True)
+  stock_list = models.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol', flat=True)
   active_stocks = []
   gain = [(0,0),]
   for stock in stock_list:

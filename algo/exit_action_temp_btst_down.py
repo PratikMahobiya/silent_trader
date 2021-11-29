@@ -20,7 +20,7 @@ def cancel_ord(kite_conn_var,stock_config_obj):
 def sell(stock, price, gain, kite_conn_var):
   order_id      = 0
   order_status  = 'NOT ACTIVE'
-  stock_config_obj = models.CONFIG_15M_TEMP_BTST.objects.get(symbol = stock)
+  stock_config_obj = models.CONFIG_15M_TEMP_BTST_DOWN.objects.get(symbol = stock)
   # get the p&l
   gain_val = round(((stock_config_obj.buy_price - price) * stock_config_obj.quantity),2)
   gain_percent = round((((stock_config_obj.buy_price - price)/stock_config_obj.buy_price)*100),2)
@@ -51,8 +51,8 @@ def sell(stock, price, gain, kite_conn_var):
         transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
         if transaction.is_valid():
           transaction.save()
-        models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-        models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+        models.ENTRY_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
+        models.TREND_15M_A_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
         stock_config_obj.buy                  = False
         stock_config_obj.placed               = False
         stock_config_obj.d_sl_flag            = False
@@ -84,8 +84,8 @@ def sell(stock, price, gain, kite_conn_var):
         transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
         if transaction.is_valid():
           transaction.save()
-        models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-        models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+        models.ENTRY_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
+        models.TREND_15M_A_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
         stock_config_obj.buy                  = False
         stock_config_obj.placed               = False
         stock_config_obj.d_sl_flag            = False
@@ -118,8 +118,8 @@ def sell(stock, price, gain, kite_conn_var):
           transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
           if transaction.is_valid():
             transaction.save()
-          models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-          models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+          models.ENTRY_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
+          models.TREND_15M_A_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
           stock_config_obj.buy                  = False
           stock_config_obj.placed               = False
           stock_config_obj.d_sl_flag            = False
@@ -167,8 +167,8 @@ def sell(stock, price, gain, kite_conn_var):
         transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
         if transaction.is_valid():
           transaction.save()
-        models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-        models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+        models.ENTRY_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
+        models.TREND_15M_A_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
         stock_config_obj.buy                  = False
         stock_config_obj.placed               = False
         stock_config_obj.d_sl_flag            = False
@@ -200,8 +200,8 @@ def sell(stock, price, gain, kite_conn_var):
       transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
       if transaction.is_valid():
         transaction.save()
-      models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-      models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+      models.ENTRY_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
+      models.TREND_15M_A_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
       stock_config_obj.buy                  = False
       stock_config_obj.placed               = False
       stock_config_obj.d_sl_flag            = False
@@ -234,8 +234,8 @@ def sell(stock, price, gain, kite_conn_var):
         transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
         if transaction.is_valid():
           transaction.save()
-        models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-        models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+        models.ENTRY_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
+        models.TREND_15M_A_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
         stock_config_obj.buy                  = False
         stock_config_obj.placed               = False
         stock_config_obj.d_sl_flag            = False
@@ -248,7 +248,7 @@ def sell(stock, price, gain, kite_conn_var):
 
 # SQUARE OFF, EXIT
 def square_off(stock, price, kite_conn_var):
-  stock_config_obj = models.CONFIG_15M_TEMP_BTST.objects.get(symbol = stock)
+  stock_config_obj = models.CONFIG_15M_TEMP_BTST_DOWN.objects.get(symbol = stock)
   if stock_config_obj.order_id != 0:
     if stock_config_obj.buy is True:
       ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
@@ -269,8 +269,8 @@ def square_off(stock, price, kite_conn_var):
       transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
       if transaction.is_valid():
         transaction.save()
-      models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-      models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+      models.ENTRY_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
+      models.TREND_15M_A_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
       stock_config_obj.buy                  = False
       stock_config_obj.placed               = False
       stock_config_obj.d_sl_flag            = False
@@ -290,8 +290,8 @@ def square_off(stock, price, kite_conn_var):
     transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
     if transaction.is_valid():
       transaction.save()
-    models.ENTRY_15M_TEMP_BTST.objects.filter(symbol = stock).delete()
-    models.TREND_15M_A_TEMP_BTST.objects.filter(symbol = stock).delete()
+    models.ENTRY_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
+    models.TREND_15M_A_TEMP_BTST_DOWN.objects.filter(symbol = stock).delete()
     stock_config_obj.buy                  = False
     stock_config_obj.placed               = False
     stock_config_obj.d_sl_flag            = False
