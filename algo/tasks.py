@@ -14,6 +14,7 @@ from . import freeze_all_15_temp_btst
 from . import freeze_all_30
 from . import freeze_all_30_btst
 from . import freeze_all_15_down
+from . import freeze_all_15_down_btst
 from . import check_ltp
 from . import check_ltp_btst
 from . import check_ltp_crs_30
@@ -411,7 +412,7 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_entry = len(models.ENTRY_15M.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
-    gain_placed_price = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date()).current_gain + sum(models.CONFIG_15M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    gain_placed_price = sum(models.CONFIG_15M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
     if len(models.CONFIG_15M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True)) != 0:
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain           = round(gain_placed_price,2)
@@ -458,7 +459,7 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_entry = len(models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_30_MIN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
-    gain_placed_price = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date()).current_gain + sum(models_30.CONFIG_30M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    gain_placed_price = sum(models_30.CONFIG_30M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
     if len(models_30.CONFIG_30M.objects.filter(buy = True,placed = True).values_list('return_price', flat=True)) != 0:
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain           = round(gain_placed_price,2)
@@ -506,7 +507,7 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
-    gain_placed_price = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date()).current_gain + sum(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    gain_placed_price = sum(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
     if len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True,placed = True).values_list('return_price', flat=True)) != 0:
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain           = round(gain_placed_price,2)
@@ -553,7 +554,7 @@ def ltp_of_entries(self):
       model_config_obj.top_loss_entry = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
     model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
     model_config_obj.save()
-    gain_placed_price = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date()).current_gain + sum(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    gain_placed_price = sum(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
     if len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True)) != 0:
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain           = round(gain_placed_price,2)
