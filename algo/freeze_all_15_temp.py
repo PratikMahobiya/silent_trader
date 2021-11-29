@@ -43,7 +43,7 @@ def freeze_all(stock_list, kite_conn_var):
 
           diff          = price - stock_config_obj.buy_price
           profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-          diff          = round((diff * stock_config_obj.quantity),2)
+          diff          = round((diff * stock_config_obj.quantity),2) - 100
           gain.append(diff)
           p_l.append(profit)
 
@@ -66,7 +66,7 @@ def freeze_all(stock_list, kite_conn_var):
         order_status   = 'NOT PLACED'
         diff          = price - stock_config_obj.buy_price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-        diff          = round((diff * stock_config_obj.quantity),2)
+        diff          = round((diff * stock_config_obj.quantity),2) - 100
         gain.append(diff)
         p_l.append(profit)
 

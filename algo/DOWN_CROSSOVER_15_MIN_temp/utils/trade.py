@@ -96,8 +96,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                 stock_config_obj.last_top       = price
                 stock_config_obj.order_id       = order_id
                 stock_config_obj.order_status   = order_status
+                stock_config_obj.fixed_target   = price - price * 0.006
                 if checking_close_ema_diff(stock,data_frame,ema_max):
-                  stock_config_obj.fixed_target       = price - price * 0.005
                   stock_config_obj.fixed_target_flag  = True
                 stock_config_obj.save()
                 # TRANSACTION TABLE UPDATE
@@ -132,8 +132,8 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                     stock_config_obj.last_top       = price
                     stock_config_obj.order_id       = order_id
                     stock_config_obj.order_status   = order_status
+                    stock_config_obj.fixed_target   = price - price * 0.006
                     if checking_close_ema_diff(stock,data_frame,ema_max):
-                      stock_config_obj.fixed_target       = price - price * 0.005
                       stock_config_obj.fixed_target_flag  = True
                     stock_config_obj.save()
                     # TRANSACTION TABLE UPDATE
@@ -184,8 +184,8 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                 stock_config_obj.last_top       = price
                 stock_config_obj.order_id       = order_id
                 stock_config_obj.order_status   = order_status
+                stock_config_obj.fixed_target   = price - price * 0.006
                 if checking_close_ema_diff(stock,data_frame,ema_max):
-                  stock_config_obj.fixed_target       = price - price * 0.005
                   stock_config_obj.fixed_target_flag  = True
                 stock_config_obj.save()
                 # TRANSACTION TABLE UPDATE
@@ -220,8 +220,8 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                     stock_config_obj.last_top       = price
                     stock_config_obj.order_id       = order_id
                     stock_config_obj.order_status   = order_status
+                    stock_config_obj.fixed_target   = price - price * 0.005
                     if checking_close_ema_diff(stock,data_frame,ema_max):
-                      stock_config_obj.fixed_target       = price - price * 0.005
                       stock_config_obj.fixed_target_flag  = True
                     stock_config_obj.save()
                     # TRANSACTION TABLE UPDATE
