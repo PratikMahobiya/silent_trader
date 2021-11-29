@@ -416,17 +416,17 @@ def ltp_of_entries(self):
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain           = round(gain_placed_price,2)
       model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models.CONFIG_15M.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if len(models.CONFIG_15M.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models.CONFIG_15M.filter(buy = True, placed = True).values_list('symbol',flat=True))
+      model_config_obj.current_gain_entry     = len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
+      if len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
+        model_config_obj.max_entry     = len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       if gain_placed_price > model_config_obj.top_gain:
         model_config_obj.top_gain       = round(gain_placed_price,2)
         model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models.CONFIG_15M.filter(buy = True, placed = True).values_list('symbol',flat=True))
+        model_config_obj.top_gain_entry = len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       if gain_placed_price < model_config_obj.top_loss:
         model_config_obj.top_loss       = round(gain_placed_price,2)
         model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models.CONFIG_15M.filter(buy = True, placed = True).values_list('symbol',flat=True))
+        model_config_obj.top_loss_entry = len(models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       model_config_obj.save()
 
     # LTP CRS 30 MIN
@@ -463,17 +463,17 @@ def ltp_of_entries(self):
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain           = round(gain_placed_price,2)
       model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models_30.CONFIG_30M.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if len(models_30.CONFIG_30M.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models_30.CONFIG_30M.filter(buy = True, placed = True).values_list('symbol',flat=True))
+      model_config_obj.current_gain_entry     = len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
+      if len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
+        model_config_obj.max_entry     = len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       if gain_placed_price > model_config_obj.top_gain:
         model_config_obj.top_gain       = round(gain_placed_price,2)
         model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models_30.CONFIG_30M.filter(buy = True, placed = True).values_list('symbol',flat=True))
+        model_config_obj.top_gain_entry = len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       if gain_placed_price < model_config_obj.top_loss:
         model_config_obj.top_loss       = round(gain_placed_price,2)
         model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models_30.CONFIG_30M.filter(buy = True, placed = True).values_list('symbol',flat=True))
+        model_config_obj.top_loss_entry = len(models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       model_config_obj.save()
 
     # ----------------------------------------- NOT ACTIVE ---------------------------------
@@ -511,17 +511,17 @@ def ltp_of_entries(self):
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain           = round(gain_placed_price,2)
       model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models_temp.CONFIG_15M_TEMP.filter(buy = True, placed = True).values_list('symbol',flat=True))
-      if len(models_temp.CONFIG_15M_TEMP.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models_temp.CONFIG_15M_TEMP.filter(buy = True, placed = True).values_list('symbol',flat=True))
+      model_config_obj.current_gain_entry     = len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
+      if len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True)) > model_config_obj.max_entry:
+        model_config_obj.max_entry     = len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       if gain_placed_price > model_config_obj.top_gain:
         model_config_obj.top_gain       = round(gain_placed_price,2)
         model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models_temp.CONFIG_15M_TEMP.filter(buy = True, placed = True).values_list('symbol',flat=True))
+        model_config_obj.top_gain_entry = len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       if gain_placed_price < model_config_obj.top_loss:
         model_config_obj.top_loss       = round(gain_placed_price,2)
         model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models_temp.CONFIG_15M_TEMP.filter(buy = True, placed = True).values_list('symbol',flat=True))
+        model_config_obj.top_loss_entry = len(models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol',flat=True))
       model_config_obj.save()
 
     # LTP CRS TEMP DOWN
