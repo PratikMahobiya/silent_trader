@@ -31,14 +31,14 @@ def freeze_all(stock_list, kite_conn_var):
       stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
       if stock_config_obj.order_id != 0:
         if stock_config_obj.buy is True:
-          ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
-          if ord_det[-1]['status'] == 'COMPLETE':
+          # ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
+          # if ord_det[-1]['status'] == 'COMPLETE':
             # CALL PLACE ORDER ----
-            order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
+          order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
             # ---------------------
-          else:
+          # else:
             # CALL CANCEL ORDER ----
-            order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
+            # order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
             # ----------------------
 
           diff          = price - stock_config_obj.buy_price
