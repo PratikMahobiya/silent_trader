@@ -10,4 +10,5 @@ urlpatterns = [
 	path('generate_token/', views.generate_acc_token, name='generate_token'),
 
 	path('model_status/', views.MODEL_STATUS, name='Model Status'),
+	path('exit_all/', views.FREEZE_ALL, name='Freeze All'),
 ]

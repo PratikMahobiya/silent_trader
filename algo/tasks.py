@@ -1,6 +1,7 @@
 from datetime import date, datetime, time
 from kiteconnect import KiteConnect
 from time import sleep
+from django.db.models import Q
 
 from Model_15M import models
 from Model_30M import models as models_30
@@ -824,14 +825,14 @@ def ltp_of_entries(self):
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = round(sum(profit),2)
       if ind == 8:
-        profit_main = list(models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit',placed = True,created_on = datetime.now().date()).values_list('profit',flat=True))
-        total_sum_main = list(models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit',placed = True,created_on = datetime.now().date()).values_list('difference',flat=True))
-        profit_temp = list(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',placed = True,created_on = datetime.now().date()).values_list('profit',flat=True))
-        total_sum_temp = list(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',placed = True,created_on = datetime.now().date()).values_list('difference',flat=True))
-        profit_30 = list(models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit',placed = True,created_on = datetime.now().date()).values_list('profit',flat=True))
-        total_sum_30 = list(models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit',placed = True,created_on = datetime.now().date()).values_list('difference',flat=True))
-        profit_down = list(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit',placed = True,created_on = datetime.now().date()).values_list('profit',flat=True))
-        total_sum_down = list(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit',placed = True,created_on = datetime.now().date()).values_list('difference',flat=True))
+        profit_main = list(models_a.CROSSOVER_15_MIN.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True))
+        total_sum_main = list(models_a.CROSSOVER_15_MIN.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True))
+        profit_temp = list(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True))
+        total_sum_temp = list(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True))
+        profit_30 = list(models_a.CROSSOVER_30_MIN.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True))
+        total_sum_30 = list(models_a.CROSSOVER_30_MIN.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True))
+        profit_down = list(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True))
+        total_sum_down = list(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True))
         # merge all--
         total_sum = total_sum_main + total_sum_temp + total_sum_30 + total_sum_down
         profit    = profit_main + profit_temp + profit_30 + profit_down

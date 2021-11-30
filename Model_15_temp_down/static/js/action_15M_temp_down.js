@@ -147,8 +147,19 @@ function SetModelStatus(data){
         else if (data[i].p_l == 0){
             elem_P_l.setAttribute("style", "font-weight:500");
         }
-        elem.innerHTML = data[i].current_gain + ' ₹';
-        elem_P_l.innerHTML = ' ' + data[i].p_l + ' %';
+        if (data[i].model_name == 'OVER_ALL_PLACED'){
+            if (data[i].p_l == 0 && data[i].current_gain != 0){
+                elem.innerHTML = data[i].current_gain + ' ₹ ' + "<button type='submit' id='btn_exit_all' class='btn btn-sm btn-primary' style='width:max-content; background-color:#6600CC;color:white' value='Submit' onclick=exit_all_entry()>Exit ALL</button>";
+            }
+            else{
+                elem.innerHTML = data[i].current_gain + ' ₹ ';
+                elem_P_l.innerHTML = data[i].p_l + ' %';
+            }
+        }
+        else{
+            elem.innerHTML = data[i].current_gain + ' ₹';
+            elem_P_l.innerHTML = data[i].p_l + ' %';
+        }
     }
 }
 
@@ -390,4 +401,47 @@ function Exitmsg(symbol) {
         }
     })
 }
+async function EXITALLSTOCKS() {
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    console.log('csrToken:- ', csrftoken);
+    let response = await fetch('http://139.59.54.145/exit_all/', {
+    credentials: 'include',
+    method: 'POST', // or 'PUT'
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+    },
+    })
+    let data = await response.json();
+    // console.log(data);
+    return data;
+}
+
+function exit_all_entry() {
+    Swal.fire({
+        title: "Are you sure, you want to ExitALL STOCKS ?",
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonText: 'Exit ALL',
+        confirmButtonColor: '#FF0000',
+        denyButtonText: `Don't save`,
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            EXITALLSTOCKS().then(data => {
+                Swal.fire(
+                    {
+                        title: data.status,
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#FF0000',
+                    }
+                )
+            }
+            );
+        } else if (result.isDenied) {
+            Swal.fire('Changes are not saved', '', 'info')
+        }
+    })
+}
+
 getData();
