@@ -279,7 +279,7 @@ def Transactions_BTST(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
     queryset      = models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(created_on = date.today()).order_by('-date')
-    serializer    = serializers.CROSSOVER_15_Min_Serializer_TEMP_DOWN_BTST(queryset, many = True)
+    serializer    = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(queryset, many = True)
     response.update({'success': True, 'data': serializer.data})
     return JsonResponse(response)
   return JsonResponse(response)
