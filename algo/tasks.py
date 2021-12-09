@@ -104,6 +104,7 @@ def get_stocks_configs(self):
       'HINDZINC':	[364545,	'METAL,COMMODITY','NA'],
       'IBULHSGFIN':	[7712001,	'nill','NA'],
       'ICICIBANK':	[1270529,	'BANK,FINN','nify'],
+      'IDEA': [3677697, 'nill', 'mid100'],
       'IDFCFIRSTB':	[2863105,	'BANK','mid50'],
       'IGL':		[2883073,	'INFRA','nxt50'],
       'INDIANB':	[3663105,	'BANK','NA'],

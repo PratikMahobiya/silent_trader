@@ -23,7 +23,7 @@ def exit_order(kite_conn_var,stock_config_obj):
   cancel_id = 0
   error_status = 'NOT_EXIT'
   try:
-    cancel_id = kite_conn_var.cancel_order(order_id=stock_config_obj,
+    cancel_id = kite_conn_var.cancel_order(order_id=stock_config_obj.order_id,
                                   variety=kite_conn_var.VARIETY_REGULAR)
     error_status = 'REJECTED_CANCELLED'
   except Exception as e:

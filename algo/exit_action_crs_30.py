@@ -57,7 +57,7 @@ def sell(stock, price, gain, kite_conn_var):
         diff          = round((diff * stock_config_obj.quantity),2) - 100
 
         type_str = 'HIT'
-        if 0 < stock_config_obj.count < 8:
+        if 0 < stock_config_obj.count < 4:
           type_str = 'HIT_{}'.format(stock_config_obj.count)
         else:
           type_str = 'JACKPOT_{}'.format(stock_config_obj.count)
