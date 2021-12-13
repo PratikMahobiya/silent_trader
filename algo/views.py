@@ -90,21 +90,21 @@ def MODEL_STATUS(request):
 def FREEZE_ALL(request):
   kite_conn_var = connect_to_kite_connection()
   # --------------------------------- FREEZE Profit at each LTP ------------------------
-  crs_main_entry_list = models_15.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-  crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-  crs_30_entry_list   = models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-  crs_down_entry_list = models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
+  crs_main_entry_list = models_15.CONFIG_15M.objects.filter(placed = True).values_list('symbol', flat=True)
+  crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(placed = True).values_list('symbol', flat=True)
+  crs_30_entry_list   = models_30.CONFIG_30M.objects.filter(placed = True).values_list('symbol', flat=True)
+  crs_down_entry_list = models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(placed = True).values_list('symbol', flat=True)
   total_placed_entry = len(crs_main_entry_list) + len(crs_temp_entry_list) + len(crs_30_entry_list) + len(crs_down_entry_list)
 
   model_config_obj               = models.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
   model_profit_config_obj        = models.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
   # FREEZE PROFIT
-  gain_main, p_l_main = freeze_all_15.freeze_all(crs_main_entry_list,kite_conn_var)
-  gain_temp, p_l_temp = freeze_all_15_temp.freeze_all(crs_temp_entry_list,kite_conn_var)
-  gain_30, p_l_30 = freeze_all_30.freeze_all(crs_30_entry_list,kite_conn_var)
-  gain_down, p_l_down = freeze_all_15_down.freeze_all(crs_down_entry_list,kite_conn_var)
-  gain = gain_main + gain_temp + gain_30 + gain_down
-  p_l  = p_l_main + p_l_temp + p_l_30 + p_l_down
+  # gain_main, p_l_main = freeze_all_15.freeze_all(crs_main_entry_list,kite_conn_var)
+  # gain_temp, p_l_temp = freeze_all_15_temp.freeze_all(crs_temp_entry_list,kite_conn_var)
+  # gain_30, p_l_30 = freeze_all_30.freeze_all(crs_30_entry_list,kite_conn_var)
+  # gain_down, p_l_down = freeze_all_15_down.freeze_all(crs_down_entry_list,kite_conn_var)
+  gain = [0,]#gain_main + gain_temp + gain_30 + gain_down
+  p_l  = [0,]#p_l_main + p_l_temp + p_l_30 + p_l_down
   models.FREEZE_PROFIT(model_name = 'OVER_ALL_PLACED', indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = total_placed_entry, day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
   model_profit_config_obj.day_hit   += 1
   model_profit_config_obj.target    = 4000
@@ -119,5 +119,5 @@ def FREEZE_ALL(request):
   model_config_obj.p_l                    = 0
   model_profit_config_obj.save()
   model_config_obj.save()
-  response = {'success': True, 'status': 'BOOKED PROFIT OF {} ₹.'.format(gain)}
+  response = {'success': True, 'status': 'BOOKED PROFIT OF {} ₹.'.format(crs_main_entry_list)}
   return JsonResponse(response)

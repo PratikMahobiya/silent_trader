@@ -548,10 +548,10 @@ def ltp_of_entries(self):
     model_config_obj.save()
 
     # --------------------------------- FREEZE Profit at each LTP ------------------------
-    crs_main_entry_list = models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-    crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-    crs_30_entry_list   = models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-    crs_down_entry_list = models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
+    crs_main_entry_list = models.CONFIG_15M.objects.filter(placed = True).values_list('symbol', flat=True)
+    crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(placed = True).values_list('symbol', flat=True)
+    crs_30_entry_list   = models_30.CONFIG_30M.objects.filter(placed = True).values_list('symbol', flat=True)
+    crs_down_entry_list = models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(placed = True).values_list('symbol', flat=True)
     total_placed_entry = len(crs_main_entry_list) + len(crs_temp_entry_list) + len(crs_30_entry_list) + len(crs_down_entry_list)
 
     model_config_obj               = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
