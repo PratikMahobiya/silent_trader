@@ -518,8 +518,8 @@ def ltp_of_entries(self):
     active_placed_entry += len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
 
     # OVER_ALL MODEL UPDATES ----------------------------------------
+    model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
     if active_placed_entry != 0:
-      model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain           = round(gain_placed_price,2)
       model_config_obj.current_gain_time      = datetime.now().time()
       if active_placed_entry > model_config_obj.max_entry:
