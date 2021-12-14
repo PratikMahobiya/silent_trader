@@ -533,6 +533,12 @@ def ltp_of_entries(self):
         model_config_obj.top_loss_time  = datetime.now().time()
         model_config_obj.top_loss_entry = active_placed_entry
     else:
+      # PROFIT TABLE
+      model_config_obj.current_gain           = 0
+      model_config_obj.top_gain               = 0
+      model_config_obj.top_loss               = 0
+      model_config_obj.p_l                    = 0
+      # PROFIT CONFIG
       model_profit_config_obj           = models_a.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
       model_profit_config_obj.target    = 4000
       model_profit_config_obj.stoploss  = 0
@@ -540,11 +546,6 @@ def ltp_of_entries(self):
       model_profit_config_obj.active    = False
       model_profit_config_obj.entry     = 0
       model_profit_config_obj.save()
-      # PROFIT TABLE
-      model_config_obj.current_gain           = 0
-      model_config_obj.top_gain               = 0
-      model_config_obj.top_loss               = 0
-      model_config_obj.p_l                    = 0
     model_config_obj.save()
 
     # --------------------------------- FREEZE Profit at each LTP ------------------------
