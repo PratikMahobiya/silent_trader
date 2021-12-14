@@ -76,8 +76,9 @@ def PLACE_ORDER(request):
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
       target_p = price + price * 0.006
+      fixed_target_p = price + price * 0.006
       sl_fixed = price - price * 0.004
-      models.CONFIG_15M_TEMP.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p, f_stoploss = sl_fixed)
+      models.CONFIG_15M_TEMP.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p,fixed_target = fixed_target_p, f_stoploss = sl_fixed)
       models_a.CROSSOVER_15_MIN_TEMP.objects.filter(symbol = symbol, id = reference_id).update(order_id = order_id, order_status = order_status, price = price, quantity = quantity)
       model_config_obj   = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
       model_config_obj.current_gain_entry     += 1

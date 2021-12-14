@@ -1,6 +1,7 @@
 from algo import serializers
 from Model_15_temp_down import models
 from . import ltp_zerodha_action_temp_down
+from time import sleep
 
 # place a sell order for exit
 def place_ord(kite_conn_var,stock,stock_config_obj):
@@ -26,6 +27,7 @@ def freeze_all(stock_list, kite_conn_var):
   if len(active_stocks) != 0:
     stocks_ltp = kite_conn_var.ltp(active_stocks)
     for stock_key in stocks_ltp:
+      sleep(0.3)
       price = stocks_ltp[stock_key]['last_price']
       stock = stock_key.split(':')[-1]
       stock_config_obj = models.CONFIG_15M_TEMP_DOWN.objects.get(symbol = stock)

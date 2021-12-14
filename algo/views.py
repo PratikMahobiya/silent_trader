@@ -99,10 +99,10 @@ def FREEZE_ALL(request):
   model_config_obj               = models.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
   model_profit_config_obj        = models.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
   # FREEZE PROFIT
-  gain_main, p_l_main = freeze_all_15.freeze_all(crs_main_entry_list,kite_conn_var)
-  gain_temp, p_l_temp = freeze_all_15_temp.freeze_all(crs_temp_entry_list,kite_conn_var)
-  gain_30, p_l_30 = freeze_all_30.freeze_all(crs_30_entry_list,kite_conn_var)
-  gain_down, p_l_down = freeze_all_15_down.freeze_all(crs_down_entry_list,kite_conn_var)
+  gain_main, p_l_main = freeze_all_15.freeze_all(list(crs_main_entry_list),kite_conn_var)
+  gain_temp, p_l_temp = freeze_all_15_temp.freeze_all(list(crs_temp_entry_list),kite_conn_var)
+  gain_30, p_l_30 = freeze_all_30.freeze_all(list(crs_30_entry_list),kite_conn_var)
+  gain_down, p_l_down = freeze_all_15_down.freeze_all(list(crs_down_entry_list),kite_conn_var)
   gain = gain_main + gain_temp + gain_30 + gain_down
   p_l  = p_l_main + p_l_temp + p_l_30 + p_l_down
   models.FREEZE_PROFIT(model_name = 'OVER_ALL_PLACED', indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = total_placed_entry, day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
