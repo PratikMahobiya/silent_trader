@@ -15,10 +15,6 @@ def trending_30(data_frame,intervals):
           conf_obj = models.CONFIG_15M.objects.get(symbol = stock)
           conf_obj.trend = True
           conf_obj.save()
-        else:
-          conf_obj = models.CONFIG_15M.objects.get(symbol = stock)
-          conf_obj.trend = False
-          conf_obj.save()
       else:
         conf_obj = models.CONFIG_15M.objects.get(symbol = stock)
         conf_obj.trend = False
