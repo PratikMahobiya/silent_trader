@@ -86,7 +86,7 @@ def MODEL_STATUS(request):
     return JsonResponse(response)
   return JsonResponse(response)
 
-@api_view(['GET',])
+@api_view(['GET','POST'])
 def FREEZE_ALL(request):
   kite_conn_var = connect_to_kite_connection()
   # --------------------------------- FREEZE Profit at each LTP ------------------------
