@@ -212,7 +212,7 @@ def get_stocks_configs(self):
     else:
       model_profit_config_obj = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
       model_profit_config_obj.day_hit   = 1
-      model_profit_config_obj.target    = 4000
+      model_profit_config_obj.target    = 2000
       model_profit_config_obj.stoploss  = 0
       model_profit_config_obj.count     = 0
       model_profit_config_obj.active    = False
