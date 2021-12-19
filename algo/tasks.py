@@ -540,7 +540,7 @@ def ltp_of_entries(self):
       model_config_obj.p_l                    = 0
       # PROFIT CONFIG
       model_profit_config_obj           = models_a.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
-      model_profit_config_obj.target    = 4000
+      model_profit_config_obj.target    = 2000
       model_profit_config_obj.stoploss  = 0
       model_profit_config_obj.count     = 0
       model_profit_config_obj.active    = False

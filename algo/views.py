@@ -107,7 +107,7 @@ def FREEZE_ALL(request):
   p_l  = p_l_main + p_l_temp + p_l_30 + p_l_down
   models.FREEZE_PROFIT(model_name = 'OVER_ALL_PLACED', indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = total_placed_entry, day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
   model_profit_config_obj.day_hit   += 1
-  model_profit_config_obj.target    = 4000
+  model_profit_config_obj.target    = 2000
   model_profit_config_obj.stoploss  = 0
   model_profit_config_obj.count     = 0
   model_profit_config_obj.active    = False
