@@ -86,7 +86,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
     # if stockrsi(fastk, fastd):
-    # if vwap_confirmations(stock,data_frame):
+    if vwap_confirmations(stock,data_frame):
       if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
@@ -122,7 +122,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
   elif ema_min[-1] > ema_max[-1]:
     if ema_min[-2] < ema_max[-2]:
       # if stockrsi(fastk, fastd):
-      # if vwap_confirmations(stock,data_frame):
+      if vwap_confirmations(stock,data_frame):
         if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
           if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
             if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
@@ -176,7 +176,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] > ema_min[-1]:
     # if stockrsi(fastk, fastd):
-    # if vwap_confirmations(stock,data_frame):
+    if vwap_confirmations(stock,data_frame):
       if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
         if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
           if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
@@ -212,7 +212,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
   elif ema_min[-1] > ema_max[-1]:
     if ema_min[-2] < ema_max[-2]:
       # if stockrsi(fastk, fastd):
-      # if vwap_confirmations(stock,data_frame):
+      if vwap_confirmations(stock,data_frame):
         if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
           if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
             if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
