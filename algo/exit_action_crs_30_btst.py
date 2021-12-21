@@ -22,24 +22,24 @@ def sell(stock, price, gain, kite_conn_var):
   order_status  = 'NOT ACTIVE'
   stock_config_obj = models.CONFIG_30M_BTST.objects.get(symbol = stock)
   # get the p&l
-  gain_val = round(((price - stock_config_obj.buy_price) * stock_config_obj.quantity),2)
-  gain_percent = round((((price - stock_config_obj.buy_price)/stock_config_obj.buy_price)*100),2)
+  gain_val = round(((stock_config_obj.buy_price - price) * stock_config_obj.quantity),2)
+  gain_percent = round((((stock_config_obj.buy_price - price)/stock_config_obj.buy_price)*100),2)
   gain.append((gain_val, gain_percent))
   models.CONFIG_30M_BTST.objects.filter(symbol = stock).update(return_price = gain_val)
 
   # if price hits First Target Starts TU.
-  if ((price >= stock_config_obj.target) and (stock_config_obj.d_sl_flag is False)):
+  if ((price <= stock_config_obj.target) and (stock_config_obj.d_sl_flag is False)):
     if stock_config_obj.buy is True:
       if stock_config_obj.count == 0:
         stock_config_obj.last_top     = price
-        stock_config_obj.d_stoploss   = price - price*0.004
+        stock_config_obj.d_stoploss   = price + price*0.004
         stock_config_obj.d_sl_flag    = True
         stock_config_obj.count        += 1
         stock_config_obj.save()
 
   # if price hits dynamic StopLoss, Exit
   elif stock_config_obj.d_sl_flag is True:
-    if price <= stock_config_obj.d_stoploss:
+    if price >= stock_config_obj.d_stoploss:
       if stock_config_obj.buy is True:
         if stock_config_obj.order_id != 0:
           ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
@@ -52,7 +52,7 @@ def sell(stock, price, gain, kite_conn_var):
             order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
             # ----------------------
 
-        diff          = price - stock_config_obj.buy_price
+        diff          = stock_config_obj.buy_price - price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
 
@@ -76,7 +76,7 @@ def sell(stock, price, gain, kite_conn_var):
         stock_config_obj.save()
 
   # if price hits Fixed StopLoss, Exit
-  elif price <= stock_config_obj.f_stoploss:
+  elif price >= stock_config_obj.f_stoploss:
     if stock_config_obj.buy is True:
       if stock_config_obj.order_id != 0:
         ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
@@ -89,7 +89,7 @@ def sell(stock, price, gain, kite_conn_var):
           order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
           # ----------------------
 
-      diff          = price - stock_config_obj.buy_price
+      diff          = stock_config_obj.buy_price - price
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
       diff          = round((diff * stock_config_obj.quantity),2) - 100
 
@@ -109,7 +109,7 @@ def sell(stock, price, gain, kite_conn_var):
 
   # if price hits outoftrend exit StopLoss, Exit
   elif stock_config_obj.trend is False:
-    if price <= stock_config_obj.stoploss:
+    if price >= stock_config_obj.stoploss:
       if stock_config_obj.buy is True:
         if stock_config_obj.order_id != 0:
           ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
@@ -122,7 +122,7 @@ def sell(stock, price, gain, kite_conn_var):
             order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
             # ----------------------
 
-        diff          = price - stock_config_obj.buy_price
+        diff          = stock_config_obj.buy_price - price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
 
@@ -156,7 +156,7 @@ def square_off(stock, price, kite_conn_var):
         order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
         # ----------------------
 
-      diff          = price - stock_config_obj.buy_price
+      diff          = stock_config_obj.buy_price - price
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
       diff          = round((diff * stock_config_obj.quantity),2) - 100
 
@@ -176,7 +176,7 @@ def square_off(stock, price, kite_conn_var):
   else:
     order_id       = '0'
     order_status   = 'NOT PLACED'
-    diff          = price - stock_config_obj.buy_price
+    diff          = stock_config_obj.buy_price - price
     profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
     diff          = round((diff * stock_config_obj.quantity),2) - 100
 

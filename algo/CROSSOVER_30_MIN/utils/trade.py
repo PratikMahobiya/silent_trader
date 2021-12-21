@@ -12,8 +12,8 @@ def place_ord(kite_conn_var,stock, zerodha_flag_obj):
   return order_id, order_status, price, quantity
 
 def vwap_confirmations(stock,data_frame):
-  if data_frame[stock]['Close'].iloc[-2] > data_frame[stock]['Vwap'].iloc[-2]:
-    if data_frame[stock]['Close'].iloc[-3] > data_frame[stock]['Vwap'].iloc[-3]:
+  if data_frame[stock]['Close'].iloc[-2] < data_frame[stock]['Vwap'].iloc[-2]:
+    if data_frame[stock]['Close'].iloc[-3] < data_frame[stock]['Vwap'].iloc[-3]:
       return True
     else:
       return False
@@ -22,11 +22,11 @@ def vwap_confirmations(stock,data_frame):
 
 def stockrsi(fastk, fastd):
   flag = []
-  if fastd[-1] >= 80:
+  if fastd[-1] <= 20:
     flag.append(0)
   else:
     flag.append(1)
-  if fastk[-1] >= 80:
+  if fastk[-1] <= 20:
     flag.append(0)
   else:
     flag.append(1)
@@ -36,22 +36,22 @@ def stockrsi(fastk, fastd):
     return True
 
 def checking_close_ema_diff(stock,data_frame,ema_max):
-  per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/data_frame[stock]['Close'].iloc[-2])*100
-  if per < 0.9:
+  per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100
+  if per >= 0.7:
     return True
   else:
     return False
 
 def checking_stoploss_fixed(price):
-  stoploss_val = price - price*0.004
+  stoploss_val = price + price*0.004
   return round(stoploss_val,2)
 
 def checking_stoploss_ot(price, atr):
-  stoploss_val = price - atr[-1]*0.5
+  stoploss_val = price + atr[-1]*0.5
   return round(stoploss_val,2)
 
 def checking_stoploss_tu(price):
-  stoploss_val = price - price*0.005
+  stoploss_val = price + price*0.005
   return round(stoploss_val,2)
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
@@ -72,7 +72,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
 # UPDATE STOPLOSS
 def updatestoploss(stock, data_frame, atr):
   stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
-  if data_frame[stock]['Close'].iloc[-2] > stock_config_obj.last_top:
+  if data_frame[stock]['Close'].iloc[-2] < stock_config_obj.last_top:
     stock_config_obj.last_top = data_frame[stock]['Close'].iloc[-2]
     stock_config_obj.stoploss = checking_stoploss_ot(data_frame[stock]['Close'].iloc[-2],atr)
     if stock_config_obj.d_sl_flag is True:
@@ -84,14 +84,14 @@ def updatestoploss(stock, data_frame, atr):
 # BUYS STOCKS ; ENTRY
 def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
-  if ema_max[-1] > ema_min[-1]:
+  if ema_max[-1] < ema_min[-1]:
     # if checking_close_ema_diff(stock,data_frame,ema_max):
-    if vwap_confirmations(stock,data_frame):
+    # if vwap_confirmations(stock,data_frame):
       if stockrsi(fastk, fastd):
-        if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
-          if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
-            if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
-              if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
+        if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
+          if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
+            if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
+              if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                 if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
                   # Place Order in ZERODHA.
                   order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
@@ -101,7 +101,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                   stock_config_obj.buy            = True
                   stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                   stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                  stock_config_obj.target         = price + price * 0.006
+                  stock_config_obj.target         = price - price * 0.006
                   stock_config_obj.quantity       = quantity
                   stock_config_obj.buy_price      = price
                   stock_config_obj.last_top       = price
@@ -117,17 +117,17 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                   models.ENTRY_30M(symbol = stock, reference_id = transaction.data['id']).save()
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
-  elif ema_min[-1] > ema_max[-1]:
-    if ema_min[-2] < ema_max[-2]:
+  elif ema_min[-1] < ema_max[-1]:
+    if ema_min[-2] > ema_max[-2]:
       # if checking_close_ema_diff(stock,data_frame,ema_max):
-      if vwap_confirmations(stock,data_frame):
+      # if vwap_confirmations(stock,data_frame):
         if stockrsi(fastk, fastd):
-          if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
-            if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
-              if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
-                if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
+          if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
+            if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
+              if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
+                if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                   if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
-                    if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
+                    if rsi[-1] < rsi[-2] and rsi[-1] < rsi[-3]:
                       # Place Order in ZERODHA.
                       order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                       # UPDATE CONFIG
@@ -136,7 +136,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                       stock_config_obj.buy            = True
                       stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                       stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                      stock_config_obj.target         = price + price * 0.006
+                      stock_config_obj.target         = price - price * 0.006
                       stock_config_obj.quantity       = quantity
                       stock_config_obj.buy_price      = price
                       stock_config_obj.last_top       = price
@@ -168,14 +168,14 @@ def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var)
 
 def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
-  if ema_max[-1] > ema_min[-1]:
+  if ema_max[-1] < ema_min[-1]:
     # if checking_close_ema_diff(stock,data_frame,ema_max):
-    if vwap_confirmations(stock,data_frame):
+    # if vwap_confirmations(stock,data_frame):
       if stockrsi(fastk, fastd):
-        if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
-          if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
-            if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
-              if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
+        if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
+          if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
+            if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
+              if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                 if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
                   # Place Order in ZERODHA.
                   order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
@@ -185,7 +185,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                   stock_config_obj.buy            = True
                   stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                   stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                  stock_config_obj.target         = price + price * 0.006
+                  stock_config_obj.target         = price - price * 0.006
                   stock_config_obj.quantity       = quantity
                   stock_config_obj.buy_price      = price
                   stock_config_obj.last_top       = price
@@ -201,17 +201,17 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                   models.ENTRY_30M_BTST(symbol = stock, reference_id = transaction.data['id']).save()
 
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
-  elif ema_min[-1] > ema_max[-1]:
-    if ema_min[-2] < ema_max[-2]:
+  elif ema_min[-1] < ema_max[-1]:
+    if ema_min[-2] > ema_max[-2]:
       # if checking_close_ema_diff(stock,data_frame,ema_max):
-      if vwap_confirmations(stock,data_frame):
+      # if vwap_confirmations(stock,data_frame):
         if stockrsi(fastk, fastd):
-          if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
-            if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
-              if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
-                if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
+          if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
+            if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
+              if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
+                if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                   if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
-                    if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
+                    if rsi[-1] < rsi[-2] and rsi[-1] < rsi[-3]:
                       # Place Order in ZERODHA.
                       order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                       # UPDATE CONFIG
@@ -220,7 +220,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                       stock_config_obj.buy            = True
                       stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                       stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                      stock_config_obj.target         = price + price * 0.006
+                      stock_config_obj.target         = price - price * 0.006
                       stock_config_obj.quantity       = quantity
                       stock_config_obj.buy_price      = price
                       stock_config_obj.last_top       = price

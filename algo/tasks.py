@@ -871,14 +871,13 @@ def CROSS_OVER_RUNS_15_MIN(self):
 @shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_30_MIN(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
-  sleep(901)
 
   # Initialize Kite Connections
   kite_conn_var       = connect_to_kite_connection()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['30minute',5,60,55,15,7,'15minute',30,14,14,14]
+  intervals      = ['15minute',5,60,55,16,8,'30minute',30,14,14,14]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **

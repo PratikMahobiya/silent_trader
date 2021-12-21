@@ -14,7 +14,7 @@ def model(intervals, kite_conn_var):
   if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,00,00):
     # Trend Update i every 15 interval
     trending_stocks_list    = []
-    if (15 <= datetime.now().time().minute < 19):
+    if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
       # DownLoad data for trend analysis
       data_frame  = get_data.download_trend_data_60(intervals,kite_conn_var)
 
@@ -35,10 +35,10 @@ def model(intervals, kite_conn_var):
       # print('None of them is in Trending.')
       return 'NO STOCK IS IN TRENDING.'
 
-  if time(14,14,00) <= datetime.now().time() <= time(15,30,5):
+  if time(14,44,00) <= datetime.now().time() <= time(15,30,5):
     # Trend Update i every 15 interval
     trending_stocks_list    = []
-    if (15 <= datetime.now().time().minute < 19):
+    if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
       # DownLoad data for trend analysis
       data_frame  = get_data.download_trend_data_60(intervals,kite_conn_var)
 

@@ -10,20 +10,31 @@ def trending_60(data_frame,intervals):
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
     # ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=40)
     # ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=200)
-    if rsi[-1] >= 45:
-      # if ema_min[-1] > ema_max[-1]:
+    if models.CONFIG_30M.objects.get(symbol = stock).buy is not True:
+      if rsi[-1] <= 55:
+        if rsi[-2] >= 55:
+          models.TREND_30M_A(symbol = stock, rsi = rsi[-1]).save()
+          conf_obj = models.CONFIG_30M.objects.get(symbol = stock)
+          conf_obj.trend = True
+          conf_obj.save()
+        else:
+          conf_obj = models.CONFIG_30M.objects.get(symbol = stock)
+          conf_obj.trend = False
+          conf_obj.save()
+      else:
+        conf_obj = models.CONFIG_30M.objects.get(symbol = stock)
+        conf_obj.trend = False
+        conf_obj.save()
+    else:
+      if rsi[-1] <= 55:
         models.TREND_30M_A(symbol = stock, rsi = rsi[-1]).save()
         conf_obj = models.CONFIG_30M.objects.get(symbol = stock)
         conf_obj.trend = True
         conf_obj.save()
-      # else:
-      #   conf_obj = models.CONFIG_30M.objects.get(symbol = stock)
-      #   conf_obj.trend = False
-      #   conf_obj.save()
-    else:
-      conf_obj = models.CONFIG_30M.objects.get(symbol = stock)
-      conf_obj.trend = False
-      conf_obj.save()
+      else:
+        conf_obj = models.CONFIG_30M.objects.get(symbol = stock)
+        conf_obj.trend = False
+        conf_obj.save()
 
 def trending_60_BTST(data_frame,intervals):
   models.TREND_30M_A_BTST.objects.all().delete()
@@ -32,17 +43,29 @@ def trending_60_BTST(data_frame,intervals):
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
     # ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=40)
     # ema_max     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=200)
-    if rsi[-1] >= 45:
-      # if ema_min[-1] > ema_max[-1]:
+    if models.CONFIG_30M_BTST.objects.get(symbol = stock).buy is not True:
+      if rsi[-1] <= 55:
+        if rsi[-2] >= 55:
+        # if ema_min[-1] > ema_max[-1]:
+          models.TREND_30M_A_BTST(symbol = stock, rsi = rsi[-1]).save()
+          conf_obj = models.CONFIG_30M_BTST.objects.get(symbol = stock)
+          conf_obj.trend = True
+          conf_obj.save()
+        else:
+          conf_obj = models.CONFIG_30M_BTST.objects.get(symbol = stock)
+          conf_obj.trend = False
+          conf_obj.save()
+      else:
+        conf_obj = models.CONFIG_30M_BTST.objects.get(symbol = stock)
+        conf_obj.trend = False
+        conf_obj.save()
+    else:
+      if rsi[-1] <= 55:
         models.TREND_30M_A_BTST(symbol = stock, rsi = rsi[-1]).save()
         conf_obj = models.CONFIG_30M_BTST.objects.get(symbol = stock)
         conf_obj.trend = True
         conf_obj.save()
-      # else:
-      #   conf_obj = models.CONFIG_30M_BTST.objects.get(symbol = stock)
-      #   conf_obj.trend = False
-      #   conf_obj.save()
-    else:
-      conf_obj = models.CONFIG_30M_BTST.objects.get(symbol = stock)
-      conf_obj.trend = False
-      conf_obj.save()
+      else:
+        conf_obj = models.CONFIG_30M_BTST.objects.get(symbol = stock)
+        conf_obj.trend = False
+        conf_obj.save()
