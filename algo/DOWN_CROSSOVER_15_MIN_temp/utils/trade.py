@@ -11,10 +11,16 @@ def place_ord(kite_conn_var,stock, zerodha_flag_obj):
   # -------------------------------------------
   return order_id, order_status, price, quantity
 
+def vwap(df):
+  v = df['Volume'].values
+  tp = (df['Low'] + df['Close'] + df['High']).div(3).values
+  return df.assign(Vwap=(tp * v).cumsum() / v.cumsum())
+
 def vwap_confirmations(stock,data_frame, ema_max, ema_200):
-  if data_frame[stock]['Close'].iloc[-2] < data_frame[stock]['Vwap'].iloc[-2]:
-    if data_frame[stock]['Close'].iloc[-3] < data_frame[stock]['Vwap'].iloc[-3]:
-      if ema_200[-1] > data_frame[stock]['Vwap'].iloc[-2]:
+  vwap_df = vwap(data_frame[75:])
+  if data_frame[stock]['Close'].iloc[-2] < vwap_df['Vwap'].iloc[-2]:
+    if data_frame[stock]['Close'].iloc[-3] < vwap_df['Vwap'].iloc[-3]:
+      if ema_200[-1] > vwap_df['Vwap'].iloc[-2]:
         if data_frame[stock]['Vwap'].iloc[-2] > ema_max[-1]:
           return True
         else:

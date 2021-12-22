@@ -3,12 +3,6 @@ from datetime import date, datetime, time, timedelta
 from time import sleep
 import pandas as pd
 
-# Create VWAP function
-def vwap(df):
-  v = df['Volume'].values
-  tp = (df['Low'] + df['Close'] + df['High']).div(3).values
-  return df.assign(Vwap=(tp * v).cumsum() / v.cumsum())
-
 def download_trend_data_60(intervals,kite_conn_var):
   now = date.today()
   from_day = now - timedelta(days=intervals[7])
@@ -23,7 +17,6 @@ def download_trend_data_60(intervals,kite_conn_var):
     data=pd.DataFrame(data)
     data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
     data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
-    data_frame = vwap(data_frame)
     df_list.append(data_frame)
     df_key.append(stock_name)
   merged_data_frame = pd.concat(df_list,axis=1,keys=df_key).tz_localize(None)
@@ -40,7 +33,6 @@ def download_trade_data(for_trade,intervals,kite_conn_var):
     data=pd.DataFrame(data)
     data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
     data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
-    data_frame = vwap(data_frame)
     df_list.append(data_frame)
     df_key.append(stock_name)
   merged_data_frame = pd.concat(df_list,axis=1,keys=df_key).tz_localize(None)
