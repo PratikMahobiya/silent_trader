@@ -18,7 +18,7 @@ def vwap(df):
   return df.assign(Vwap=(tp * v).cumsum() / v.cumsum())
 
 def vwap_confirmations(stock,data_frame):
-  vwap_df = vwap(data_frame[75:])
+  vwap_df = vwap(data_frame[stock][75:])
   if data_frame[stock]['Close'].iloc[-2] < vwap_df['Vwap'].iloc[-2]:
     if data_frame[stock]['Close'].iloc[-3] < vwap_df['Vwap'].iloc[-3]:
       return True
