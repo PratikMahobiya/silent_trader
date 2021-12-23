@@ -21,7 +21,7 @@ def vwap_confirmations(stock,data_frame, ema_max, ema_200):
   if data_frame[stock]['Close'].iloc[-2] < vwap_df['Vwap'].iloc[-2]:
     if data_frame[stock]['Close'].iloc[-3] < vwap_df['Vwap'].iloc[-3]:
       # if ema_200[-1] > vwap_df['Vwap'].iloc[-2]:
-        if data_frame[stock]['Vwap'].iloc[-2] > ema_max[-1]:
+        if vwap_df['Vwap'].iloc[-2] > ema_max[-1]:
           return True
         else:
           return False
