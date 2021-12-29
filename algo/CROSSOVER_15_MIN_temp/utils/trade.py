@@ -21,6 +21,8 @@ def check_rsi(rsi):
   for i in rsi[:-50:-1]:
     if i < 30:
       return True
+    elif i > 70:
+      return False
   return False
 
 def vwap_confirmations(stock,data_frame):
@@ -120,9 +122,9 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                     stock_config_obj.last_top       = price
                     stock_config_obj.order_id       = order_id
                     stock_config_obj.order_status   = order_status
-                    if checking_close_ema_diff(stock,data_frame,ema_max):
-                      stock_config_obj.fixed_target       = price + price * 0.005
-                      stock_config_obj.fixed_target_flag  = True
+                    # if checking_close_ema_diff(stock,data_frame,ema_max):
+                    #   stock_config_obj.fixed_target       = price + price * 0.006
+                    #   stock_config_obj.fixed_target_flag  = True
                     stock_config_obj.save()
                     # TRANSACTION TABLE UPDATE
                     trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
@@ -158,9 +160,9 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_conn_
                         stock_config_obj.last_top       = price
                         stock_config_obj.order_id       = order_id
                         stock_config_obj.order_status   = order_status
-                        if checking_close_ema_diff(stock,data_frame,ema_max):
-                          stock_config_obj.fixed_target       = price + price * 0.005
-                          stock_config_obj.fixed_target_flag  = True
+                        # if checking_close_ema_diff(stock,data_frame,ema_max):
+                        #   stock_config_obj.fixed_target       = price + price * 0.006
+                        #   stock_config_obj.fixed_target_flag  = True
                         stock_config_obj.save()
                         # TRANSACTION TABLE UPDATE
                         trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
@@ -212,9 +214,9 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                     stock_config_obj.last_top       = price
                     stock_config_obj.order_id       = order_id
                     stock_config_obj.order_status   = order_status
-                    if checking_close_ema_diff(stock,data_frame,ema_max):
-                      stock_config_obj.fixed_target       = price + price * 0.005
-                      stock_config_obj.fixed_target_flag  = True
+                    # if checking_close_ema_diff(stock,data_frame,ema_max):
+                    #   stock_config_obj.fixed_target       = price + price * 0.006
+                    #   stock_config_obj.fixed_target_flag  = True
                     stock_config_obj.save()
                     # TRANSACTION TABLE UPDATE
                     trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
@@ -250,9 +252,9 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, rsi, atr, fastk, fastd, kite_
                         stock_config_obj.last_top       = price
                         stock_config_obj.order_id       = order_id
                         stock_config_obj.order_status   = order_status
-                        if checking_close_ema_diff(stock,data_frame,ema_max):
-                          stock_config_obj.fixed_target       = price + price * 0.005
-                          stock_config_obj.fixed_target_flag  = True
+                        # if checking_close_ema_diff(stock,data_frame,ema_max):
+                        #   stock_config_obj.fixed_target       = price + price * 0.006
+                        #   stock_config_obj.fixed_target_flag  = True
                         stock_config_obj.save()
                         # TRANSACTION TABLE UPDATE
                         trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}

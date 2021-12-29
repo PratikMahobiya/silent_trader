@@ -21,6 +21,8 @@ def check_rsi(rsi):
   for i in rsi[:-50:-1]:
     if i < 30:
       return True
+    elif i > 70:
+      return False
   return False
 
 def vwap_confirmations(stock,data_frame):

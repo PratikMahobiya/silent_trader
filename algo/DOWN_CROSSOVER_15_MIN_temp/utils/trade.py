@@ -18,21 +18,17 @@ def vwap(df):
 
 def check_rsi(rsi):
   for i in rsi[:-50:-1]:
-    if i > 60:
+    if i > 70:
       return True
+    elif i < 30:
+      return False
   return False
 
 def vwap_confirmations(stock,data_frame, ema_max, ema_200):
   vwap_df = vwap(data_frame[stock][75:])
   if data_frame[stock]['Close'].iloc[-2] < vwap_df['Vwap'].iloc[-2]:
     if data_frame[stock]['Close'].iloc[-3] < vwap_df['Vwap'].iloc[-3]:
-      if abs(((ema_200[-1] - vwap_df['Vwap'].iloc[-2])/ema_200[-1])*100) > 0.8:
-        if vwap_df['Vwap'].iloc[-2] > ema_max[-1]:
-          return True
-        else:
-          return False
-      else:
-        return False
+      return True
     else:
       return False
   else:
@@ -112,7 +108,6 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, k
               if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
                 if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                   if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
-                    if rsi[-1] > 40:
                       # Place Order in ZERODHA.
                       order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                       # UPDATE CONFIG
