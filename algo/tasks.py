@@ -1,4 +1,5 @@
 from datetime import date, datetime, time, timedelta
+from re import T
 from kiteconnect import KiteConnect
 from time import sleep
 import pandas as pd
@@ -233,6 +234,8 @@ def get_stocks_configs(self):
   cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
   for stk in volatile_stocks:
     if volatile_stocks[stk] > cut_off_volatility:
+      models_a.STOCK.objects.filter(symbol = stk).update(active_15 = True, active_5 = True)
+    else:
       models_a.STOCK.objects.filter(symbol = stk).update(active_15 = False, active_5 = False)
 
   # Config Model to Profit Tables
