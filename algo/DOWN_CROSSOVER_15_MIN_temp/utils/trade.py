@@ -11,6 +11,12 @@ def place_ord(kite_conn_var,stock, zerodha_flag_obj):
   # -------------------------------------------
   return order_id, order_status, price, quantity
 
+def in_range(stock,price):
+  if price < models_a.STOCK.objects.get(symbol = stock).lower_lim:
+    return True
+  else:
+    return False
+
 def vwap(df):
   v = df['Volume'].values
   tp = (df['Low'] + df['Close'] + df['High']).div(3).values
@@ -75,11 +81,12 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
     ema_200     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=200)
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[9])
+    rsi_8       = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=8)
     atr         = talib.ATR(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[10])
     fastk, fastd = talib.STOCHRSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=14, fastk_period=3, fastd_period=3, fastd_matype=0)
     stock_config_obj = models.CONFIG_15M_TEMP_DOWN.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
-      buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj)
+      buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, rsi_8, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj)
     else:
       updatestoploss(stock, data_frame, atr)
   return 0
@@ -97,17 +104,18 @@ def updatestoploss(stock, data_frame, atr):
   return 0
 
 # BUYS STOCKS ; ENTRY
-def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj):
+def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, rsi_8, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] < ema_min[-1]:
     if stockrsi(fastk, fastd):
-      if check_rsi(rsi):
+      if check_rsi(rsi_8):
         if vwap_confirmations(stock,data_frame, ema_max, ema_200):
           if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
             if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
               if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
                 if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                   if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
+                    if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
                       # Place Order in ZERODHA.
                       order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                       # UPDATE CONFIG
@@ -138,7 +146,7 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, k
   elif ema_min[-1] < ema_max[-1]:
     if ema_min[-2] > ema_max[-2]:
       if stockrsi(fastk, fastd):
-        if check_rsi(rsi):
+        if check_rsi(rsi_8):
           if vwap_confirmations(stock,data_frame, ema_max, ema_200):
             if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
               if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
@@ -146,31 +154,32 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, k
                   if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                     if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
                       if rsi[-1] < rsi[-2] and rsi[-1] < rsi[-3] and rsi[-1] > 40:
-                        # Place Order in ZERODHA.
-                        order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
-                        # UPDATE CONFIG
-                        type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
-                        stock_config_obj = models.CONFIG_15M_TEMP_DOWN.objects.get(symbol = stock)
-                        stock_config_obj.buy            = True
-                        stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                        stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                        stock_config_obj.target         = price - price * 0.006
-                        stock_config_obj.quantity       = quantity
-                        stock_config_obj.buy_price      = price
-                        stock_config_obj.last_top       = price
-                        stock_config_obj.order_id       = order_id
-                        stock_config_obj.order_status   = order_status
-                        stock_config_obj.fixed_target   = price - price * 0.006
-                        if checking_close_ema_diff(stock,data_frame,ema_max):
-                          stock_config_obj.fixed_target_flag  = True
-                        stock_config_obj.save()
-                        # TRANSACTION TABLE UPDATE
-                        trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
-                        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_DOWN(data=trans_data)
-                        if transaction.is_valid():
-                          transaction.save()
-                        # UPDATE CURRENT ENTRY TABLE
-                        models.ENTRY_15M_TEMP_DOWN(symbol = stock, reference_id = transaction.data['id']).save()
+                        if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
+                          # Place Order in ZERODHA.
+                          order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
+                          # UPDATE CONFIG
+                          type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
+                          stock_config_obj = models.CONFIG_15M_TEMP_DOWN.objects.get(symbol = stock)
+                          stock_config_obj.buy            = True
+                          stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
+                          stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
+                          stock_config_obj.target         = price - price * 0.006
+                          stock_config_obj.quantity       = quantity
+                          stock_config_obj.buy_price      = price
+                          stock_config_obj.last_top       = price
+                          stock_config_obj.order_id       = order_id
+                          stock_config_obj.order_status   = order_status
+                          stock_config_obj.fixed_target   = price - price * 0.006
+                          if checking_close_ema_diff(stock,data_frame,ema_max):
+                            stock_config_obj.fixed_target_flag  = True
+                          stock_config_obj.save()
+                          # TRANSACTION TABLE UPDATE
+                          trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                          transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_DOWN(data=trans_data)
+                          if transaction.is_valid():
+                            transaction.save()
+                          # UPDATE CURRENT ENTRY TABLE
+                          models.ENTRY_15M_TEMP_DOWN(symbol = stock, reference_id = transaction.data['id']).save()
 
 # BTST TARDES
 def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var):
@@ -180,27 +189,29 @@ def trade_execution_BTST(data_frame, for_trade_stocks, intervals, kite_conn_var)
     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
     ema_200     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=200)
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[9])
+    rsi_8       = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=8)
     atr         = talib.ATR(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[10])
     fastk, fastd = talib.STOCHRSI(data_frame[stock]['Close'].iloc[:-1], timeperiod=14, fastk_period=3, fastd_period=3, fastd_matype=0)
     stock_config_obj = models.CONFIG_15M_TEMP_BTST_DOWN.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
-      buys_BTST(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj)
+      buys_BTST(stock, data_frame, ema_max, ema_min, ema_200, rsi, rsi_8, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj)
     else:
       updatestoploss(stock, data_frame, atr)
   return 0
 
 # BUYS STOCKS ; ENTRY
-def buys_BTST(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj):
+def buys_BTST(stock, data_frame, ema_max, ema_min, ema_200, rsi, rsi_8, atr, fastk, fastd, kite_conn_var, zerodha_flag_obj):
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] < ema_min[-1]:
     if stockrsi(fastk, fastd):
-      if check_rsi(rsi):
+      if check_rsi(rsi_8):
         if vwap_confirmations(stock,data_frame, ema_max, ema_200):
           if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
             if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
               if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
                 if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                   if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
+                    if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
                       # Place Order in ZERODHA.
                       order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
                       # UPDATE CONFIG
@@ -231,7 +242,7 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fas
   elif ema_min[-1] < ema_max[-1]:
     if ema_min[-2] > ema_max[-2]:
       if stockrsi(fastk, fastd):
-        if check_rsi(rsi):
+        if check_rsi(rsi_8):
           if vwap_confirmations(stock,data_frame, ema_max, ema_200):
             if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
               if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
@@ -239,28 +250,29 @@ def buys_BTST(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fas
                   if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
                     if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
                       if rsi[-1] < rsi[-2] and rsi[-1] < rsi[-3] and rsi[-1] > 40:
-                        # Place Order in ZERODHA.
-                        order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
-                        # UPDATE CONFIG
-                        type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
-                        stock_config_obj = models.CONFIG_15M_TEMP_BTST_DOWN.objects.get(symbol = stock)
-                        stock_config_obj.buy            = True
-                        stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
-                        stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
-                        stock_config_obj.target         = price - price * 0.006
-                        stock_config_obj.quantity       = quantity
-                        stock_config_obj.buy_price      = price
-                        stock_config_obj.last_top       = price
-                        stock_config_obj.order_id       = order_id
-                        stock_config_obj.order_status   = order_status
-                        stock_config_obj.fixed_target   = price - price * 0.005
-                        if checking_close_ema_diff(stock,data_frame,ema_max):
-                          stock_config_obj.fixed_target_flag  = True
-                        stock_config_obj.save()
-                        # TRANSACTION TABLE UPDATE
-                        trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
-                        transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
-                        if transaction.is_valid():
-                          transaction.save()
-                        # UPDATE CURRENT ENTRY TABLE
-                        models.ENTRY_15M_TEMP_BTST_DOWN(symbol = stock, reference_id = transaction.data['id']).save()
+                        if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
+                          # Place Order in ZERODHA.
+                          order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
+                          # UPDATE CONFIG
+                          type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
+                          stock_config_obj = models.CONFIG_15M_TEMP_BTST_DOWN.objects.get(symbol = stock)
+                          stock_config_obj.buy            = True
+                          stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
+                          stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
+                          stock_config_obj.target         = price - price * 0.006
+                          stock_config_obj.quantity       = quantity
+                          stock_config_obj.buy_price      = price
+                          stock_config_obj.last_top       = price
+                          stock_config_obj.order_id       = order_id
+                          stock_config_obj.order_status   = order_status
+                          stock_config_obj.fixed_target   = price - price * 0.005
+                          if checking_close_ema_diff(stock,data_frame,ema_max):
+                            stock_config_obj.fixed_target_flag  = True
+                          stock_config_obj.save()
+                          # TRANSACTION TABLE UPDATE
+                          trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.f_stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                          transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP_BTST_DOWN(data=trans_data)
+                          if transaction.is_valid():
+                            transaction.save()
+                          # UPDATE CURRENT ENTRY TABLE
+                          models.ENTRY_15M_TEMP_BTST_DOWN(symbol = stock, reference_id = transaction.data['id']).save()

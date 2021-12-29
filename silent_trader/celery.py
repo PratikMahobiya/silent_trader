@@ -25,7 +25,7 @@ app.conf.beat_schedule = {
     },
     "UPDATE_LIMIT'S":{
         'task': 'algo.tasks.UPDATE_LIMIT',
-        'schedule': crontab(minute=50, hour=9, day_of_week='mon-fri'),
+        'schedule': crontab(minute=37, hour=9, day_of_week='mon-fri'),
     },
     'LTP':{
         'task': 'algo.tasks.ltp_of_entries',

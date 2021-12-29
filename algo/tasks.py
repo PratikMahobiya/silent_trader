@@ -294,22 +294,14 @@ def UPDATE_LIMIT(self):
     data=pd.DataFrame(data)
     data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
     data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
-    if (data_frame['Close'].iloc[-2] > data_frame['Open'].iloc[-2]) and (data_frame['Close'].iloc[-3] > data_frame['Open'].iloc[-3]):
+    if (data_frame['Close'].iloc[-2] > data_frame['Open'].iloc[-2]):
       up_l = data_frame['Close'].iloc[-2]
-      lower_l = data_frame['Open'].iloc[-3]
+      lower_l = data_frame['Open'].iloc[-2]
       models_a.STOCK.objects.filter(symbol = stock_name).update(upper_lim = up_l, lower_lim = lower_l)
-    elif (data_frame['Close'].iloc[-2] < data_frame['Open'].iloc[-2]) and (data_frame['Close'].iloc[-3] < data_frame['Open'].iloc[-3]):
-      up_l = data_frame['Open'].iloc[-3]
+    elif (data_frame['Close'].iloc[-2] < data_frame['Open'].iloc[-2]):
+      up_l = data_frame['Open'].iloc[-2]
       lower_l = data_frame['Close'].iloc[-2]
       models_a.STOCK.objects.filter(symbol = stock_name).update(upper_lim = up_l, lower_lim = lower_l)
-    else:
-      if data_frame['Close'].iloc[-2] > data_frame['Open'].iloc[-2]:
-        up_l = data_frame['Close'].iloc[-2]
-        lower_l = data_frame['Close'].iloc[-3]
-      else:
-        up_l = data_frame['Close'].iloc[-3]
-        lower_l = data_frame['Close'].iloc[-2]
-        models_a.STOCK.objects.filter(symbol = stock_name).update(upper_lim = up_l, lower_lim = lower_l)
   return 'TRUE'
 
 @shared_task(bind=True,max_retries=3)
