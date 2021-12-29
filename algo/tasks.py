@@ -1,6 +1,7 @@
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from kiteconnect import KiteConnect
 from time import sleep
+import pandas as pd
 from django.db.models import Q
 
 from Model_15M import models
@@ -33,10 +34,29 @@ from . import check_ltp_temp_btst_down
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 from .DOWN_CROSSOVER_15_MIN_temp.utils import backbone as backbone_DOWN_CRS_temp
 
+def connect_to_kite_connection():
+  api_key = open('algo/config/api_key.txt','r').read()
+  access_token = models_a.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
+  try:
+    kite = KiteConnect(api_key=api_key)
+    kite.set_access_token(access_token)
+  except Exception as  e:
+    pass
+  return kite
+
+def cal_volatility(dt):
+  dt['Return'] = 100 * (dt['Close'].pct_change())
+  daily_volatility = dt['Return'].std()
+  return daily_volatility
+
 @shared_task(bind=True,max_retries=3)
 # initial_setup on DATABASE -------------------------------------
 def get_stocks_configs(self):
   response = {'stock_table': False, 'config_table_15': False, 'config_table_30': False}
+  now = date.today()
+  last_6_days       = now - timedelta(days=1825)
+  kite_conn_var     = connect_to_kite_connection()
+  volatile_stocks   = {}
   # Stock dict
   stock_dict = {
       'AARTIIND':	[1793,		'COMMODITY','mid50'],
@@ -201,6 +221,19 @@ def get_stocks_configs(self):
     if not models_temp_down.CONFIG_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock_sym).exists():
       models_temp_down.CONFIG_15M_TEMP_BTST_DOWN(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
 
+    # GET THE VOLATILITY OF EACH STK IN DICT
+    data = kite_conn_var.historical_data(instrument_token=stock_dict[stock_sym][0], from_date=last_6_days, to_date=now, interval='day')
+    sleep(0.3)
+    data=pd.DataFrame(data)
+    data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
+    data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
+    volatile_stocks[stock_sym] = cal_volatility(data_frame)
+
+  cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
+  for stk in volatile_stocks:
+    if volatile_stocks[stk] > cut_off_volatility:
+      models_a.STOCK.objects.filter(symbol = stk).update(active_15 = False, active_30 = False)
+
   # Config Model to Profit Tables
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST','CRS_15_TEMP_BTST_DOWN','OVER_ALL_PLACED']
   for model_name in model_name_list:
@@ -243,16 +276,6 @@ def get_stocks_configs(self):
   else:
     response.update({'config_table_30': False, 'config_len_30': len(models_30.CONFIG_30M.objects.all())})
   return response
-
-def connect_to_kite_connection():
-  api_key = open('algo/config/api_key.txt','r').read()
-  access_token = models_a.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
-  try:
-    kite = KiteConnect(api_key=api_key)
-    kite.set_access_token(access_token)
-  except Exception as  e:
-    pass
-  return kite
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):
