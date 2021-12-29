@@ -233,7 +233,7 @@ def get_stocks_configs(self):
   cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
   for stk in volatile_stocks:
     if volatile_stocks[stk] > cut_off_volatility:
-      models_a.STOCK.objects.filter(symbol = stk).update(active_15 = False, active_30 = False)
+      models_a.STOCK.objects.filter(symbol = stk).update(active_15 = False, active_5 = False)
 
   # Config Model to Profit Tables
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST','CRS_15_TEMP_BTST_DOWN','OVER_ALL_PLACED']
