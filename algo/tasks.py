@@ -228,6 +228,7 @@ def get_stocks_configs(self):
     data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
     data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
     volatile_stocks[stock_sym] = cal_volatility(data_frame)
+    models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame))
 
   cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
   for stk in volatile_stocks:
@@ -276,6 +277,37 @@ def get_stocks_configs(self):
   else:
     response.update({'config_table_30': False, 'config_len_30': len(models_30.CONFIG_30M.objects.all())})
   return response
+
+@shared_task(bind=True,max_retries=3)
+def UPDATE_LIMIT(self):
+  now = date.today()
+  from_day = now - timedelta(days=5)
+  # Initialize Kite Connections
+  kite_conn_var       = connect_to_kite_connection()
+  stocks = models_a.STOCK.objects.all().values_list('symbol', flat=True)
+  for stock_name in stocks:
+    sleep(0.3)
+    data = kite_conn_var.historical_data(instrument_token=models_a.STOCK.objects.get(symbol = stock_name).instrument_key, from_date=from_day, to_date=now, interval='15minute')
+    data=pd.DataFrame(data)
+    data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
+    data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
+    if (data_frame['Close'].iloc[-2] > data_frame['Open'].iloc[-2]) and (data_frame['Close'].iloc[-3] > data_frame['Open'].iloc[-3]):
+      up_l = data_frame['Close'].iloc[-2]
+      lower_l = data_frame['Open'].iloc[-3]
+      models_a.STOCK.objects.filter(symbol = stock_name).update(upper_lim = up_l, lower_lim = lower_l)
+    elif (data_frame['Close'].iloc[-2] < data_frame['Open'].iloc[-2]) and (data_frame['Close'].iloc[-3] < data_frame['Open'].iloc[-3]):
+      up_l = data_frame['Open'].iloc[-3]
+      lower_l = data_frame['Close'].iloc[-2]
+      models_a.STOCK.objects.filter(symbol = stock_name).update(upper_lim = up_l, lower_lim = lower_l)
+    else:
+      if data_frame['Close'].iloc[-2] > data_frame['Open'].iloc[-2]:
+        up_l = data_frame['Close'].iloc[-2]
+        lower_l = data_frame['Close'].iloc[-3]
+      else:
+        up_l = data_frame['Close'].iloc[-3]
+        lower_l = data_frame['Close'].iloc[-2]
+        models_a.STOCK.objects.filter(symbol = stock_name).update(upper_lim = up_l, lower_lim = lower_l)
+  return 'TRUE'
 
 @shared_task(bind=True,max_retries=3)
 def ltp_of_entries(self):

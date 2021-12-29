@@ -7,7 +7,10 @@ class STOCK(models.Model):
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     active_15               = models.BooleanField(verbose_name='ACTIVE 15 Minute',default=True)
-    active_30               = models.BooleanField(verbose_name='ACTIVE 30 Minute',default=True)
+    active_5                = models.BooleanField(verbose_name='ACTIVE 5 Minute',default=True)
+    volatility				= models.FloatField(verbose_name='VOLATILITY(%)',default=0)
+    upper_lim				= models.FloatField(verbose_name='UPPER LIMIT',default=0)
+    lower_lim				= models.FloatField(verbose_name='LOWER LIMIT',default=0)
     def __str__(self):
         return self.symbol
     class Meta:
