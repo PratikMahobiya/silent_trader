@@ -16,10 +16,10 @@ def model(intervals, kite_conn_var):
     trending_stocks_list    = []
     if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
       # DownLoad data for trend analysis
-      data_frame  = get_data.download_trend_data_60(intervals,kite_conn_var)
+      data_frame, for_trend  = get_data.download_trend_data_60(intervals,kite_conn_var)
 
       # Get the list of Trending Stocks in 60 Minutes
-      trending_stocks.trending_60(data_frame,intervals)
+      trending_stocks.trending_60(data_frame,intervals,for_trend)
       trending_stocks_list    = models.TREND_30M_A.objects.all().values_list('symbol', flat=True)
     else:
       trending_stocks_list    = models.TREND_30M_A.objects.all().values_list('symbol', flat=True)
@@ -40,10 +40,10 @@ def model(intervals, kite_conn_var):
     trending_stocks_list    = []
     if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
       # DownLoad data for trend analysis
-      data_frame  = get_data.download_trend_data_60(intervals,kite_conn_var)
+      data_frame, for_trend  = get_data.download_trend_data_60(intervals,kite_conn_var)
 
       # Get the list of Trending Stocks in 60 Minutes
-      trending_stocks.trending_60_BTST(data_frame,intervals)
+      trending_stocks.trending_60_BTST(data_frame,intervals,for_trend)
       trending_stocks_list    = models.TREND_30M_A_BTST.objects.all().values_list('symbol', flat=True)
     else:
       trending_stocks_list    = models.TREND_30M_A_BTST.objects.all().values_list('symbol', flat=True)

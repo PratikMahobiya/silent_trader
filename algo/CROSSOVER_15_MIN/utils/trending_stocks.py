@@ -3,9 +3,8 @@ from algo import models as models_a
 from datetime import datetime, time
 import talib
 
-def trending_30(data_frame,intervals):
+def trending_30(data_frame,intervals,for_trend_stocks):
   models.TREND_15M_A.objects.all().delete()
-  for_trend_stocks = models_a.STOCK.objects.filter(active_15 = True).values_list('symbol', flat=True)
   for stock in for_trend_stocks:
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
     if rsi[-1] >= 45:
@@ -18,9 +17,8 @@ def trending_30(data_frame,intervals):
       conf_obj.trend = False
       conf_obj.save()
 
-def trending_30_BTST(data_frame,intervals):
+def trending_30_BTST(data_frame,intervals,for_trend_stocks):
   models.TREND_15M_A_BTST.objects.all().delete()
-  for_trend_stocks = models_a.STOCK.objects.filter(active_15 = True).values_list('symbol', flat=True)
   for stock in for_trend_stocks:
     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
     if rsi[-1] >= 45:
@@ -40,9 +38,8 @@ def trending_30_BTST(data_frame,intervals):
 # from datetime import datetime, time
 # import talib
 
-# def trending_30(data_frame,intervals):
+# def trending_30(data_frame,intervals,for_trend_stocks):
 #   models.TREND_15M_A.objects.all().delete()
-#   for_trend_stocks = models_a.STOCK.objects.filter(active_15 = True).values_list('symbol', flat=True)
 #   for stock in for_trend_stocks:
 #     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
 #     if models.CONFIG_15M.objects.get(symbol = stock).buy is not True:
@@ -67,9 +64,8 @@ def trending_30_BTST(data_frame,intervals):
 #         conf_obj.trend = False
 #         conf_obj.save()
 
-# def trending_30_BTST(data_frame,intervals):
+# def trending_30_BTST(data_frame,intervals,for_trend_stocks):
 #   models.TREND_15M_A_BTST.objects.all().delete()
-#   for_trend_stocks = models_a.STOCK.objects.filter(active_15 = True).values_list('symbol', flat=True)
 #   for stock in for_trend_stocks:
 #     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
 #     if models.CONFIG_15M_BTST.objects.get(symbol = stock).buy is not True:
@@ -105,9 +101,8 @@ def trending_30_BTST(data_frame,intervals):
 # from datetime import datetime, time
 # import talib
 
-# def trending_30(data_frame,intervals):
+# def trending_30(data_frame,intervals,for_trend_stocks):
 #   models.TREND_15M_A.objects.all().delete()
-#   for_trend_stocks = models_a.STOCK.objects.filter(active_15 = True).values_list('symbol', flat=True)
 #   for stock in for_trend_stocks:
 #     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
 #     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=40)
@@ -138,9 +133,8 @@ def trending_30_BTST(data_frame,intervals):
 #         conf_obj.trend = False
 #         conf_obj.save()
 
-# def trending_30_BTST(data_frame,intervals):
+# def trending_30_BTST(data_frame,intervals,for_trend_stocks):
 #   models.TREND_15M_A_BTST.objects.all().delete()
-#   for_trend_stocks = models_a.STOCK.objects.filter(active_15 = True).values_list('symbol', flat=True)
 #   for stock in for_trend_stocks:
 #     rsi         = talib.RSI(data_frame[stock]['Close'].iloc[:-1], timeperiod = intervals[8])
 #     ema_min     = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=40)

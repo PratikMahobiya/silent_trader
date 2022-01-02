@@ -8,6 +8,7 @@ class STOCK(models.Model):
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     active_15               = models.BooleanField(verbose_name='ACTIVE 15 Minute',default=True)
     active_5                = models.BooleanField(verbose_name='ACTIVE 5 Minute',default=True)
+    nifty_flag              = models.BooleanField(verbose_name='NIFTY FLAG',default=False)
     volatility				= models.FloatField(verbose_name='VOLATILITY(%)',default=0)
     upper_lim				= models.FloatField(verbose_name='UPPER LIMIT',default=0)
     lower_lim				= models.FloatField(verbose_name='LOWER LIMIT',default=0)

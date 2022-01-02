@@ -24,19 +24,16 @@ def vwap(df):
 
 def check_rsi(rsi):
   for i in rsi[:-50:-1]:
-    if i > 70:
+    if i > 60:
       return True
-    elif i < 30:
+    elif i < 20:
       return False
   return False
 
 def vwap_confirmations(stock,data_frame, ema_max, ema_200):
   vwap_df = vwap(data_frame[stock][75:])
   if data_frame[stock]['Close'].iloc[-2] < vwap_df['Vwap'].iloc[-2]:
-    if data_frame[stock]['Close'].iloc[-3] < vwap_df['Vwap'].iloc[-3]:
-      return True
-    else:
-      return False
+    return True
   else:
     return False
 
