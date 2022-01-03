@@ -28,7 +28,7 @@ def check_rsi(rsi):
 
 def vwap_confirmations(stock,data_frame):
   vwap_df = vwap(data_frame[stock][75:])
-  if data_frame[stock]['Close'].iloc[-2] > vwap_df['Vwap'].iloc[-2]:
+  if data_frame[stock]['Close'].iloc[-2] > vwap_df['Vwap'].iloc[-1]:
     return True
   else:
     return False
@@ -170,12 +170,12 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, k
 
   # EMA 8 CROSS VWAP
   if models.CONFIG_15M.objects.get(symbol = stock).buy == False:
-    if ema_min[-1] > vwap_df['Vwap'].iloc[-2]:
-      if ema_min[-2] < vwap_df['Vwap'].iloc[-3]:
-        if data_frame[stock]['Close'].iloc[-2] > vwap_df['Vwap'].iloc[-2]:
-          if data_frame[stock]['Close'].iloc[-3] > vwap_df['Vwap'].iloc[-3]:
-            if data_frame[stock]['Close'].iloc[-4] > vwap_df['Vwap'].iloc[-4]:
-              if vwap_df['Vwap'].iloc[-2] > ema_200[-1]:
+    if ema_min[-1] > vwap_df['Vwap'].iloc[-1]:
+      if ema_min[-2] < vwap_df['Vwap'].iloc[-2]:
+        if data_frame[stock]['Close'].iloc[-2] > vwap_df['Vwap'].iloc[-1]:
+          if data_frame[stock]['Close'].iloc[-3] > vwap_df['Vwap'].iloc[-2]:
+            if data_frame[stock]['Close'].iloc[-4] > vwap_df['Vwap'].iloc[-3]:
+              if vwap_df['Vwap'].iloc[-1] > ema_200[-1]:
                 if ema_min[-1] > ema_200[-1]:
                   # Place Order in ZERODHA.
                   order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
@@ -202,11 +202,11 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, k
 
   # VWAP CROSS EMA 8
   if models.CONFIG_15M.objects.get(symbol = stock).buy == False:
-    if vwap_df['Vwap'].iloc[-2] > ema_min[-1]:
-      if vwap_df['Vwap'].iloc[-3] < ema_min[-2]:
-        if data_frame[stock]['Close'].iloc[-2] > vwap_df['Vwap'].iloc[-2]:
+    if vwap_df['Vwap'].iloc[-1] > ema_min[-1]:
+      if vwap_df['Vwap'].iloc[-2] < ema_min[-2]:
+        if data_frame[stock]['Close'].iloc[-2] > vwap_df['Vwap'].iloc[-1]:
           if data_frame[stock]['Close'].iloc[-2] > ema_min[-1]:
-            if vwap_df['Vwap'].iloc[-2] > ema_200[-1]:
+            if vwap_df['Vwap'].iloc[-1] > ema_200[-1]:
               if ema_min[-1] > ema_200[-1]:
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
@@ -233,11 +233,11 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, k
   
   if datetime.now().time() >= time(10,16,0):
     if models.CONFIG_15M.objects.get(symbol = stock).buy == False:
-      if vwap_df['Vwap'].iloc[-3] > ema_min[-2]:
-        if vwap_df['Vwap'].iloc[-4] < ema_min[-3]:
-          if data_frame[stock]['Close'].iloc[-3] > vwap_df['Vwap'].iloc[-3]:
+      if vwap_df['Vwap'].iloc[-2] > ema_min[-2]:
+        if vwap_df['Vwap'].iloc[-3] < ema_min[-3]:
+          if data_frame[stock]['Close'].iloc[-3] > vwap_df['Vwap'].iloc[-2]:
             if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
-              if vwap_df['Vwap'].iloc[-3] > ema_200[-2]:
+              if vwap_df['Vwap'].iloc[-2] > ema_200[-2]:
                 if ema_min[-2] > ema_200[-2]:
                   # Place Order in ZERODHA.
                   order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
@@ -263,11 +263,11 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, atr, fastk, fastd, k
                   models.ENTRY_15M(symbol = stock, reference_id = transaction.data['id']).save()                
 
     if models.CONFIG_15M.objects.get(symbol = stock).buy == False:
-      if vwap_df['Vwap'].iloc[-4] > ema_min[-3]:
-        if vwap_df['Vwap'].iloc[-5] < ema_min[-4]:
-          if data_frame[stock]['Close'].iloc[-4] > vwap_df['Vwap'].iloc[-4]:
+      if vwap_df['Vwap'].iloc[-3] > ema_min[-3]:
+        if vwap_df['Vwap'].iloc[-4] < ema_min[-4]:
+          if data_frame[stock]['Close'].iloc[-4] > vwap_df['Vwap'].iloc[-3]:
             if data_frame[stock]['Close'].iloc[-4] > ema_min[-3]:
-              if vwap_df['Vwap'].iloc[-4] > ema_200[-3]:
+              if vwap_df['Vwap'].iloc[-3] > ema_200[-3]:
                 if ema_min[-3] > ema_200[-3]:
                   # Place Order in ZERODHA.
                   order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)

@@ -29,7 +29,10 @@ def download_trend_data_60(intervals,kite_conn_var):
     data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
     df_list.append(data_frame)
     df_key.append(stock_name)
-  merged_data_frame = pd.concat(df_list,axis=1,keys=df_key).tz_localize(None)
+  if len(for_trend) != 0:
+    merged_data_frame = pd.concat(df_list,axis=1,keys=df_key).tz_localize(None)
+  else:
+    merged_data_frame = {}
   return merged_data_frame, for_trend
 
 def download_trade_data(for_trade,intervals,kite_conn_var):

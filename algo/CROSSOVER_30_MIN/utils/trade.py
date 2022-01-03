@@ -27,7 +27,7 @@ def check_rsi(rsi):
 
 def vwap_confirmations(stock,data_frame):
   vwap_df = vwap(data_frame[stock][75:])
-  if data_frame[stock]['Close'].iloc[-2] < vwap_df['Vwap'].iloc[-2]:
+  if data_frame[stock]['Close'].iloc[-2] < vwap_df['Vwap'].iloc[-1]:
     return True
   else:
     return False
