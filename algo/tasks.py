@@ -48,7 +48,7 @@ def connect_to_kite_connection():
 def cal_volatility(dt):
   dt['Return'] = 100 * (dt['Close'].pct_change())
   daily_volatility = dt['Return'].std()
-  return daily_volatility
+  return round(daily_volatility,4)
 
 @shared_task(bind=True,max_retries=3)
 # initial_setup on DATABASE -------------------------------------
