@@ -39,18 +39,18 @@ def vwap_confirmations(stock,data_frame, ema_max, ema_200):
 
 def stockrsi(fastk, fastd):
   flag = []
-  if fastd[-1] <= 20:
+  if fastd[-1] >= 20:
     flag.append(0)
   else:
     flag.append(1)
-  if fastk[-1] <= 20:
+  if fastk[-1] >= 20:
     flag.append(0)
   else:
     flag.append(1)
   if flag.count(0) == 2:
-    return False
-  else:
     return True
+  else:
+    return False
 
 def checking_close_ema_diff(stock,data_frame,ema_max):
   per = ((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100
