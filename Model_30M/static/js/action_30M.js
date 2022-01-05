@@ -70,14 +70,14 @@ async function ExitOrderAPI(symbol) {
 }
 
 function ltp_color(Active){
-    if (Active.price < Active.ltp){
-        return "<b style='color:red;'>" + Active.ltp + '/' + (((Active.price - Active.ltp)/Active.price)*100).toFixed(2) + "</b>"
+    if (Active.price > Active.ltp){
+        return "<b style='color:red;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active.price)*100).toFixed(2) + "</b>"
     }
-    else if (Active.price > Active.ltp){
-        return "<b style='color:green;'>" + Active.ltp + '/' + (((Active.price - Active.ltp)/Active.price)*100).toFixed(2) + "</b>"
+    else if (Active.price < Active.ltp){
+        return "<b style='color:green;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active.price)*100).toFixed(2) + "</b>"
     }
     if (Active.price == Active.ltp){
-        return "<b style='color:black;'>" + Active.ltp + '/' + (((Active.price - Active.ltp)/Active.price)*100).toFixed(2) + "</b>"
+        return "<b style='color:black;'>" + Active.ltp + '/' + (((Active.ltp - Active.price)/Active.price)*100).toFixed(2) + "</b>"
     }
 }
 

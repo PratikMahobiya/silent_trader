@@ -1,9 +1,6 @@
-from Model_30M import models
 from datetime import datetime, time
-from time import sleep
 from . import trade
 from . import get_data
-from . import trending_stocks
 
 def model(intervals, kite_conn_var):
   '''
@@ -11,54 +8,18 @@ def model(intervals, kite_conn_var):
     kite_conn_var      = to place orders in zerodha
   '''
   # Regular Trades Execution
-  if datetime.now().time() >= time(9,43,00) and datetime.now().time() < time(15,00,00):
-    # Trend Update i every 15 interval
-    trending_stocks_list    = []
-    if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
-      # DownLoad data for trend analysis
-      data_frame, for_trend  = get_data.download_trend_data_60(intervals,kite_conn_var)
+  if datetime.now().time() >= time(9,20,00) and datetime.now().time() < time(15,12,00):
+    # DownLoad data for initiating Trades
+    trade_data_frame, trading_stocks_list = get_data.download_trade_data(intervals,kite_conn_var)
 
-      # Get the list of Trending Stocks in 60 Minutes
-      trending_stocks.trending_60(data_frame,intervals,for_trend)
-      trending_stocks_list    = models.TREND_30M_A.objects.all().values_list('symbol', flat=True)
-    else:
-      trending_stocks_list    = models.TREND_30M_A.objects.all().values_list('symbol', flat=True)
+    # Initiating trades
+    trade.trade_execution(trade_data_frame, trading_stocks_list, intervals, kite_conn_var)
+    return 'SUCCESS'
 
-    if len(trending_stocks_list) != 0:
-      # DownLoad data for initiating Trades
-      trade_data_frame = get_data.download_trade_data(trending_stocks_list,intervals,kite_conn_var)
-
-      # Initiating trades
-      trade.trade_execution(trade_data_frame, trending_stocks_list, intervals, kite_conn_var)
-      return 'SUCCESS'
-    else:
-      # print('None of them is in Trending.')
-      return 'NO STOCK IS IN TRENDING.'
-
-  if time(14,44,00) <= datetime.now().time() <= time(15,30,5):
-    # Trend Update i every 15 interval
-    trending_stocks_list    = []
-    if (15 <= datetime.now().time().minute < 19) or (45 <= datetime.now().time().minute < 49):
-      # DownLoad data for trend analysis
-      data_frame, for_trend  = get_data.download_trend_data_60(intervals,kite_conn_var)
-
-      # Get the list of Trending Stocks in 60 Minutes
-      trending_stocks.trending_60_BTST(data_frame,intervals,for_trend)
-      trending_stocks_list    = models.TREND_30M_A_BTST.objects.all().values_list('symbol', flat=True)
-    else:
-      trending_stocks_list    = models.TREND_30M_A_BTST.objects.all().values_list('symbol', flat=True)
-
-    if len(trending_stocks_list) != 0:
-      # DownLoad data for initiating Trades
-      trade_data_frame = get_data.download_trade_data(trending_stocks_list,intervals,kite_conn_var)
-
-      # Initiating trades
-      trade.trade_execution_BTST(trade_data_frame, trending_stocks_list, intervals, kite_conn_var)
-      return 'SUCCESS'
-    else:
-      # print('None of them is in Trending.')
-      return 'NO STOCK IS IN TRENDING.'
-    # return 'ENTRY IS CLOSED.'
+  # SQUARE OFF EXECUTIONS
+  elif time(15,12,00) <= datetime.now().time() < time(15,20,00):
+    trade.squareoff(kite_conn_var)
+    return 'SUCCESS'
 
   elif datetime.now().time() > time(15,30,5):
     return 'MARKET ENDED.'
