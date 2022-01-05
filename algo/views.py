@@ -13,7 +13,6 @@ from . import freeze_all_15_btst
 from . import freeze_all_15_temp
 from . import freeze_all_15_temp_btst
 from . import freeze_all_30
-from . import freeze_all_30_btst
 from . import freeze_all_15_down
 from . import freeze_all_15_down_btst
 
