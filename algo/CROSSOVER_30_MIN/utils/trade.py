@@ -15,9 +15,9 @@ def place_ord_buy(kite_conn_var,stock, zerodha_flag_obj):
 def place_ord_sell(kite_conn_var,stock, stock_config_obj):
   # Place Order in ZERODHA.
   # -------------------------------------------
-  order_id, order_status, price, quantity = zerodha_action.place_regular_sell_order(kite_conn_var,stock, stock_config_obj)
+  order_id, order_status, price = zerodha_action.place_regular_sell_order(kite_conn_var,stock, stock_config_obj)
   # -------------------------------------------
-  return order_id, order_status, price, quantity
+  return order_id, order_status, price
 
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
