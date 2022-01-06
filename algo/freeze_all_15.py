@@ -31,9 +31,12 @@ def freeze_all(stock_list, kite_conn_var):
       price = stocks_ltp[stock_key]['last_price']
       stock = stock_key.split(':')[-1]
       stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
-      # CALL PLACE ORDER ----
-      order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
-      # ---------------------
+      if stock_config_obj.order_id != 0:
+        ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
+        if ord_det[-1]['status'] == 'COMPLETE':
+          # CALL PLACE ORDER ----
+          order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
+          # ---------------------
 
       diff          = stock_config_obj.buy_price - price
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)

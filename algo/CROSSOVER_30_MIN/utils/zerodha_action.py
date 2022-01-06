@@ -38,16 +38,18 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
   ltp        = stocks_ltp['NSE:'+symbol]['last_price']
   try:
     if stock_config_obj.order_id != 0:
-      order_id = kite_conn_var.place_order(tradingsymbol=symbol,
-                                    exchange=kite_conn_var.EXCHANGE_NSE,
-                                    transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
-                                    quantity=stock_config_obj.quantity,
-                                    variety=kite_conn_var.VARIETY_REGULAR,
-                                    order_type=kite_conn_var.ORDER_TYPE_LIMIT,
-                                    product=kite_conn_var.PRODUCT_MIS,
-                                    validity=kite_conn_var.VALIDITY_DAY,
-                                    price=ltp,
-                                    )
+      ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
+      if ord_det[-1]['status'] == 'COMPLETE':
+        order_id = kite_conn_var.place_order(tradingsymbol=symbol,
+                                      exchange=kite_conn_var.EXCHANGE_NSE,
+                                      transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
+                                      quantity=stock_config_obj.quantity,
+                                      variety=kite_conn_var.VARIETY_REGULAR,
+                                      order_type=kite_conn_var.ORDER_TYPE_LIMIT,
+                                      product=kite_conn_var.PRODUCT_MIS,
+                                      validity=kite_conn_var.VALIDITY_DAY,
+                                      price=ltp,
+                                      )
     order_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
     order_status = 'PROBLEM AT ZERODHA END.'
