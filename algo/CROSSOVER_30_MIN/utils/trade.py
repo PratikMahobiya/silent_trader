@@ -25,7 +25,7 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
   for stock in for_trade_stocks:
     macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
     stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
-    if stock_config_obj.buy is False:
+    if stock_config_obj.buy == False:
       buys(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj)
     else:
       sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj)
@@ -60,8 +60,8 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_f
 def sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj):
   stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
   # After CrossOver MACD AND MACDSIGNAL
-  if macdsignal[-1] > macd[-1]:
-    if macdsignal[-2] < macd[-2]:
+  if macdsignal[-2] < macd[-2]:
+    if macdsignal[-1] > macd[-1]:
       if stock_config_obj.order_id != 0:
         ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
         if ord_det[-1]['status'] == 'COMPLETE':
