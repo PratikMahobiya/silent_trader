@@ -23,39 +23,42 @@ def place_ord_sell(kite_conn_var,stock, stock_config_obj):
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
   zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN')
   for stock in for_trade_stocks:
+    ema           = talib.EMA(data_frame[stock]['Close'], timeperiod=intervals[5])
     macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
     stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
     if stock_config_obj.buy == False:
-      buys(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj)
+      buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zerodha_flag_obj)
     else:
       sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj)
   return 0
 
 # BUYS STOCKS ; ENTRY
-def buys(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj):
+def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zerodha_flag_obj):
   stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
   # After CrossOver MACD AND MACDSIGNAL
   if macd[-1] > macdsignal[-1]:
     if macd[-2] < macdsignal[-2]:
-      # Place Order in ZERODHA.
-      order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
-      # UPDATE CONFIG
-      type_str         = 'AF_BUY'
-      stock_config_obj.buy            = True
-      stock_config_obj.stoploss       = price - price * 0.006
-      stock_config_obj.target         = price + price * 0.006
-      stock_config_obj.quantity       = quantity
-      stock_config_obj.buy_price      = price
-      stock_config_obj.order_id       = order_id
-      stock_config_obj.order_status   = order_status
-      stock_config_obj.save()
-      # TRANSACTION TABLE UPDATE
-      trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
-      transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
-      if transaction.is_valid():
-        transaction.save()
-      # UPDATE CURRENT ENTRY TABLE
-      models.ENTRY_30M(symbol = stock, reference_id = transaction.data['id']).save()
+      if data_frame[stock]['Close'].iloc[-2] > ema[-1]:
+        if macdhist[-1] > macdhist[-2] and macdhist[-2] > macdhist[-3]:
+          # Place Order in ZERODHA.
+          order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
+          # UPDATE CONFIG
+          type_str         = 'AF_BUY'
+          stock_config_obj.buy            = True
+          stock_config_obj.stoploss       = price - price * 0.006
+          stock_config_obj.target         = price + price * 0.006
+          stock_config_obj.quantity       = quantity
+          stock_config_obj.buy_price      = price
+          stock_config_obj.order_id       = order_id
+          stock_config_obj.order_status   = order_status
+          stock_config_obj.save()
+          # TRANSACTION TABLE UPDATE
+          trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+          transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
+          if transaction.is_valid():
+            transaction.save()
+          # UPDATE CURRENT ENTRY TABLE
+          models.ENTRY_30M(symbol = stock, reference_id = transaction.data['id']).save()
 
 def sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj):
   stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
