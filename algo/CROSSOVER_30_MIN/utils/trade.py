@@ -68,6 +68,8 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_f
           # CALL PLACE ORDER ----
           order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
 
+      stocks_ltp    = kite_conn_var.ltp('NSE:'+stock)
+      price         = stocks_ltp['NSE:'+stock]['last_price']
       diff          = price - stock_config_obj.buy_price 
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
       diff          = round((diff * stock_config_obj.quantity),2) - 100
@@ -94,6 +96,8 @@ def squareoff(kite_conn_var):
         # CALL PLACE ORDER ----
         order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
 
+    stocks_ltp    = kite_conn_var.ltp('NSE:'+stock)
+    price         = stocks_ltp['NSE:'+stock]['last_price']
     diff          = price - stock_config_obj.buy_price 
     profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
     diff          = round((diff * stock_config_obj.quantity),2) - 100
