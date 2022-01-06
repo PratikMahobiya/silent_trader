@@ -22,8 +22,8 @@ def sell(stock, price, gain, kite_conn_var):
   order_status  = 'NOT ACTIVE'
   stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
   # get the p&l
-  gain_val = round(((stock_config_obj.buy_price - price) * stock_config_obj.quantity),2)
-  gain_percent = round((((stock_config_obj.buy_price - price)/stock_config_obj.buy_price)*100),2)
+  gain_val = round(((price - stock_config_obj.buy_price) * stock_config_obj.quantity),2)
+  gain_percent = round((((price - stock_config_obj.buy_price)/stock_config_obj.buy_price)*100),2)
   gain.append((gain_val, gain_percent))
   models.CONFIG_30M.objects.filter(symbol = stock).update(return_price = gain_val)
   
