@@ -37,8 +37,8 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zero
   # After CrossOver MACD AND MACDSIGNAL
   if macd[-1] < macdsignal[-1]:
     if macd[-2] > macdsignal[-2]:
-      if data_frame[stock]['Close'].iloc[-2] < ema[-1]:
-        if macdhist[-1] < macdhist[-2] and macdhist[-2] < macdhist[-3]:
+      # if data_frame[stock]['Close'].iloc[-2] < ema[-1]:
+      #   if macdhist[-1] < macdhist[-2] and macdhist[-2] < macdhist[-3]:
           # Place Order in ZERODHA.
           order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
           # UPDATE CONFIG
