@@ -9,7 +9,6 @@ from kiteconnect import KiteConnect
 from datetime import date, datetime
 
 from . import freeze_all_15
-from . import freeze_all_15_btst
 from . import freeze_all_15_temp
 from . import freeze_all_15_temp_btst
 from . import freeze_all_30
