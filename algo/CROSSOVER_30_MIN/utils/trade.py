@@ -60,16 +60,11 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_f
 def sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj):
   stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
   # After CrossOver MACD AND MACDSIGNAL
-  if macdsignal[-2] < macd[-2]:
-    if macdsignal[-1] > macd[-1]:
-      if stock_config_obj.order_id != 0:
-        ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
-        if ord_det[-1]['status'] == 'COMPLETE':
-          # CALL PLACE ORDER ----
-          order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
+  if macdsignal[-1] > macd[-1]:
+    if macdsignal[-2] < macd[-2]:
+      # CALL PLACE ORDER ----
+      order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
 
-      stocks_ltp    = kite_conn_var.ltp('NSE:'+stock)
-      price         = stocks_ltp['NSE:'+stock]['last_price']
       diff          = price - stock_config_obj.buy_price 
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
       diff          = round((diff * stock_config_obj.quantity),2) - 100
@@ -90,14 +85,9 @@ def squareoff(kite_conn_var):
   stock_list = models.ENTRY_30M.objects.all().values_list('symbol', flat=True)
   for stock in stock_list:
     stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
-    if stock_config_obj.order_id != 0:
-      ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
-      if ord_det[-1]['status'] == 'COMPLETE':
-        # CALL PLACE ORDER ----
-        order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
+    # CALL PLACE ORDER ----
+    order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
 
-    stocks_ltp    = kite_conn_var.ltp('NSE:'+stock)
-    price         = stocks_ltp['NSE:'+stock]['last_price']
     diff          = price - stock_config_obj.buy_price 
     profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
     diff          = round((diff * stock_config_obj.quantity),2) - 100
