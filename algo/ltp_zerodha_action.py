@@ -6,7 +6,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
   try:
     order_id = kite_conn_var.place_order(tradingsymbol=symbol.split('.')[0],
                                 exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
+                                transaction_type=kite_conn_var.TRANSACTION_TYPE_BUY,
                                 quantity=stock_config_obj.quantity,
                                 variety=kite_conn_var.VARIETY_REGULAR,
                                 order_type=kite_conn_var.ORDER_TYPE_MARKET,

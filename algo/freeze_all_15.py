@@ -35,7 +35,7 @@ def freeze_all(stock_list, kite_conn_var):
       order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
       # ---------------------
 
-      diff          = price - stock_config_obj.buy_price
+      diff          = stock_config_obj.buy_price - price
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
       diff          = round((diff * stock_config_obj.quantity),2) - 100
       gain.append(diff)
@@ -46,11 +46,8 @@ def freeze_all(stock_list, kite_conn_var):
       if transaction.is_valid():
         transaction.save()
       models.ENTRY_15M.objects.filter(symbol = stock).delete()
-      models.TREND_15M_A.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
       stock_config_obj.placed       = False
-      stock_config_obj.d_sl_flag    = False
-      stock_config_obj.trend        = False
       stock_config_obj.count        = 0
       stock_config_obj.order_id     = 0
       stock_config_obj.save()

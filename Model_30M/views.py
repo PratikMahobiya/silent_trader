@@ -108,8 +108,6 @@ def EXIT_ORDER(request):
         models.ENTRY_30M.objects.filter(symbol = symbol).delete()
         stock_config_obj.buy          = False
         stock_config_obj.placed       = False
-        stock_config_obj.d_sl_flag    = False
-        stock_config_obj.trend        = False
         stock_config_obj.count        = 0
         stock_config_obj.order_id     = 0
         stock_config_obj.save()
