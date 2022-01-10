@@ -114,11 +114,13 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, rsi_8, atr, fastk, fastd, kit
                 if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
                   if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
                     if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
+                      stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
                       # Place Order in ZERODHA.
                       order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
+                      if zerodha_flag_obj.zerodha_entry is True:
+                        stock_config_obj.placed       = True
                       # UPDATE CONFIG
                       type_str         = 'BF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
-                      stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
                       stock_config_obj.buy            = True
                       stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                       stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
@@ -153,11 +155,13 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, rsi_8, atr, fastk, fastd, kit
                     if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
                       if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                         if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
+                          stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
                           # Place Order in ZERODHA.
                           order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
+                          if zerodha_flag_obj.zerodha_entry is True:
+                            stock_config_obj.placed       = True
                           # UPDATE CONFIG
                           type_str         = 'AF_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - ema_max[-1])/ema_max[-1])*100),2))
-                          stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
                           stock_config_obj.buy            = True
                           stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                           stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)
@@ -187,11 +191,13 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, rsi_8, atr, fastk, fastd, kit
           if abs(((data_frame[stock]['Close'].iloc[-2] - vwap_df['Vwap'].iloc[-1])/vwap_df['Vwap'].iloc[-1])*100) <= 0.7:
             if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
               if models.CONFIG_15M_TEMP.objects.get(symbol = stock).buy is False:
+                stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord(kite_conn_var,stock, zerodha_flag_obj)
+                if zerodha_flag_obj.zerodha_entry is True:
+                  stock_config_obj.placed       = True
                 # UPDATE CONFIG
                 type_str         = 'EV_{}'.format(round((((data_frame[stock]['Close'].iloc[-2] - vwap_df['Vwap'].iloc[-1])/vwap_df['Vwap'].iloc[-1])*100),2))
-                stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
                 stock_config_obj.buy            = True
                 stock_config_obj.f_stoploss     = checking_stoploss_fixed(price)
                 stock_config_obj.stoploss       = checking_stoploss_ot(price,atr)

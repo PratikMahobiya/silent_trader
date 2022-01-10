@@ -4,6 +4,8 @@ from time import sleep
 import pandas as pd
 
 def download_trade_data(intervals,kite_conn_var):
+  if time(9,14,00) <= datetime.now().time() <= time(9,18,00):
+    sleep(60)
   now = date.today()
   from_day = now - timedelta(days=intervals[1])
   df_list = []

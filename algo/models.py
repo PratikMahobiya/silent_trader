@@ -75,6 +75,7 @@ class FREEZE_PROFIT(models.Model):
     	return self.id
     class Meta:
         db_table = 'FREEZE_PROFIT'
+        
 class CROSSOVER_15_MIN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')

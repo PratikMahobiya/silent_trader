@@ -19,7 +19,8 @@ def download_trend_data_30(intervals,kite_conn_var):
   df_key  = []
   if time(9,14,00) <= datetime.now().time() <= time(9,25,00):
     sleep(300)
-  for_trend = in_nifty_range(kite_conn_var)
+  # for_trend = in_nifty_range(kite_conn_var)
+  for_trend = models_a.STOCK.objects.filter(active_15 = True, nifty_flag = False).values_list('symbol', flat=True)
   for stock_name in for_trend:
     sleep(0.3)
     data = kite_conn_var.historical_data(instrument_token=models_a.STOCK.objects.get(symbol = stock_name).instrument_key, from_date=from_day, to_date=now, interval=intervals[6])

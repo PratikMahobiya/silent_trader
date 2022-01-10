@@ -8,7 +8,7 @@ def model(intervals, kite_conn_var):
     kite_conn_var      = to place orders in zerodha
   '''
   # Regular Trades Execution
-  if datetime.now().time() >= time(9,20,00) and datetime.now().time() < time(15,12,00):
+  if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,12,00):
     # DownLoad data for initiating Trades
     trade_data_frame, trading_stocks_list = get_data.download_trade_data(intervals,kite_conn_var)
 
