@@ -38,28 +38,30 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zero
   if macd[-1] < macdsignal[-1]:
     if macd[-2] > macdsignal[-2]:
       # if data_frame[stock]['Close'].iloc[-2] < ema[-1]:
-        if macdhist[-1] < macdhist[-2] and macdhist[-2] < macdhist[-3]:
-          # Place Order in ZERODHA.
-          order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
-          if zerodha_flag_obj.zerodha_entry is True:
-            stock_config_obj.placed       = True
-          # UPDATE CONFIG
-          type_str         = 'AF_SELL'
-          stock_config_obj.buy            = True
-          stock_config_obj.stoploss       = price + price * 0.006
-          stock_config_obj.target         = price - price * 0.006
-          stock_config_obj.quantity       = quantity
-          stock_config_obj.buy_price      = price
-          stock_config_obj.order_id       = order_id
-          stock_config_obj.order_status   = order_status
-          stock_config_obj.save()
-          # TRANSACTION TABLE UPDATE
-          trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
-          transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
-          if transaction.is_valid():
-            transaction.save()
-          # UPDATE CURRENT ENTRY TABLE
-          models.ENTRY_15M(symbol = stock, reference_id = transaction.data['id']).save()
+        if macdhist[-1] < macdhist[-2]:
+          if macdhist[-2] < macdhist[-3]:
+            if macdhist[-3] < macdhist[-4]:
+              # Place Order in ZERODHA.
+              order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
+              if zerodha_flag_obj.zerodha_entry is True:
+                stock_config_obj.placed       = True
+              # UPDATE CONFIG
+              type_str         = 'AF_SELL'
+              stock_config_obj.buy            = True
+              stock_config_obj.stoploss       = price + price * 0.006
+              stock_config_obj.target         = price - price * 0.006
+              stock_config_obj.quantity       = quantity
+              stock_config_obj.buy_price      = price
+              stock_config_obj.order_id       = order_id
+              stock_config_obj.order_status   = order_status
+              stock_config_obj.save()
+              # TRANSACTION TABLE UPDATE
+              trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+              transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
+              if transaction.is_valid():
+                transaction.save()
+              # UPDATE CURRENT ENTRY TABLE
+              models.ENTRY_15M(symbol = stock, reference_id = transaction.data['id']).save()
 
 def sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj):
   stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
