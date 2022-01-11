@@ -45,7 +45,7 @@ def cal_volatility(dt):
   return round(daily_volatility,4)
 
 def cal_volatility_VOL(dt):
-  dt['Return'] = 100 * (dt['Volume'].pct_change())
+  # dt['Return'] = 100 * (dt['Volume'].pct_change())
   daily_volatility = dt['Volume'].std()
   return round(daily_volatility,4)
 
