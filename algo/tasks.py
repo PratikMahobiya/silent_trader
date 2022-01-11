@@ -742,7 +742,7 @@ def ltp_of_entries(self):
   elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
     model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST', 'CRS_TEMP_DOWN','CRS_15_TEMP_BTST_DOWN','OVER_ALL_PLACED']
     for ind, m_name in enumerate(model_name_list):
-      models_a.PROFIT_CONFIG.objects.filter(model_name = m_name).update(zerodha_entry = False)
+      # models_a.PROFIT_CONFIG.objects.filter(model_name = m_name).update(zerodha_entry = False)
       model_config_obj = models_a.PROFIT.objects.get(model_name = m_name, date = datetime.now().date())
       if ind == 0:
         profit = models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
