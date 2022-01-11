@@ -10,6 +10,7 @@ class STOCK(models.Model):
     active_5                = models.BooleanField(verbose_name='ACTIVE 5 Minute',default=False)
     nifty_flag              = models.BooleanField(verbose_name='NIFTY FLAG',default=False)
     volatility				= models.FloatField(verbose_name='VOLATILITY(%)',default=0)
+    vol_volatility			= models.FloatField(verbose_name='VOLUME VOLATILITY(%)',default=0)
     upper_lim				= models.FloatField(verbose_name='UPPER LIMIT',default=0)
     lower_lim				= models.FloatField(verbose_name='LOWER LIMIT',default=0)
     def __str__(self):

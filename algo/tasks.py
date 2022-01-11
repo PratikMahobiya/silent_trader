@@ -44,6 +44,11 @@ def cal_volatility(dt):
   daily_volatility = dt['Return'].std()
   return round(daily_volatility,4)
 
+def cal_volatility_VOL(dt):
+  dt['Return'] = 100 * (dt['Volume'].pct_change())
+  daily_volatility = dt['Return'].std()
+  return round(daily_volatility,4)
+
 @shared_task(bind=True,max_retries=3)
 # initial_setup on DATABASE -------------------------------------
 def get_stocks_configs(self):
@@ -220,7 +225,7 @@ def get_stocks_configs(self):
     data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
     data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
     volatile_stocks[stock_sym] = cal_volatility(data_frame)
-    models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame))
+    models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
 
   cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
   # cut_off_volatility = 2
