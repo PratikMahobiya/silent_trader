@@ -46,7 +46,8 @@ def cal_volatility(dt):
 
 def cal_volatility_VOL(dt):
   # dt['Return'] = 100 * (dt['Volume'].pct_change())
-  daily_volatility = dt['Volume'].std()
+  # daily_volatility = dt['Volume'].std()
+  daily_volatility = dt['Volume'].iloc[-1]
   return round(daily_volatility,4)
 
 @shared_task(bind=True,max_retries=3)
