@@ -41,7 +41,7 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zero
       if data_frame[stock]['Close'].iloc[-2] > ema[-1]:
         if macdhist[-1] > macdhist[-2]:
           if macdhist[-2] > macdhist[-3]:
-            if macdhist[-3] > macdhist[-4]:
+            # if macdhist[-3] > macdhist[-4]:
               # Place Order in ZERODHA.
               order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
               if zerodha_flag_obj.zerodha_entry is True:
