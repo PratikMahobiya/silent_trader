@@ -4,6 +4,7 @@ from django.db import models
 class STOCK(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     instrument_key          = models.BigIntegerField(verbose_name='INSTRUMENT KEY')
+    token                   = models.CharField(max_length=100, verbose_name='TOKEN')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     active_15               = models.BooleanField(verbose_name='ACTIVE 15 Minute',default=False)
@@ -23,7 +24,7 @@ class ZERODHA_KEYS(models.Model):
     api_key                         = models.CharField(max_length=100, verbose_name='api_key')
     api_secret                      = models.CharField(max_length=100, verbose_name='api_secret')
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'ZERODHA_KEYS'
 
@@ -42,7 +43,7 @@ class PROFIT(models.Model):
     current_gain_entry		= models.BigIntegerField(verbose_name='TOTAL ENTRY',default=0)
     p_l                     = models.FloatField(verbose_name='P/L(%)',default=0)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'PROFIT'
 
@@ -57,7 +58,7 @@ class PROFIT_CONFIG(models.Model):
     stoploss                = models.FloatField(verbose_name='STOPLOSS',default=0)
     entry                   = models.BigIntegerField(verbose_name='NUM. OF ENT',default=0)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'PROFIT_CONFIG'
 
@@ -73,7 +74,7 @@ class FREEZE_PROFIT(models.Model):
     entry                   = models.BigIntegerField(verbose_name='NUM. OF ENT')
     day_hit                 = models.CharField(max_length=100, verbose_name='DAY_HIT')
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'FREEZE_PROFIT'
         
@@ -95,7 +96,7 @@ class CROSSOVER_15_MIN(models.Model):
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'CROSSOVER_15_MIN'
 
@@ -117,7 +118,7 @@ class CROSSOVER_15_MIN_BTST(models.Model):
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'CROSSOVER_15_MIN_BTST'
 
@@ -139,7 +140,7 @@ class CROSSOVER_30_MIN(models.Model):
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'CROSSOVER_30_MIN'
 
@@ -161,7 +162,7 @@ class CROSSOVER_30_MIN_BTST(models.Model):
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'CROSSOVER_30_MIN_BTST'
 
@@ -184,7 +185,7 @@ class CROSSOVER_15_MIN_TEMP(models.Model):
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'CROSSOVER_15_MIN_TEMP'
 
@@ -206,9 +207,10 @@ class CROSSOVER_15_MIN_TEMP_BTST(models.Model):
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'CROSSOVER_15_MIN_TEMP_BTST'
+
 class CROSSOVER_15_MIN_TEMP_DOWN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
     indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
@@ -227,10 +229,9 @@ class CROSSOVER_15_MIN_TEMP_DOWN(models.Model):
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'CROSSOVER_15_MIN_TEMP_DOWN'
-
 
 class CROSSOVER_15_MIN_TEMP_BTST_DOWN(models.Model):
     symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
@@ -250,6 +251,6 @@ class CROSSOVER_15_MIN_TEMP_BTST_DOWN(models.Model):
     created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
     placed                  = models.BooleanField(verbose_name='PLACED',default=False)
     def __int__(self):
-    	return self.id
+        return self.id
     class Meta:
         db_table = 'CROSSOVER_15_MIN_TEMP_BTST_DOWN'

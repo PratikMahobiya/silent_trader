@@ -5,7 +5,7 @@ from import_export.admin import ExportActionMixin
 # Register your models here.
 @admin.register(models.STOCK)
 class STOCK_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('symbol','instrument_key','sector','niftytype','volatility','vol_volatility','upper_lim','lower_lim','active_15','active_5','nifty_flag')
+    list_display = ('symbol','active_15','active_5','niftytype','volatility','sector','vol_volatility','upper_lim','lower_lim','instrument_key','token','nifty_flag')
     search_fields = ['symbol',]
     list_filter = ("active_15","active_5",)
 
