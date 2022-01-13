@@ -187,7 +187,7 @@ def get_stocks_configs(self):
       'TVSMOTOR':	[2170625,	'AUTO','mid50','8479'],
       'ULTRACEMCO':	[2952193,	'INFRA,COMMODITY','nify','ULTRACEMCO','11532'],
       'UNIONBANK':	[2752769,	'BANK','nifty','10753'],
-      'UPL':		[2889473,	'COMMODITY','nify','UPL'],
+      'UPL':		[2889473,	'COMMODITY','nify','11287'],
       'VEDL':		[784129,	'METAL,MNC,COMMODITY','nxt50','3063'],
       'VOLTAS':	[951809,	'CONSUMPTION','mid50','3718'],
       'WELCORP':	[3026177,	'METAL','nifty','11821'],
