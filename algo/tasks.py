@@ -146,7 +146,7 @@ def get_stocks_configs(self):
       'JUBLFOOD':	[4632577,	'FMCG,CONSUMPTION','nxt50','18096'],
       'KOTAKBANK':	[492033,	'BANK,FINN','nify','1922'],
       'LICHSGFIN':	[511233,	'nill','mid50','1997'],
-      'LT':		[2939649,	'INFRA','nify','6843'],
+      'LT':		[2939649,	'INFRA','nify','11483'],
       'LUPIN':	[2672641,	'PHARMA','nxt50','10440'],
       'M&M':		[519937,	'AUTO,CONSUMPTION','nify','2031'],
       'MARUTI':	[2815745,	'AUTO','nify','10999'],
