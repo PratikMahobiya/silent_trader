@@ -45,7 +45,7 @@ def download_trend_data_30(intervals,kite_conn_var):
     df_list.append(data_frame)
     df_key.append(stock_name)
   if len(for_trend) != 0:
-    merged_data_frame = pd.concat(df_list,axis=1,keys=df_key).tz_localize(None)
+    merged_data_frame = pd.concat(df_list,axis=1,keys=df_key)
   else:
     merged_data_frame = {}
   return merged_data_frame, for_trend
@@ -71,5 +71,5 @@ def download_trade_data(for_trade,intervals,kite_conn_var):
     data_frame.index.names = ['date']
     df_list.append(data_frame)
     df_key.append(stock_name)
-  merged_data_frame = pd.concat(df_list,axis=1,keys=df_key).tz_localize(None)
+  merged_data_frame = pd.concat(df_list,axis=1,keys=df_key)
   return merged_data_frame
