@@ -6,6 +6,11 @@ class ZERODHA_KEYS_Serializer(serializers.ModelSerializer):
 		model 	= models.ZERODHA_KEYS
 		fields 	= ('access_token','api_key','api_secret')
 
+class FYERS_KEYS_Serializer(serializers.ModelSerializer):
+	class Meta:
+		model 	= models.FYERS_KEYS
+		fields 	= ('access_token','app_id','app_secret')
+
 class CROSSOVER_15_Min_Serializer(serializers.ModelSerializer):
 	class Meta:
 		model 	= models.CROSSOVER_15_MIN

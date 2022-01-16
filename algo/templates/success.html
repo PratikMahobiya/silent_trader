@@ -52,15 +52,27 @@
 										<p><b>You have SUCCESSFULLY create a TOKEN</b></p>
 										<p>-:TOKEN:-</p>
 										<p><i><b>{{ access_token }}</b></i></p>
-										<p>SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
+										{% if {{fyers}} == '1' %} 
+											<p>FYERS ACCOUNT NAME:- <strong>{{ account_name }}</strong></p>
+										{% else %}
+											<p>ZERODHA SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
+										{% endif %}
 										<p><b>{{ status }}</b></p>
 								{% endif %}
 							</form>
-								{% if success == 'ERROR' %}
-									<a href="http://139.59.54.145/index/"><button type="submit" class="loginhny-btn btn">HOME</button></a>
+							{% if success == 'ERROR' %}
+								{% if {{fyers}} == '1' %} 
+									<a href="http://139.59.54.145/index_fyers/"><button type="submit" class="loginhny-btn btn">FYERS</button></a>
 								{% else %}
-									<a href="http://139.59.54.145/check/"><button type="submit" class="loginhny-btn btn">CHECK</button></a>
+									<a href="http://139.59.54.145/index/"><button type="submit" class="loginhny-btn btn">ZERODHA</button></a>
 								{% endif %}
+							{% else %}
+								{% if {{fyers}} == '1' %} 
+									<a href="http://139.59.54.145/check_fyers/"><button type="submit" class="loginhny-btn btn">CHECK FYERS</button></a>
+								{% else %}
+									<a href="http://139.59.54.145/check/"><button type="submit" class="loginhny-btn btn">CHECK ZERODHA</button></a>
+								{% endif %}
+							{% endif %}
 						</div>
 					</div>
 				</div>

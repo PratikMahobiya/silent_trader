@@ -1,5 +1,6 @@
 from datetime import date, datetime, time, timedelta
 from kiteconnect import KiteConnect
+from fyers_api import fyersModel
 from time import sleep
 import pandas as pd
 from django.db.models import Q
@@ -29,6 +30,15 @@ from . import check_ltp_temp_btst_down
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 from .DOWN_CROSSOVER_15_MIN_temp.utils import backbone as backbone_DOWN_CRS_temp
 
+def fyers_conn():
+  app_id = open('algo/config/app_id.txt','r').read()
+  access_token = models_a.FYERS_KEYS.objects.get(app_id=app_id).access_token
+  try:
+    fyers = fyersModel.FyersModel(client_id=app_id, token=access_token)
+  except Exception as  e:
+    pass
+  return fyers
+
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
   access_token = models_a.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
@@ -56,146 +66,142 @@ def get_stocks_configs(self):
   response = {'stock_table': False, 'config_table_15': False, 'config_table_30': False}
   now = date.today()
   last_6_days       = now - timedelta(days=1825)
-  kite_conn_var     = connect_to_kite_connection()
+  fyers_conn_val = fyers_conn()
   volatile_stocks   = {}
   # Stock dict
   stock_dict = {
-      'NSE:NIFTY 50': [256265, 'nill', 'nill'],
-      'NSE:NIFTY NEXT 50': [270857, 'nill', 'nill'],
-      'NSE:NIFTY MIDCAP 50': [260873, 'nill', 'nill'],
-      'AARTIIND':	[1793,		'COMMODITY','mid50'],
-      'ABFRL':	[7707649,	'nill','nifty'],
-      'ACC':		[5633,		'INFRA,COMMODITY','nxt50'],
-      'ADANIENT':	[6401,		'METAL','nxt50'],
-      'ADANIGREEN':	[912129,	'ENERGY,COMMODITY','nxt50'],
-      'ADANIPORTS':	[3861249,	'INFRA','nify'],
-      'AMBUJACEM':	[325121,	'INFRA,MNC,COMMODITY','nxt50'],
-      'APLLTD':	[6483969,	'nill','nifty'],
-      'APOLLOTYRE':	[41729,		'nill','mid50'],
-      'ASHOKLEY':	[54273,		'AUTO,INFRA,MNC','mid50'],
-      'ASIANPAINT':	[60417,		'CONSUMPTION','nify'],
-      'AUROPHARMA':	[70401,		'PHARMA','nxt50'],
-      'AXISBANK':	[1510401,	'BANK,FINN','nify'],
-      'BAJAJ-AUTO':	[4267265,	'AUTO,CONSUMPTION','nify'],
-      'BANDHANBNK':	[579329,	'BANK','nxt50'],
-      'BANKBARODA':	[1195009,	'BANK','nxt50'],
-      'BANKINDIA':	[1214721,	'BANK','mid50'],
-      'BATAINDIA':	[94977,		'MNC','mid50'],
-      'BEL':		[98049,		'PSE','mid50'],
-      'BERGEPAINT':	[103425,	'CONSUMPTION','nxt50'],
-      'BHARATFORG':	[108033,	'AUTO','mid50'],
-      'BHARTIARTL':	[2714625,	'INFRA,CONSUMPTION','nify'],
-      'BHEL':		[112129,	'PSE','mid50'],
-      'BIOCON':	[2911489,	'PHARMA','nxt50'],
-      'BPCL':		[134657,	'INFRA,PSE,COMMODITY','nify'],
-      'BRITANNIA':	[140033,	'FMCG,MNC,CONSUMPTION','nify'],
-      'CADILAHC':	[2029825,	'PHARMA','nxt50'],
-      'CANBK':	[2763265,	'BANK','mid50'],
-      'CASTROLIND':	[320001,	'MNC','nifty'],
-      'CHOLAFIN':	[175361,	'FINN','nxt50'],
-      'CIPLA':	[177665,	'PHARMA','nify'],
-      'COALINDIA':	[5215745,	'METAL,PSE,COMMODITY','nify'],
-      'COFORGE':	[2955009,	'IT','mid50'],
-      'COLPAL':	[3876097,	'FMCG,MNC,CONSUMPTION','nxt50'],
-      'CONCOR':	[1215745,	'INFRA,PSE','mid50'],
-      'CUB':		[1459457,	'nill','nifty'],
-      'CUMMINSIND':	[486657,	'MNC','mid50'],
-      'DABUR':	[197633,	'FMCG,CONSUMPTION','nxt50'],
-      'DIVISLAB':	[2800641,	'PHARMA','nify'],
-      'DLF':		[3771393,	'INFRA','nxt50'],
-      'DMART':	[5097729,	'CONSUMPTION','nxt50'],
-      'DRREDDY':	[225537,	'PHARMA','nify'],
-      'EMAMILTD':	[3460353,	'FMCG','nifty'],
-      'ESCORTS':	[245249,	'nill','mid50'],
-      'EICHERMOT':	[232961,	'AUTO','nify'],
-      'EXIDEIND':	[173057,	'AUTO,INFRA','mid50'],
-      'FEDERALBNK':	[261889,	'BANK','mid50'],
-      'GAIL':		[1207553,	'INFRA,PSE','nxt50'],
-      'GMRINFRA':	[3463169,	'nill','nifty'],
-      'GODREJCP':	[2585345,	'FMCG,CONSUMPTION','nxt50'],
-      'GODREJPROP':	[4576001,	'nill','mid50'],
-      'GRANULES':	[3039233,	'nill','nifty'],
-      'GRASIM':	[315393,	'INFRA,COMMODITY','nify'],
-      'HAVELLS':	[2513665,	'CONSUMPTION','nxt50'],
-      'HCLTECH':	[1850625,	'IT','nify'],
-      'HDFC':		[340481,	'FINN','nify'],
-      'HDFCBANK':	[341249,	'BANK,FINN','nify'],
-      'HDFCLIFE':	[119553,	'FINN','nify'],
-      'HEROMOTOCO':	[345089,	'AUTO','nify'],
-      'HINDALCO':	[348929,	'METAL','nify'],
-      'HINDPETRO':	[359937,	'INFRA,PSE,COMMODITY','nxt50'],
-      'HINDUNILVR':	[356865,	'FMCG,MNC,CONSUMPTION','nify'],
-      'HINDZINC':	[364545,	'METAL,COMMODITY','nifty'],
-      'IBULHSGFIN':	[7712001,	'nill','nifty'],
-      'ICICIBANK':	[1270529,	'BANK,FINN','nify'],
-      'IDFCFIRSTB':	[2863105,	'BANK','mid50'],
-      'IGL':		[2883073,	'INFRA','nxt50'],
-      'INDIANB':	[3663105,	'BANK','nifty'],
-      'INDIGO': [2865921,'nill','nifty'],
-      'INDUSINDBK':	[1346049,	'BANK','nify'],
-      'INDUSTOWER':	[7458561,	'INFRA','nxt50'],
-      'INFY':		[408065,	'IT','nify'],
-      'IOC':		[415745,	'INFRA,PSE,COMMODITY','nify'],
-      'IRCTC':	[3484417,	'PSE','mid50'],
-      'ITC':		[424961,	'FMCG,CONSUMPTION','nify'],
-      'JINDALSTEL':	[1723649,	'METAL,COMMODITY','nxt50'],
-      'JSWSTEEL':	[3001089,	'METAL,COMMODITY','nify'],
-      'JUBLFOOD':	[4632577,	'FMCG,CONSUMPTION','nxt50'],
-      'KOTAKBANK':	[492033,	'BANK,FINN','nify'],
-      'LICHSGFIN':	[511233,	'nill','mid50'],
-      'LT':		[2939649,	'INFRA','nify'],
-      'LUPIN':	[2672641,	'PHARMA','nxt50'],
-      'M&M':		[519937,	'AUTO,CONSUMPTION','nify'],
-      'MARUTI':	[2815745,	'AUTO','nify'],
-      'M&MFIN':	[3400961,	'FINN','mid50'],
-      'MANAPPURAM':	[4879617,	'nill','mid50'],
-      'MARICO':	[1041153,	'FMCG,CONSUMPTION','nxt50'],
-      'MCDOWELL-N':	[2674433,	'FMCG,MNC,CONSUMPTION','nxt50'],
-      'MINDTREE':	[3675137,	'IT','mid50'],
-      'MUTHOOTFIN':	[6054401,	'FINN','nxt50'],
-      'NAM-INDIA':	[91393,		'nill','nifty'],
-      'NATIONALUM':	[1629185,	'METAL,PSE','nifty'],
-      'NMDC':		[3924993,	'METAL,PSE,COMMODITY','nxt50'],
-      'NTPC':		[2977281,	'INFRA,PSE,COMMODITY','nify'],
-      'ONGC':		[633601,	'INFRA,PSE,COMMODITY','nify'],
-      'PETRONET':	[2905857,	'INFRA','mid50'],
-      'PFC':		[3660545,	'PSE','mid50'],
-      'PNB':		[2730497,	'BANK','nxt50'],
-      'POWERGRID':	[3834113,	'INFRA,PSE','nify'],
-      'PVR':		[3365633,	'MEDIA','nifty'],
-      'RBLBANK':	[4708097,	'BANK','nifty'],
-      'RELIANCE':	[738561,	'INFRA,COMMODITY','nify'],
-      'SAIL':		[758529,	'METAL,PSE','nxt50'],
-      'SBICARD':	[4600577,	'nill','nxt50'],
-      'SBILIFE':	[5582849,	'FINN','nify'],
-      'SBIN':		[779521,	'BANK,FINN','nify'],
-      'SUNPHARMA':	[857857,	'PHARMA','nify'],
-      'SUNTV':	[3431425,	'MEDIA','mid50'],
-      'TATACHEM':	[871681,	'nill','nifty'],
-      'TATACONSUM':	[878593,	'FMCG,CONSUMPTION','nify'],
-      'TATAMOTORS':	[884737,	'AUTO','nify'],
-      'TATAPOWER':	[877057,	'ENERGY,INFRA,COMMODITY','mid50'],
-      'TATASTEEL':	[895745,	'METAL,COMMODITY','nify'],
-      'TCS':		[2953217,	'IT','nify'],
-      'TECHM':	[3465729,	'IT','nify'],
-      'TITAN':	[897537,	'CONSUMPTION','nify'],
-      'TORNTPOWER':	[3529217,	'COMMODITY','mid50'],
-      'TRENT':	[502785,	'CONSUMPTION','mid50'],
-      'TVSMOTOR':	[2170625,	'AUTO','mid50'],
-      'ULTRACEMCO':	[2952193,	'INFRA,COMMODITY','nify'],
-      'UNIONBANK':	[2752769,	'BANK','nifty'],
-      'UPL':		[2889473,	'COMMODITY','nify'],
-      'VEDL':		[784129,	'METAL,MNC,COMMODITY','nxt50'],
-      'VOLTAS':	[951809,	'CONSUMPTION','mid50'],
-      'WELCORP':	[3026177,	'METAL','nifty'],
-      'WIPRO':	[969473,	'IT','nify'],
-      'ZEEL':		[975873,	'MEDIA,CONSUMPTION','mid50']
+      'AARTIIND':	[1793,		'COMMODITY','mid50','7'],
+      'ABFRL':	[7707649,	'nill','nifty','30108'],
+      'ACC':		[5633,		'INFRA,COMMODITY','nxt50','4421'],
+      'ADANIENT':	[6401,		'METAL','nxt50','25'],
+      'ADANIGREEN':	[912129,	'ENERGY,COMMODITY','nxt50','3563'],
+      'ADANIPORTS':	[3861249,	'INFRA','nify','15083'],
+      'AMBUJACEM':	[325121,	'INFRA,MNC,COMMODITY','nxt50','1270'],
+      'APLLTD':	[6483969,	'nill','nifty','25328'],
+      'ASHOKLEY':	[54273,		'AUTO,INFRA,MNC','mid50','212'],
+      'ASIANPAINT':	[60417,		'CONSUMPTION','nify','236'],
+      'AUROPHARMA':	[70401,		'PHARMA','nxt50','275'],
+      'AXISBANK':	[1510401,	'BANK,FINN','nify','5900'],
+      'BAJAJ-AUTO':	[4267265,	'AUTO,CONSUMPTION','nify','16669'],
+      'BANDHANBNK':	[579329,	'BANK','nxt50','2263'],
+      'BANKBARODA':	[1195009,	'BANK','nxt50','4668'],
+      'BANKINDIA':	[1214721,	'BANK','mid50','4745'],
+      'BATAINDIA':	[94977,		'MNC','mid50','371'],
+      'BEL':		[98049,		'PSE','mid50','383'],
+      'BERGEPAINT':	[103425,	'CONSUMPTION','nxt50','404'],
+      'BHARATFORG':	[108033,	'AUTO','mid50','422'],
+      'BHARTIARTL':	[2714625,	'INFRA,CONSUMPTION','nify','10604'],
+      'BHEL':		[112129,	'PSE','mid50','438'],
+      'BIOCON':	[2911489,	'PHARMA','nxt50','11373'],
+      'BPCL':		[134657,	'INFRA,PSE,COMMODITY','nify','526'],
+      'BRITANNIA':	[140033,	'FMCG,MNC,CONSUMPTION','nify','547'],
+      'CADILAHC':	[2029825,	'PHARMA','nxt50','7929'],
+      'CANBK':	[2763265,	'BANK','mid50','10794'],
+      'CASTROLIND':	[320001,	'MNC','nifty','1250'],
+      'CHOLAFIN':	[175361,	'FINN','nxt50','685'],
+      'CIPLA':	[177665,	'PHARMA','nify','694'],
+      'COALINDIA':	[5215745,	'METAL,PSE,COMMODITY','nify','20374'],
+      'COFORGE':	[2955009,	'IT','mid50','11543'],
+      'COLPAL':	[3876097,	'FMCG,MNC,CONSUMPTION','nxt50','15141'],
+      'CONCOR':	[1215745,	'INFRA,PSE','mid50','4749'],
+      'CUB':		[1459457,	'nill','nifty','5701'],
+      'CUMMINSIND':	[486657,	'MNC','mid50','1901'],
+      'DABUR':	[197633,	'FMCG,CONSUMPTION','nxt50','772'],
+      'DIVISLAB':	[2800641,	'PHARMA','nify','10940'],
+      'DLF':		[3771393,	'INFRA','nxt50','14732'],
+      'DMART':	[5097729,	'CONSUMPTION','nxt50','19913'],
+      'DRREDDY':	[225537,	'PHARMA','nify','881'],
+      'EMAMILTD':	[3460353,	'FMCG','nifty','13517'],
+      'ESCORTS':	[245249,	'nill','mid50','958'],
+      'EICHERMOT':	[232961,	'AUTO','nify','910'],
+      'EXIDEIND':	[173057,	'AUTO,INFRA','mid50','676'],
+      'FEDERALBNK':	[261889,	'BANK','mid50','1023'],
+      'GAIL':		[1207553,	'INFRA,PSE','nxt50','4717'],
+      'GMRINFRA':	[3463169,	'nill','nifty','13528'],
+      'GODREJCP':	[2585345,	'FMCG,CONSUMPTION','nxt50','10099'],
+      'GODREJPROP':	[4576001,	'nill','mid50','17875'],
+      'GRANULES':	[3039233,	'nill','nifty','11872'],
+      'GRASIM':	[315393,	'INFRA,COMMODITY','nify','1232'],
+      'HAVELLS':	[2513665,	'CONSUMPTION','nxt50','9819'],
+      'HCLTECH':	[1850625,	'IT','nify','7229'],
+      'HDFC':		[340481,	'FINN','nify','1330'],
+      'HDFCBANK':	[341249,	'BANK,FINN','nify','1333'],
+      'HDFCLIFE':	[119553,	'FINN','nify','467'],
+      'HEROMOTOCO':	[345089,	'AUTO','nify','1348'],
+      'HINDALCO':	[348929,	'METAL','nify','1363'],
+      'HINDPETRO':	[359937,	'INFRA,PSE,COMMODITY','nxt50','1406'],
+      'HINDUNILVR':	[356865,	'FMCG,MNC,CONSUMPTION','nify','1394'],
+      'HINDZINC':	[364545,	'METAL,COMMODITY','nifty','1424'],
+      'IBULHSGFIN':	[7712001,	'nill','nifty','30125'],
+      'ICICIBANK':	[1270529,	'BANK,FINN','nify','4963'],
+      'IDFCFIRSTB':	[2863105,	'BANK','mid50','11184'],
+      'IGL':		[2883073,	'INFRA','nxt50','11262'],
+      'INDIANB':	[3663105,	'BANK','nifty','14309'],
+      'INDIGO': [2865921,'nill','nifty','11195'],
+      'INDUSINDBK':	[1346049,	'BANK','nify','5258'],
+      'INDUSTOWER':	[7458561,	'INFRA','nxt50','29135'],
+      'INFY':		[408065,	'IT','nify','1594'],
+      'IOC':		[415745,	'INFRA,PSE,COMMODITY','nify','1624'],
+      'IRCTC':	[3484417,	'PSE','mid50','13611'],
+      'ITC':		[424961,	'FMCG,CONSUMPTION','nify','1660'],
+      'JINDALSTEL':	[1723649,	'METAL,COMMODITY','nxt50','6733'],
+      'JSWSTEEL':	[3001089,	'METAL,COMMODITY','nify','11723'],
+      'JUBLFOOD':	[4632577,	'FMCG,CONSUMPTION','nxt50','18096'],
+      'KOTAKBANK':	[492033,	'BANK,FINN','nify','1922'],
+      'LICHSGFIN':	[511233,	'nill','mid50','1997'],
+      'LT':		[2939649,	'INFRA','nify','11483'],
+      'LUPIN':	[2672641,	'PHARMA','nxt50','10440'],
+      'M&M':		[519937,	'AUTO,CONSUMPTION','nify','2031'],
+      'MARUTI':	[2815745,	'AUTO','nify','10999'],
+      'M&MFIN':	[3400961,	'FINN','mid50','13285'],
+      'MANAPPURAM':	[4879617,	'nill','mid50','19061'],
+      'MARICO':	[1041153,	'FMCG,CONSUMPTION','nxt50','4067'],
+      'MCDOWELL-N':	[2674433,	'FMCG,MNC,CONSUMPTION','nxt50','10447'],
+      'MINDTREE':	[3675137,	'IT','mid50','14356'],
+      'MUTHOOTFIN':	[6054401,	'FINN','nxt50','23650'],
+      'NAM-INDIA':	[91393,		'nill','nifty','357'],
+      'NATIONALUM':	[1629185,	'METAL,PSE','nifty','6364'],
+      'NMDC':		[3924993,	'METAL,PSE,COMMODITY','nxt50','15332'],
+      'NTPC':		[2977281,	'INFRA,PSE,COMMODITY','nify','11630'],
+      'ONGC':		[633601,	'INFRA,PSE,COMMODITY','nify','2475'],
+      'PETRONET':	[2905857,	'INFRA','mid50','11351'],
+      'PFC':		[3660545,	'PSE','mid50','14299'],
+      'PNB':		[2730497,	'BANK','nxt50','10666'],
+      'POWERGRID':	[3834113,	'INFRA,PSE','nify','14977'],
+      'PVR':		[3365633,	'MEDIA','nifty','13147'],
+      'RBLBANK':	[4708097,	'BANK','nifty','18391'],
+      'RELIANCE':	[738561,	'INFRA,COMMODITY','nify','2885'],
+      'SAIL':		[758529,	'METAL,PSE','nxt50','2963'],
+      'SBICARD':	[4600577,	'nill','nxt50','17971'],
+      'SBILIFE':	[5582849,	'FINN','nify','21808'],
+      'SBIN':		[779521,	'BANK,FINN','nify','3045'],
+      'SUNPHARMA':	[857857,	'PHARMA','nify','3351'],
+      'SUNTV':	[3431425,	'MEDIA','mid50','13404'],
+      'TATACHEM':	[871681,	'nill','nifty','3405'],
+      'TATACONSUM':	[878593,	'FMCG,CONSUMPTION','nify','3432'],
+      'TATAMOTORS':	[884737,	'AUTO','nify','3456'],
+      'TATAPOWER':	[877057,	'ENERGY,INFRA,COMMODITY','mid50','3426'],
+      'TATASTEEL':	[895745,	'METAL,COMMODITY','nify','3499'],
+      'TCS':		[2953217,	'IT','nify','11536'],
+      'TECHM':	[3465729,	'IT','nify','13538'],
+      'TITAN':	[897537,	'CONSUMPTION','nify','3506'],
+      'TORNTPOWER':	[3529217,	'COMMODITY','mid50','13786'],
+      'TRENT':	[502785,	'CONSUMPTION','mid50','1964'],
+      'TVSMOTOR':	[2170625,	'AUTO','mid50','8479'],
+      'ULTRACEMCO':	[2952193,	'INFRA,COMMODITY','nify','11532'],
+      'UNIONBANK':	[2752769,	'BANK','nifty','10753'],
+      'UPL':		[2889473,	'COMMODITY','nify','11287'],
+      'VEDL':		[784129,	'METAL,MNC,COMMODITY','nxt50','3063'],
+      'VOLTAS':	[951809,	'CONSUMPTION','mid50','3718'],
+      'WELCORP':	[3026177,	'METAL','nifty','11821'],
+      'WIPRO':	[969473,	'IT','nify','3787'],
+      'ZEEL':		[975873,	'MEDIA,CONSUMPTION','mid50','3812']
       }
   # Create stocks and config's for trade in stock and config table
   for stock_sym in stock_dict:
     # STORE IN STOCK TABLE
     if not models_a.STOCK.objects.filter(symbol = stock_sym).exists():
-      models_a.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym][0], sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
+      models_a.STOCK(symbol = stock_sym, instrument_key = stock_dict[stock_sym][0], sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2], token=stock_dict[stock_sym][3]).save()
     # CREATE CONFIG IN FOR 15 MIN
     if not models.CONFIG_15M.objects.filter(symbol = stock_sym).exists():
       models.CONFIG_15M(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
@@ -220,11 +226,14 @@ def get_stocks_configs(self):
       models_temp_down.CONFIG_15M_TEMP_BTST_DOWN(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
 
     # GET THE VOLATILITY OF EACH STK IN DICT
-    data = kite_conn_var.historical_data(instrument_token=stock_dict[stock_sym][0], from_date=last_6_days, to_date=now, interval='day')
     sleep(0.3)
+    data = {"symbol":"NSE:{}-EQ".format(stock_dict[stock_sym][3]),"resolution":'D',"date_format":"1","range_from":last_6_days,"range_to":now,"cont_flag":"0"}
+    data = fyers_conn_val.history(data)['candles']
     data=pd.DataFrame(data)
-    data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
-    data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
+    data[0] = pd.to_datetime(data[0],unit = 's')
+    data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
+    data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
+    data_frame.index.names = ['date']
     volatile_stocks[stock_sym] = cal_volatility(data_frame)
     models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
 
@@ -276,16 +285,19 @@ def get_stocks_configs(self):
 @shared_task(bind=True,max_retries=3)
 def UPDATE_LIMIT(self):
   now = date.today()
-  from_day = now - timedelta(days=5)
+  from_day = now - timedelta(days=20)
   # Initialize Kite Connections
-  kite_conn_var       = connect_to_kite_connection()
+  fyers_conn_val = fyers_conn()
   stocks = models_a.STOCK.objects.all().values_list('symbol', flat=True)
   for stock_name in stocks:
     sleep(0.3)
-    data = kite_conn_var.historical_data(instrument_token=models_a.STOCK.objects.get(symbol = stock_name).instrument_key, from_date=from_day, to_date=now, interval='15minute')
+    data = {"symbol":"NSE:{}-EQ".format(stock_name),"resolution":'15',"date_format":"1","range_from":from_day,"range_to":now,"cont_flag":"0"}
+    data = fyers_conn_val.history(data)['candles']
     data=pd.DataFrame(data)
-    data_frame = data.set_index(data['date'], drop=False, append=False, inplace=False, verify_integrity=False).drop('date', 1)
-    data_frame.rename(columns = {'open':'Open','high':'High','low':'Low','close':'Close','volume':'Volume'}, inplace = True)
+    data[0] = pd.to_datetime(data[0],unit = 's')
+    data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
+    data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
+    data_frame.index.names = ['date']
     if (data_frame['Close'].iloc[-2] > data_frame['Open'].iloc[-2]):
       up_l = data_frame['Close'].iloc[-2]
       lower_l = data_frame['Open'].iloc[-2]
@@ -839,7 +851,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['5minute',10,12,26,20,100]
+  intervals      = ['5',10,12,26,20,100]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
@@ -857,7 +869,7 @@ def CROSS_OVER_RUNS_30_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['5minute',10,12,26,20,100]
+  intervals      = ['5',10,12,26,20,100]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
@@ -876,7 +888,7 @@ def CROSS_OVER_RUNS_15_MIN_TEMP(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15minute',20,60,55,16,8,'5minute',10,14,14,14]
+  intervals      = ['15',20,60,55,16,8,'5',10,14,14,14]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
@@ -894,7 +906,7 @@ def DOWN_CROSS_OVER_RUNS_15_MIN_TEMP(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15minute',20,60,55,16,8,'5minute',10,14,14,14]
+  intervals      = ['15',20,60,55,16,8,'5',10,14,14,14]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **

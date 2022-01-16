@@ -6,6 +6,8 @@ from Model_15_temp_down import models as models_temp_down
 from django.http import JsonResponse
 from django.shortcuts import render
 from kiteconnect import KiteConnect
+from fyers_api import accessToken
+from fyers_api import fyersModel
 from datetime import date, datetime
 
 from . import freeze_all_15
@@ -18,6 +20,16 @@ from . import freeze_all_15_down_btst
 from rest_framework.decorators import api_view
 
 # Create your views here.
+def connect_to_kite_connection():
+  api_key = open('./algo/config/api_key.txt','r').read()
+  access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
+  try:
+    kite = KiteConnect(api_key=api_key)
+    kite.set_access_token(access_token)
+  except Exception as  e:
+    pass
+  return kite
+
 def Index(request):
   api_key = open('./algo/config/api_key.txt','r').read()
   try:
@@ -41,7 +53,7 @@ def generate_acc_token(request):
       access_token_obj = models.ZERODHA_KEYS(api_key=api_key, api_secret=api_secret,access_token=data["access_token"])
       access_token_obj.save()
       ltp = kite.ltp(['NSE:SBIN'])
-      context = {'access_token': data["access_token"], 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
+      context = {'access_token': data["access_token"], 'fyers': '0', 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
     except Exception as  e:
       context = {'success':'ERROR','status':e}
     return render(request, 'success.html', context)
@@ -56,21 +68,60 @@ def check(request):
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)
     ltp = kite.ltp(['NSE:SBIN'])
-    context = {'access_token': access_token, 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
+    context = {'access_token': access_token,'fyers': '0', 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
   except Exception as  e:
     context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':e}
   return render(request, 'check.html', context)
 
-
-def connect_to_kite_connection():
-  api_key = open('./algo/config/api_key.txt','r').read()
-  access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
+def Index_FYERS(request):
+  app_id = open('./algo/config/app_id.txt','r').read()
+  app_secret = open('./algo/config/app_secret.txt','r').read()
   try:
-    kite = KiteConnect(api_key=api_key)
-    kite.set_access_token(access_token)
+    session=accessToken.SessionModel(client_id=app_id,
+    secret_key=app_secret,redirect_uri='https://www.google.com/',
+    response_type='code', grant_type='authorization_code')
+    fyers_url = session.generate_authcode()  
   except Exception as  e:
-    pass
-  return kite
+      print(e)
+  context = {'fyers_url': fyers_url}
+  return render(request, 'index_fyers.html', context)
+
+def generate_fyers_acc_token(request):
+  app_id = open('./algo/config/app_id.txt','r').read()
+  app_secret = open('./algo/config/app_secret.txt','r').read()
+  if request.method == 'POST':
+    request_token 		= request.POST.get('request_token','')
+    try:
+      session=accessToken.SessionModel(client_id=app_id,
+      secret_key=app_secret,redirect_uri='https://www.google.com/',
+      response_type='code', grant_type='authorization_code')
+      session.set_token(request_token)
+      response = session.generate_token()
+
+      access_token = response["access_token"]
+      models.FYERS_KEYS.objects.all().delete()
+      access_token_obj = models.FYERS_KEYS(app_id=app_id, app_secret=app_secret,access_token=access_token)
+      access_token_obj.save()
+      fyers = fyersModel.FyersModel(client_id=app_id, token=access_token)
+      acc_name = fyers.get_profile()['data']['name']
+      context = {'access_token': access_token,'fyers': '1', 'account_name': acc_name,'status':'Now you can "REST IN PEACE".'}
+    except Exception as  e:
+      context = {'success':'ERROR','status':e}
+    return render(request, 'success.html', context)
+  else:
+    context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':'WORNG METHOD APPLID.'}
+    return render(request, 'success.html', context)
+
+def check_fyers(request):
+  app_id = open('./algo/config/app_id.txt','r').read()
+  try:
+    access_token = models.FYERS_KEYS.objects.get(app_id=app_id).access_token
+    fyers = fyersModel.FyersModel(client_id=app_id, token=access_token)
+    acc_name = fyers.get_profile()['data']['name']
+    context = {'access_token': access_token,'fyers': '1', 'account_name': acc_name,'status':'Now you can "REST IN PEACE".'}
+  except Exception as  e:
+    context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':e}
+  return render(request, 'check.html', context)
 
 @api_view(['GET',])
 def MODEL_STATUS(request):

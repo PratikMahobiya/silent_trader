@@ -46,11 +46,12 @@
 						<div class="bottom-content">
 							<form action="http://139.59.54.145/generate_token/" method="post">
 								{% csrf_token %}
-								<p><b>To get request token? </b><a href="{{ kite_url }}" target="_blank">Click Here</a></p>
+								<p><b>To get <b>ZERODHA's</b> request token? </b><a href="{{ kite_url }}" target="_blank">Click Here</a></p>
 								<input type='text' name="request_token" id="request_token" class="input-form" placeholder="Enter token you copied."
 										required="required" />
 								<button type="submit" class="loginhny-btn btn">Generate</button>
 							</form>
+							<a href="http://139.59.54.145/index_fyers/"><button type="submit" class="loginhny-btn btn">FYERS</button></a>
 							<a href="http://139.59.54.145/check/"><button type="submit" class="loginhny-btn btn">CHECK</button></a>
 							<a href="http://139.59.54.145/crs15m/dashboard/"><button type="submit" class="loginhny-btn btn">DASHBOARD</button></a>
 						</div>

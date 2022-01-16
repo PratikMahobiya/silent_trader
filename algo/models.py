@@ -28,6 +28,15 @@ class ZERODHA_KEYS(models.Model):
     class Meta:
         db_table = 'ZERODHA_KEYS'
 
+class FYERS_KEYS(models.Model):
+    access_token 					= models.CharField(max_length=100, verbose_name='access_token')
+    app_id                          = models.CharField(max_length=100, verbose_name='app_id')
+    app_secret                      = models.CharField(max_length=100, verbose_name='app_secret')
+    def __int__(self):
+        return self.id
+    class Meta:
+        db_table = 'FYERS_KEYS'
+
 class PROFIT(models.Model):
     date                    = models.DateField(verbose_name='DATE',null=True, blank=True)
     model_name              = models.CharField(max_length=100, verbose_name='MODEL NAME')

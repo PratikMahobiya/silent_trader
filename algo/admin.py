@@ -15,6 +15,12 @@ class ZERODHA_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     readonly_fields = ('access_token','api_key','api_secret')
 
+@admin.register(models.FYERS_KEYS)
+class FYERS_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
+    list_display = ('access_token','app_id','app_secret')
+    list_per_page = 10
+    readonly_fields = ('access_token','app_id','app_secret')
+
 @admin.register(models.PROFIT)
 class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','model_name','current_gain','current_gain_time','current_gain_entry','top_gain','top_gain_time','top_gain_entry','top_loss','top_loss_time','top_loss_entry','max_entry','p_l')
