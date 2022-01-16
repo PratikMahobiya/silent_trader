@@ -52,7 +52,7 @@
 										<p><b>You have SUCCESSFULLY create a TOKEN</b></p>
 										<p>-:TOKEN:-</p>
 										<p><i><b>{{ access_token }}</b></i></p>
-										{% if {{fyers}} == '1' %} 
+										{% if fyers == '1' %} 
 											<p>FYERS ACCOUNT NAME:- <strong>{{ account_name }}</strong></p>
 										{% else %}
 											<p>ZERODHA SBI LTP:- <strong>{{ SBI_ltp }}</strong></p>
@@ -61,13 +61,13 @@
 								{% endif %}
 							</form>
 							{% if success == 'ERROR' %}
-								{% if {{fyers}} == '1' %} 
+								{% if fyers == '1' %} 
 									<a href="http://139.59.54.145/index_fyers/"><button type="submit" class="loginhny-btn btn">FYERS</button></a>
 								{% else %}
 									<a href="http://139.59.54.145/index/"><button type="submit" class="loginhny-btn btn">ZERODHA</button></a>
 								{% endif %}
 							{% else %}
-								{% if {{fyers}} == '1' %} 
+								{% if fyers == '1' %} 
 									<a href="http://139.59.54.145/check_fyers/"><button type="submit" class="loginhny-btn btn">CHECK FYERS</button></a>
 								{% else %}
 									<a href="http://139.59.54.145/check/"><button type="submit" class="loginhny-btn btn">CHECK ZERODHA</button></a>
