@@ -65,7 +65,7 @@ def cal_volatility_VOL(dt):
 def get_stocks_configs(self):
   response = {'stock_table': False, 'config_table_15': False, 'config_table_30': False}
   now = date.today()
-  last_6_days       = now - timedelta(days=1825)
+  last_6_days       = now - timedelta(days=360)
   fyers_conn_val = fyers_conn()
   volatile_stocks   = {}
   # Stock dict
