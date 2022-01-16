@@ -29,7 +29,7 @@ class ZERODHA_KEYS(models.Model):
         db_table = 'ZERODHA_KEYS'
 
 class FYERS_KEYS(models.Model):
-    access_token 					= models.CharField(max_length=100, verbose_name='access_token')
+    access_token 					= models.TextField(verbose_name='access_token',)
     app_id                          = models.CharField(max_length=100, verbose_name='app_id')
     app_secret                      = models.CharField(max_length=100, verbose_name='app_secret')
     def __int__(self):
