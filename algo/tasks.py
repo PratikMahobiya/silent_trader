@@ -227,7 +227,7 @@ def get_stocks_configs(self):
 
     # GET THE VOLATILITY OF EACH STK IN DICT
     sleep(0.3)
-    data = {"symbol":"NSE:{}-EQ".format(stock_dict[stock_sym][3]),"resolution":'D',"date_format":"1","range_from":last_6_days,"range_to":now,"cont_flag":"0"}
+    data = {"symbol":"NSE:{}-EQ".format(stock_sym),"resolution":'D',"date_format":"1","range_from":last_6_days,"range_to":now,"cont_flag":"0"}
     data = fyers_conn_val.history(data)['candles']
     data=pd.DataFrame(data)
     data[0] = pd.to_datetime(data[0],unit = 's')
