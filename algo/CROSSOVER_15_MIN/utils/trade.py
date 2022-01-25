@@ -49,7 +49,7 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zero
               type_str         = 'AF_SELL'
               stock_config_obj.buy            = True
               stock_config_obj.stoploss       = price + price * 0.006
-              stock_config_obj.target         = price - price * 0.006
+              stock_config_obj.target         = price - price * 0.011
               stock_config_obj.quantity       = quantity
               stock_config_obj.buy_price      = price
               stock_config_obj.order_id       = order_id
