@@ -42,7 +42,7 @@ def freeze_all(stock_list, kite_conn_var):
           order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
           # ----------------------
 
-      diff          = stock_config_obj.buy_price - price
+      diff          = price - stock_config_obj.buy_price
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
       diff          = round((diff * stock_config_obj.quantity),2) - 100
       gain.append(diff)

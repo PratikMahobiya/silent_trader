@@ -256,7 +256,7 @@ def get_stocks_configs(self):
     else:
       model_profit_config_obj = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
       model_profit_config_obj.day_hit   = 1
-      model_profit_config_obj.target    = 2000
+      model_profit_config_obj.target    = 10000
       model_profit_config_obj.stoploss  = 0
       model_profit_config_obj.count     = 0
       model_profit_config_obj.active    = False
@@ -532,7 +532,7 @@ def ltp_of_entries(self):
       model_config_obj.p_l                    = 0
       # PROFIT CONFIG
       model_profit_config_obj           = models_a.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
-      model_profit_config_obj.target    = 2000
+      model_profit_config_obj.target    = 10000
       model_profit_config_obj.stoploss  = 0
       model_profit_config_obj.count     = 0
       model_profit_config_obj.active    = False
@@ -565,7 +565,7 @@ def ltp_of_entries(self):
         p_l  = p_l_main + p_l_temp + p_l_30 + p_l_down
         models_a.FREEZE_PROFIT(model_name = 'OVER_ALL_PLACED', indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = total_placed_entry, day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
         model_profit_config_obj.day_hit   += 1
-        model_profit_config_obj.target    = 5000
+        model_profit_config_obj.target    = 10000
         model_profit_config_obj.stoploss  = 0
         model_profit_config_obj.count     = 0
         model_profit_config_obj.active    = False
@@ -625,7 +625,7 @@ def ltp_of_entries(self):
     #         gain, p_l = freeze_all_30.freeze_all(entry_list,kite_conn_var)
     #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
     #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 5000
+    #         model_profit_config_obj.target    = 10000
     #         model_profit_config_obj.stoploss  = 0
     #         model_profit_config_obj.count     = 0
     #         model_profit_config_obj.active    = False
@@ -654,7 +654,7 @@ def ltp_of_entries(self):
     #         gain, p_l = freeze_all_15_temp.freeze_all(entry_list,kite_conn_var)
     #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
     #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 5000
+    #         model_profit_config_obj.target    = 10000
     #         model_profit_config_obj.stoploss  = 0
     #         model_profit_config_obj.count     = 0
     #         model_profit_config_obj.active    = False
@@ -683,7 +683,7 @@ def ltp_of_entries(self):
     #         gain, p_l = freeze_all_15_btst.freeze_all(entry_list,kite_conn_var)
     #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
     #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 5000
+    #         model_profit_config_obj.target    = 10000
     #         model_profit_config_obj.stoploss  = 0
     #         model_profit_config_obj.count     = 0
     #         model_profit_config_obj.active    = False
@@ -712,7 +712,7 @@ def ltp_of_entries(self):
     #         gain, p_l = freeze_all_15_temp_btst.freeze_all(entry_list,kite_conn_var)
     #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
     #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 5000
+    #         model_profit_config_obj.target    = 10000
     #         model_profit_config_obj.stoploss  = 0
     #         model_profit_config_obj.count     = 0
     #         model_profit_config_obj.active    = False
@@ -741,7 +741,7 @@ def ltp_of_entries(self):
     #         gain, p_l = freeze_all_30_btst.freeze_all(entry_list,kite_conn_var)
     #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
     #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 5000
+    #         model_profit_config_obj.target    = 10000
     #         model_profit_config_obj.stoploss  = 0
     #         model_profit_config_obj.count     = 0
     #         model_profit_config_obj.active    = False
