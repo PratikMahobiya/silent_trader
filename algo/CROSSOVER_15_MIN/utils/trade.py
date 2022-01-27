@@ -23,12 +23,13 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
   zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_MAIN')
   for stock in for_trade_stocks:
     ema           = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
+    adx           = talib.ADX(data_frame['High'],data_frame['Low'],data_frame['Close'], timeperiod=11)
     macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'].iloc[:-1], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
     stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
-      buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zerodha_flag_obj)
+      buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var, zerodha_flag_obj)
     else:
-      sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj)
+      sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
   return 0
 
 # BUYS STOCKS ; ENTRY
@@ -63,10 +64,32 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zero
               # UPDATE CURRENT ENTRY TABLE
               models.ENTRY_15M(symbol = stock, reference_id = transaction.data['id']).save()
 
-def sell(stock, data_frame, macd, macdsignal, macdhist, kite_conn_var, zerodha_flag_obj):
+def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj):
   stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
+  # ADX EXIT
+  if adx[-1] >= 40:
+    if adx[-1] < adx[-2]:
+      # CALL PLACE ORDER ----
+      order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
+
+      diff          = stock_config_obj.buy_price - price
+      profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
+      diff          = round((diff * stock_config_obj.quantity),2) - 100
+
+      type_str = 'ADX'
+      trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':type_str,'price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+      transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
+      if transaction.is_valid():
+        transaction.save()
+      models.ENTRY_15M.objects.filter(symbol = stock).delete()
+      stock_config_obj.buy          = False
+      stock_config_obj.placed       = False
+      stock_config_obj.count        = 0
+      stock_config_obj.order_id     = 0
+      stock_config_obj.save()
+    
   # After CrossOver MACD AND MACDSIGNAL
-  if macdsignal[-1] < macd[-1]:
+  elif macdsignal[-1] < macd[-1]:
     if macdsignal[-2] > macd[-2]:
       # CALL PLACE ORDER ----
       order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
