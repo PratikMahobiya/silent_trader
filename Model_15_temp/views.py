@@ -2,6 +2,8 @@ from algo import models as models_a, serializers
 from django.http import JsonResponse
 from django.shortcuts import render
 from kiteconnect import KiteConnect
+from fyers_api import fyersModel
+from smartapi import SmartConnect
 from datetime import datetime, date, timedelta
 
 from Model_15_temp import models as models
@@ -11,6 +13,20 @@ from rest_framework.decorators import api_view
 # Create your views here.
 def CRS_VIEW(request):
   return render(request, 'dashboard_15_temp.html')
+
+def angelbroking_conn():
+    obj=SmartConnect(api_key="MWxz7OCW",)
+    obj.generateSession("P567723","Qwerty@12")
+    return obj
+
+def fyers_conn():
+  app_id = open('algo/config/app_id.txt','r').read()
+  access_token = models_a.FYERS_KEYS.objects.get(app_id=app_id).access_token
+  try:
+    fyers = fyersModel.FyersModel(client_id=app_id, token=access_token)
+  except Exception as  e:
+    pass
+  return fyers
 
 def connect_to_kite_connection():
   api_key = open('algo/config/api_key.txt','r').read()
@@ -27,18 +43,22 @@ def place_regular_buy_order(symbol, price, quantity):
   order_id      = 0
   order_status  = 'NOT_PLACED'
   try:
-    kite_conn_var = connect_to_kite_connection()
-    order_id = kite_conn_var.place_order(tradingsymbol=symbol,
-                                exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_BUY,
-                                quantity=quantity,
-                                variety=kite_conn_var.VARIETY_REGULAR,
-                                order_type=kite_conn_var.ORDER_TYPE_LIMIT,
-                                product=kite_conn_var.PRODUCT_MIS,
-                                validity=kite_conn_var.VALIDITY_DAY,
-                                price=price,
-                                )
+    ang_conn = angelbroking_conn()
+    orderparams = {
+        "variety": "NORMAL",
+        "tradingsymbol": symbol+'-EQ',
+        "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
+        "transactiontype": "BUY",
+        "exchange": "NSE",
+        "ordertype": "LIMIT",
+        "producttype": "INTRADAY",
+        "duration": "DAY",
+        "price": price,
+        "quantity": '{}'.format(quantity)
+        }
+    order_id = ang_conn.placeOrder(orderparams)
     order_status = 'SUCCESSFULLY_PLACED_ENTRY'
+    ang_conn.terminateSession("P567723")
   except Exception as e:
     order_status = 'PROBLEM AT ZERODHA END.'
   return order_id, order_status
@@ -48,19 +68,22 @@ def place_regular_sell_order(symbol, stock_config_obj):
   order_id = 0
   error_status = 'NOT_PLACED'
   try:
-    kite_conn_var = connect_to_kite_connection()
-    stocks_ltp = kite_conn_var.ltp('NSE:'+symbol)
-    ltp        = stocks_ltp['NSE:'+symbol]['last_price']
-    order_id = kite_conn_var.place_order(tradingsymbol=symbol,
-                                exchange=kite_conn_var.EXCHANGE_NSE,
-                                transaction_type=kite_conn_var.TRANSACTION_TYPE_SELL,
-                                quantity=stock_config_obj.quantity,
-                                variety=kite_conn_var.VARIETY_REGULAR,
-                                order_type=kite_conn_var.ORDER_TYPE_MARKET,
-                                product=kite_conn_var.PRODUCT_MIS,
-                                validity=kite_conn_var.VALIDITY_DAY,
-                                )
+    ang_conn = angelbroking_conn()
+    ltp        = ang_conn.ltpData("NSE",symbol+'-EQ',models_a.STOCK.objects.get(symbol = symbol).token)['data']['ltp']
+    orderparams = {
+        "variety": "NORMAL",
+        "tradingsymbol": symbol+'-EQ',
+        "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
+        "transactiontype": "SELL",
+        "exchange": "NSE",
+        "ordertype": "MARKET",
+        "producttype": "INTRADAY",
+        "duration": "DAY",
+        "quantity": '{}'.format(stock_config_obj.quantity)
+        }
+    order_id = ang_conn.placeOrder(orderparams)
     error_status = 'SUCCESSFULLY_PLACED_EXIT'
+    ang_conn.terminateSession("P567723")
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END.'
   return order_id, error_status, ltp
@@ -75,7 +98,7 @@ def PLACE_ORDER(request):
     order_id, order_status = place_regular_buy_order(symbol, price, quantity)
     # order_id, order_status = 1 , 'NOT ACTIVE'
     if order_id != 0:
-      target_p = price + price * 0.006
+      target_p = price + price * 0.01
       fixed_target_p = price + price * 0.006
       sl_fixed = price - price * 0.004
       models.CONFIG_15M_TEMP.objects.filter(symbol = symbol).update(placed = True, buy_price = price, quantity = quantity, order_id = order_id, order_status = order_status, d_sl_flag = False,count = 0, target = target_p,fixed_target = fixed_target_p, f_stoploss = sl_fixed)
@@ -129,15 +152,21 @@ def Active_Stocks(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
     active_entry  = models.ENTRY_15M_TEMP.objects.all().values_list('symbol', 'reference_id')
-    active_stocks = []
+    active_stocks = {}
+    active_stocks_str = ''
+    stock_ltp = {}
     for stock in active_entry:
-      active_stocks.append('NSE:'+stock[0])
-    kite_conn_var = connect_to_kite_connection()
-    stocks_ltp = kite_conn_var.ltp(active_stocks)
+      active_stocks_str += 'NSE:'+stock+'-EQ,'
+    active_stocks = {"symbols":active_stocks_str[:-1]}
+    if len(active_stocks_str) != 0:
+      fyers_conn_var = fyers_conn()
+      stocks_ltp_res = fyers_conn_var.quotes(active_stocks)['d']
+    for i in stocks_ltp_res:
+        stock_ltp[i['v']['short_name'].split('-')[0]] = i['v']['lp']
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_TEMP.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stocks_ltp['NSE:'+sym_list[0]]['last_price']})
+      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_TEMP.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stock_ltp[sym_list[0]]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)
@@ -262,15 +291,21 @@ def Active_Stocks_BTST(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
     active_entry  = models.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol', 'reference_id')
-    active_stocks = []
+    active_stocks = {}
+    active_stocks_str = ''
+    stock_ltp = {}
     for stock in active_entry:
-      active_stocks.append('NSE:'+stock[0])
-    kite_conn_var = connect_to_kite_connection()
-    stocks_ltp = kite_conn_var.ltp(active_stocks)
+      active_stocks_str += 'NSE:'+stock+'-EQ,'
+    active_stocks = {"symbols":active_stocks_str[:-1]}
+    if len(active_stocks_str) != 0:
+      fyers_conn_var = fyers_conn()
+      stocks_ltp_res = fyers_conn_var.quotes(active_stocks)['d']
+    for i in stocks_ltp_res:
+        stock_ltp[i['v']['short_name'].split('-')[0]] = i['v']['lp']
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models.CONFIG_15M_TEMP_BTST.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stocks_ltp['NSE:'+sym_list[0]]['last_price']})
+      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stock_ltp[sym_list[0]]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)

@@ -16,6 +16,17 @@ def cancel_ord(kite_conn_var,stock_config_obj):
   # -----------------------------------------------
   return order_id, order_status
 
+def order_status_FLAG(order_id):
+  from smartapi import SmartConnect
+  obj=SmartConnect(api_key="MWxz7OCW",)
+  obj.generateSession("P567723","Qwerty@12")
+  book = obj.orderBook()['data']
+  obj.terminateSession("P567723")
+  for ord in book:
+    if ord['orderid'] == order_id and ord['status'] == 'completed':
+      return True
+  return False
+
 # SELL STOCK ; EXIT
 def sell(stock, price, gain, kite_conn_var):
   order_id      = 0
@@ -31,8 +42,7 @@ def sell(stock, price, gain, kite_conn_var):
   if price >= stock_config_obj.target:
     if stock_config_obj.buy is True:
       if stock_config_obj.order_id != 0:
-        ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
-        if ord_det[-1]['status'] == 'COMPLETE':
+        if order_status_FLAG(stock_config_obj.order_id):
           # CALL PLACE ORDER ----
           order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
           # ---------------------

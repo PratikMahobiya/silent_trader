@@ -17,24 +17,36 @@ def cancel_ord(kite_conn_var,stock_config_obj):
   # -----------------------------------------------
   return order_id, order_status
 
+def order_status_FLAG(order_id):
+  from smartapi import SmartConnect
+  obj=SmartConnect(api_key="MWxz7OCW",)
+  obj.generateSession("P567723","Qwerty@12")
+  book = obj.orderBook()['data']
+  obj.terminateSession("P567723")
+  for ord in book:
+    if ord['orderid'] == order_id and ord['status'] == 'completed':
+      return True
+  return False
+
 # SELL STOCK ; EXIT
 def freeze_all(stock_list, kite_conn_var):
-  active_stocks = []
+  active_stocks = {}
+  active_stocks_str = ''
   gain = [0,]
   p_l  = [0,]
   for stock in stock_list:
-    active_stocks.append('NSE:'+stock)
-  if len(active_stocks) != 0:
-    stocks_ltp = kite_conn_var.ltp(active_stocks)
+    active_stocks_str += 'NSE:'+stock+'-EQ,'
+  active_stocks = {"symbols":active_stocks_str[:-1]}
+  if len(active_stocks_str) != 0:
+    stocks_ltp = kite_conn_var.quotes(active_stocks)['d']
     for stock_key in stocks_ltp:
       sleep(0.3)
-      price = stocks_ltp[stock_key]['last_price']
-      stock = stock_key.split(':')[-1]
+      price = stock_key['v']['lp']
+      stock = stock_key['v']['short_name'].split('-')[0]
       stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
       if stock_config_obj.order_id != 0:
         if stock_config_obj.buy is True:
-          ord_det = kite_conn_var.order_history(order_id=stock_config_obj.order_id)
-          if ord_det[-1]['status'] == 'COMPLETE':
+          if order_status_FLAG(stock_config_obj.order_id):
             # CALL PLACE ORDER ----
             order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
             # ---------------------

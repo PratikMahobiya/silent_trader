@@ -156,7 +156,6 @@ def get_stocks_configs(self):
       'M&MFIN':	[3400961,	'FINN','mid50','13285'],
       'MANAPPURAM':	[4879617,	'nill','mid50','19061'],
       'MARICO':	[1041153,	'FMCG,CONSUMPTION','nxt50','4067'],
-      'MCDOWELL-N':	[2674433,	'FMCG,MNC,CONSUMPTION','nxt50','10447'],
       'MINDTREE':	[3675137,	'IT','mid50','14356'],
       'MUTHOOTFIN':	[6054401,	'FINN','nxt50','23650'],
       'NAM-INDIA':	[91393,		'nill','nifty','357'],
@@ -237,8 +236,8 @@ def get_stocks_configs(self):
     volatile_stocks[stock_sym] = cal_volatility(data_frame)
     models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
 
-  # cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
-  cut_off_volatility = 2.8
+  cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
+  # cut_off_volatility = 2.8
   for stk in volatile_stocks:
     if volatile_stocks[stk] > cut_off_volatility:
       models_a.STOCK.objects.filter(symbol = stk).update(active_15 = True)
@@ -316,7 +315,7 @@ def ltp_of_entries(self):
 
   # CALCULATE CURRENT RETURN OF ALL ACTIVE STOCKS
   if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,17,00):
-    kite_conn_var = connect_to_kite_connection()
+    kite_conn_var = fyers_conn()
 
     # LTP CRS TEMP BTST
     if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
@@ -847,7 +846,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
 
   # Initialize Kite Connections
-  kite_conn_var       = connect_to_kite_connection()
+  kite_conn_var       = fyers_conn()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
@@ -865,7 +864,7 @@ def CROSS_OVER_RUNS_30_MIN(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
 
   # Initialize Kite Connections
-  kite_conn_var       = connect_to_kite_connection()
+  kite_conn_var       = fyers_conn()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
@@ -884,7 +883,7 @@ def CROSS_OVER_RUNS_15_MIN_TEMP(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
 
   # Initialize Kite Connections
-  kite_conn_var       = connect_to_kite_connection()
+  kite_conn_var       = fyers_conn()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
@@ -902,7 +901,7 @@ def DOWN_CROSS_OVER_RUNS_15_MIN_TEMP(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
 
   # Initialize Kite Connections
-  kite_conn_var       = connect_to_kite_connection()
+  kite_conn_var       = fyers_conn()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''

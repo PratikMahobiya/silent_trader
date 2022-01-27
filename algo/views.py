@@ -30,6 +30,15 @@ def connect_to_kite_connection():
     pass
   return kite
 
+def fyers_conn():
+  app_id = open('algo/config/app_id.txt','r').read()
+  access_token = models.FYERS_KEYS.objects.get(app_id=app_id).access_token
+  try:
+    fyers = fyersModel.FyersModel(client_id=app_id, token=access_token)
+  except Exception as  e:
+    pass
+  return fyers
+
 def Index(request):
   api_key = open('./algo/config/api_key.txt','r').read()
   try:
@@ -137,7 +146,7 @@ def MODEL_STATUS(request):
 
 @api_view(['GET','POST'])
 def FREEZE_ALL(request):
-  kite_conn_var = connect_to_kite_connection()
+  kite_conn_var = fyers_conn()
   # --------------------------------- FREEZE Profit at each LTP ------------------------
   crs_main_entry_list = models_15.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
   crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
