@@ -51,7 +51,7 @@ def sell(stock, price, gain, kite_conn_var):
           transaction.save()
         # models.ENTRY_30M.objects.filter(symbol = stock).delete()
         # stock_config_obj.buy          = False
-        # stock_config_obj.placed       = False
+        stock_config_obj.placed       = False
         stock_config_obj.count        = 0
         stock_config_obj.order_id     = 0
         stock_config_obj.save()
