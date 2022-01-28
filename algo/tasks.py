@@ -297,13 +297,14 @@ def UPDATE_LIMIT(self):
     data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
     data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
     data_frame.index.names = ['date']
-    if (data_frame['Close'].iloc[-2] > data_frame['Open'].iloc[-2]):
-      up_l = data_frame['Close'].iloc[-2]
-      lower_l = data_frame['Open'].iloc[-2]
+    data_frame = data_frame[now:]
+    if (data_frame['Close'].iloc[0] > data_frame['Open'].iloc[0]):
+      up_l = data_frame['Close'].iloc[0]
+      lower_l = data_frame['Open'].iloc[0]
       models_a.STOCK.objects.filter(symbol = stock_name).update(upper_lim = up_l, lower_lim = lower_l)
-    elif (data_frame['Close'].iloc[-2] < data_frame['Open'].iloc[-2]):
-      up_l = data_frame['Open'].iloc[-2]
-      lower_l = data_frame['Close'].iloc[-2]
+    elif (data_frame['Close'].iloc[0] < data_frame['Open'].iloc[0]):
+      up_l = data_frame['Open'].iloc[0]
+      lower_l = data_frame['Close'].iloc[0]
       models_a.STOCK.objects.filter(symbol = stock_name).update(upper_lim = up_l, lower_lim = lower_l)
   return 'TRUE'
 
