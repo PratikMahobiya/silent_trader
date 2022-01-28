@@ -6,19 +6,15 @@ from datetime import datetime, time
 def get_stock_ltp(kite_conn_var):
   # GET ACTIVE STOCK LIST
   stock_list = models.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol', flat=True)
-  active_stocks = []
+  stocks_ltp = {}
   gain = [(0,0),]
-  active_stocks = {}
-  active_stocks_str = ''
-  gain = [(0,0),]
+  from algo import models as models_a
   for stock in stock_list:
-    active_stocks_str += 'NSE:'+stock+'-EQ,'
-  active_stocks = {"symbols":active_stocks_str[:-1]}
-  if len(active_stocks_str) != 0:
-    stocks_ltp = kite_conn_var.quotes(active_stocks)['d']
+    stocks_ltp[stock] = kite_conn_var.ltpData("NSE",stock+'-EQ',models_a.STOCK.objects.get(symbol = stock).token)['data']['ltp']
+  if len(stock_list) != 0:
     for stock_key in stocks_ltp:
-      price = stock_key['v']['lp']
-      stock_name = stock_key['v']['short_name'].split('-')[0]
+      price = stocks_ltp[stock_key]
+      stock_name = stock_key
       try:
         if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,15,5):
           if stock_name in stock_list:

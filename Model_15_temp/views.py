@@ -152,21 +152,17 @@ def Active_Stocks(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
     active_entry  = models.ENTRY_15M_TEMP.objects.all().values_list('symbol', 'reference_id')
-    active_stocks = {}
-    active_stocks_str = ''
-    stock_ltp = {}
-    for stock in active_entry:
-      active_stocks_str += 'NSE:'+stock[0]+'-EQ,'
-    active_stocks = {"symbols":active_stocks_str[:-1]}
-    if len(active_stocks_str) != 0:
-      fyers_conn_var = fyers_conn()
-      stocks_ltp_res = fyers_conn_var.quotes(active_stocks)['d']
-    for i in stocks_ltp_res:
-        stock_ltp[i['v']['short_name'].split('-')[0]] = i['v']['lp']
+    kite_conn_var = angelbroking_conn()
+    stocks_ltp = {}
+    if len(active_entry) != 0:
+      from algo import models as models_a
+      for stock in active_entry:
+        stocks_ltp[stock[0]] = kite_conn_var.ltpData("NSE",stock[0]+'-EQ',models_a.STOCK.objects.get(symbol = stock[0]).token)['data']['ltp']
+    kite_conn_var.terminateSession("P567723")
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_TEMP.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stock_ltp[sym_list[0]]})
+      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_TEMP.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stocks_ltp[sym_list[0]]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)
@@ -291,21 +287,17 @@ def Active_Stocks_BTST(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
     active_entry  = models.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol', 'reference_id')
-    active_stocks = {}
-    active_stocks_str = ''
-    stock_ltp = {}
-    for stock in active_entry:
-      active_stocks_str += 'NSE:'+stock+'-EQ,'
-    active_stocks = {"symbols":active_stocks_str[:-1]}
-    if len(active_stocks_str) != 0:
-      fyers_conn_var = fyers_conn()
-      stocks_ltp_res = fyers_conn_var.quotes(active_stocks)['d']
-    for i in stocks_ltp_res:
-        stock_ltp[i['v']['short_name'].split('-')[0]] = i['v']['lp']
+    kite_conn_var = angelbroking_conn()
+    stocks_ltp = {}
+    if len(active_entry) != 0:
+      from algo import models as models_a
+      for stock in active_entry:
+        stocks_ltp[stock[0]] = kite_conn_var.ltpData("NSE",stock[0]+'-EQ',models_a.STOCK.objects.get(symbol = stock[0]).token)['data']['ltp']
+    kite_conn_var.terminateSession("P567723")
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models.CONFIG_15M_TEMP_BTST.objects.get(symbol = sym_list[0])
-      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stock_ltp[sym_list[0]]})
+      active_entry_list.append({"symbol": sym_list[0] + '/HIT_{}'.format(stock_config_obj.count), "sector": stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,"price": stock_config_obj.buy_price, "quantity": stock_config_obj.quantity, "date": models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.get(id = sym_list[1]).date + timedelta(hours= 5 , minutes= 30),"placed": stock_config_obj.placed,"reference_id": sym_list[1],'ltp':stocks_ltp[sym_list[0]]})
     response.update({'success': True, 'data': active_entry_list})
     return JsonResponse(response)
   return JsonResponse(response)

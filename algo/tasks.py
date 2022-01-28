@@ -1,6 +1,7 @@
 from datetime import date, datetime, time, timedelta
 from kiteconnect import KiteConnect
 from fyers_api import fyersModel
+from smartapi import SmartConnect
 from time import sleep
 import pandas as pd
 from django.db.models import Q
@@ -29,6 +30,11 @@ from . import check_ltp_temp_down
 from . import check_ltp_temp_btst_down
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 from .DOWN_CROSSOVER_15_MIN_temp.utils import backbone as backbone_DOWN_CRS_temp
+
+def angelbroking_conn():
+    obj=SmartConnect(api_key="MWxz7OCW",)
+    obj.generateSession("P567723","Qwerty@12")
+    return obj
 
 def fyers_conn():
   app_id = open('algo/config/app_id.txt','r').read()
@@ -316,7 +322,7 @@ def ltp_of_entries(self):
 
   # CALCULATE CURRENT RETURN OF ALL ACTIVE STOCKS
   if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,17,00):
-    kite_conn_var = fyers_conn()
+    kite_conn_var = angelbroking_conn()
 
     # LTP CRS TEMP BTST
     if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
@@ -755,7 +761,7 @@ def ltp_of_entries(self):
     #         model_config_obj.top_loss_entry         = 0
     #     model_profit_config_obj.save()
     #     model_config_obj.save()
-
+    kite_conn_var.terminateSession("P567723")
   # CALCULATE THE RETURN OF ALL MODELS
   elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
     model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST', 'CRS_TEMP_DOWN','CRS_15_TEMP_BTST_DOWN','OVER_ALL_PLACED']
