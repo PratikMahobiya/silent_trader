@@ -152,7 +152,7 @@ def Active_Stocks(request):
     active_stocks_str = ''
     stock_ltp = {}
     for stock in active_entry:
-      active_stocks_str += 'NSE:'+stock+'-EQ,'
+      active_stocks_str += 'NSE:'+stock[0]+'-EQ,'
     active_stocks = {"symbols":active_stocks_str[:-1]}
     if len(active_stocks_str) != 0:
       fyers_conn_var = fyers_conn()
