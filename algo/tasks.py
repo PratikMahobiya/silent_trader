@@ -539,43 +539,43 @@ def ltp_of_entries(self):
       model_profit_config_obj.save()
     model_config_obj.save()
 
-    # --------------------------------- FREEZE Profit at each LTP ------------------------
-    crs_main_entry_list = models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-    crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-    crs_30_entry_list   = models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-    crs_down_entry_list = models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-    total_placed_entry = len(crs_main_entry_list) + len(crs_temp_entry_list) + len(crs_30_entry_list) + len(crs_down_entry_list)
+    # # --------------------------------- FREEZE Profit at each LTP ------------------------
+    # crs_main_entry_list = models.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
+    # crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
+    # crs_30_entry_list   = models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
+    # crs_down_entry_list = models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
+    # total_placed_entry = len(crs_main_entry_list) + len(crs_temp_entry_list) + len(crs_30_entry_list) + len(crs_down_entry_list)
 
-    model_config_obj               = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
-    model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
-    if model_config_obj.current_gain > model_profit_config_obj.target:
-      model_profit_config_obj.stoploss  = model_profit_config_obj.target - 500
-      model_profit_config_obj.target    = model_profit_config_obj.target + 200
-      model_profit_config_obj.count     += 1
-      model_profit_config_obj.active    = True
-    elif model_profit_config_obj.active is True:
-      if model_config_obj.current_gain < model_profit_config_obj.stoploss:
-        # FREEZE PROFIT
-        gain_main, p_l_main = freeze_all_15.freeze_all(crs_main_entry_list,kite_conn_var)
-        gain_temp, p_l_temp = freeze_all_15_temp.freeze_all(crs_temp_entry_list,kite_conn_var)
-        gain_30, p_l_30 = freeze_all_30.freeze_all(crs_30_entry_list,kite_conn_var)
-        gain_down, p_l_down = freeze_all_15_down.freeze_all(crs_down_entry_list,kite_conn_var)
-        gain = gain_main + gain_temp + gain_30 + gain_down
-        p_l  = p_l_main + p_l_temp + p_l_30 + p_l_down
-        models_a.FREEZE_PROFIT(model_name = 'OVER_ALL_PLACED', indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = total_placed_entry, day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
-        model_profit_config_obj.day_hit   += 1
-        model_profit_config_obj.target    = 10000
-        model_profit_config_obj.stoploss  = 0
-        model_profit_config_obj.count     = 0
-        model_profit_config_obj.active    = False
-        model_profit_config_obj.entry     = 0
-        # PROFIT TABLE
-        model_config_obj.current_gain           = 0
-        model_config_obj.top_gain               = 0
-        model_config_obj.top_loss               = 0
-        model_config_obj.p_l                    = 0
-    model_profit_config_obj.save()
-    model_config_obj.save()
+    # model_config_obj               = models_a.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
+    # model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
+    # if model_config_obj.current_gain > model_profit_config_obj.target:
+    #   model_profit_config_obj.stoploss  = model_profit_config_obj.target - 500
+    #   model_profit_config_obj.target    = model_profit_config_obj.target + 200
+    #   model_profit_config_obj.count     += 1
+    #   model_profit_config_obj.active    = True
+    # elif model_profit_config_obj.active is True:
+    #   if model_config_obj.current_gain < model_profit_config_obj.stoploss:
+    #     # FREEZE PROFIT
+    #     gain_main, p_l_main = freeze_all_15.freeze_all(crs_main_entry_list,kite_conn_var)
+    #     gain_temp, p_l_temp = freeze_all_15_temp.freeze_all(crs_temp_entry_list,kite_conn_var)
+    #     gain_30, p_l_30 = freeze_all_30.freeze_all(crs_30_entry_list,kite_conn_var)
+    #     gain_down, p_l_down = freeze_all_15_down.freeze_all(crs_down_entry_list,kite_conn_var)
+    #     gain = gain_main + gain_temp + gain_30 + gain_down
+    #     p_l  = p_l_main + p_l_temp + p_l_30 + p_l_down
+    #     models_a.FREEZE_PROFIT(model_name = 'OVER_ALL_PLACED', indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = total_placed_entry, day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
+    #     model_profit_config_obj.day_hit   += 1
+    #     model_profit_config_obj.target    = 10000
+    #     model_profit_config_obj.stoploss  = 0
+    #     model_profit_config_obj.count     = 0
+    #     model_profit_config_obj.active    = False
+    #     model_profit_config_obj.entry     = 0
+    #     # PROFIT TABLE
+    #     model_config_obj.current_gain           = 0
+    #     model_config_obj.top_gain               = 0
+    #     model_config_obj.top_loss               = 0
+    #     model_config_obj.p_l                    = 0
+    # model_profit_config_obj.save()
+    # model_config_obj.save()
 
     # model_name_list = ['CRS_MAIN', 'CRS_30_MIN', 'CRS_TEMP','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST']
     # for index, model_name in enumerate(model_name_list):
