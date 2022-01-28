@@ -23,9 +23,9 @@ def place_ord_sell(kite_conn_var,stock, stock_config_obj):
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
   zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN')
   for stock in for_trade_stocks:
-    ema           = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
-    adx           = talib.ADX(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=11)
-    macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'].iloc[:-1], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
+    ema           = talib.EMA(data_frame[stock]['Close'], timeperiod=intervals[5])
+    adx           = talib.ADX(data_frame[stock]['High'],data_frame[stock]['Low'],data_frame[stock]['Close'], timeperiod=11)
+    macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
     stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
     if stock_config_obj.buy == False:
       buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zerodha_flag_obj)
