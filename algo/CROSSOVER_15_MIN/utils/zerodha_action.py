@@ -6,28 +6,22 @@ def angelbroking_conn():
     obj.generateSession("P567723","Qwerty@12")
     return obj
 
-def order_status_FLAG(order_id):
-  from smartapi import SmartConnect
-  obj=SmartConnect(api_key="MWxz7OCW",)
-  obj.generateSession("P567723","Qwerty@12")
-  book = obj.orderBook()['data']
-  obj.terminateSession("P567723")
+def order_status_FLAG(order_id,ang_conn):
+  book = ang_conn.orderBook()['data']
   for ord in book:
     if ord['orderid'] == order_id and ord['status'] == 'completed':
       return True
   return False
 
 
-def exit_order(kite_conn_var,stock_config_obj):
+def exit_order(ang_conn,stock_config_obj):
   # Place an order for exit
   cancel_id = 0
   error_status = 'NOT_EXIT'
   try:
-    ang_conn = angelbroking_conn()
     cancel_id = ang_conn.cancelOrder(order_id=stock_config_obj.order_id,
                                   variety="NORMAL")
     error_status = 'REJECTED_CANCELLED'
-    ang_conn.terminateSession("P567723")
   except Exception as e:
     error_status = 'PROBLEM AT ZERODHA END OR STOPLOSS HITTED.'
   return cancel_id, error_status
@@ -75,7 +69,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
   ltp        = ang_conn.ltpData("NSE",symbol+'-EQ',models_a.STOCK.objects.get(symbol = symbol).token)['data']['ltp']
   try:
     if stock_config_obj.order_id != 0:
-      if order_status_FLAG(stock_config_obj.order_id):
+      if order_status_FLAG(stock_config_obj.order_id,ang_conn):
         orderparams = {
             "variety": "NORMAL",
             "tradingsymbol": symbol+'-EQ',
@@ -91,7 +85,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
         order_status = 'SUCCESSFULLY_PLACED_EXIT'
       else:
         # CALL CANCEL ORDER ----
-        order_id, order_status = exit_order(kite_conn_var,stock_config_obj)
+        order_id, order_status = exit_order(ang_conn,stock_config_obj)
         # ----------------------
   except Exception as e:
     order_status = 'PROBLEM AT ZERODHA END.'

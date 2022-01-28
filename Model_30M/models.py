@@ -19,6 +19,7 @@ class CONFIG_30M(models.Model):
     target                  = models.FloatField(verbose_name='TARGET',default=0)
     quantity                = models.BigIntegerField(verbose_name='QUANTITY',default=0)
     return_price            = models.FloatField(verbose_name='RET_PRICE',default=0)
+    ltp                     = models.FloatField(verbose_name='LTP',default=0)
     count                   = models.BigIntegerField(verbose_name='COUNT',default=0)
     order_id                = models.BigIntegerField(verbose_name='ORDER ID',default=0)
     order_status            = models.CharField(max_length=100, verbose_name='ORDER STATUS',default='NONE')
