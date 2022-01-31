@@ -17,7 +17,7 @@ def model(intervals, kite_conn_var):
     return 'SUCCESS'
 
   # SQUARE OFF EXECUTIONS
-  elif time(15,12,00) <= datetime.now().time() < time(15,20,00):
+  elif time(15,12,00) <= datetime.now().time() < time(15,30,00):
     trade.squareoff(kite_conn_var)
     return 'SUCCESS'
 

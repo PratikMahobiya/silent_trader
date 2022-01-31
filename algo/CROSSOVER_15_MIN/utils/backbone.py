@@ -1,4 +1,5 @@
 from datetime import datetime, time
+from time import sleep
 from . import trade
 from . import get_data
 
@@ -17,7 +18,8 @@ def model(intervals, kite_conn_var):
     return 'SUCCESS'
 
   # SQUARE OFF EXECUTIONS
-  elif time(15,12,00) <= datetime.now().time() < time(15,20,00):
+  elif time(15,12,00) <= datetime.now().time() < time(15,30,00):
+    sleep(10)
     trade.squareoff(kite_conn_var)
     return 'SUCCESS'
 
