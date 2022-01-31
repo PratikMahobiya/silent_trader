@@ -105,14 +105,14 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, rsi_8, atr, fastk, f
   vwap_df = vwap(data_frame[stock][75:])
   # Difference btw ema-max-min is less or equal to 0.2 and price is above ema-min-max
   if ema_max[-1] < ema_min[-1]:
-    if stockrsi(fastk, fastd):
-      # if check_rsi(rsi_8):
+    # if check_rsi(rsi_8):
+      if stockrsi(fastk, fastd):
         if vwap_confirmations(stock,data_frame, ema_max, ema_200):
           if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
             if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
               if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
                 if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
-                  if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
+                  if abs((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100)) <= 0.25:
                     if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
                       stock_config_obj = models.CONFIG_15M_TEMP_DOWN.objects.get(symbol = stock)
                       # Place Order in ZERODHA.
@@ -145,14 +145,14 @@ def buys(stock, data_frame, ema_max, ema_min, ema_200, rsi, rsi_8, atr, fastk, f
   # After CrossOver ema-min greater than ema-max and pema-min less than pema-max, diff is less than 0.2, curr_rsi is greater than its prev_2_rsi's
   elif ema_min[-1] < ema_max[-1]:
     if ema_min[-2] > ema_max[-2]:
-      if stockrsi(fastk, fastd):
-        # if check_rsi(rsi_8):
+      # if check_rsi(rsi_8):
+        if stockrsi(fastk, fastd):
           if vwap_confirmations(stock,data_frame, ema_max, ema_200):
             if data_frame[stock]['Close'].iloc[-2] < ema_min[-1]:
               if data_frame[stock]['Close'].iloc[-2] < ema_max[-1]:
                 if data_frame[stock]['Close'].iloc[-3] < ema_min[-2]:
                   if data_frame[stock]['Close'].iloc[-3] < ema_max[-2]:
-                    if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
+                    if abs((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100)) <= 0.25:
                       if rsi[-1] < rsi[-2] and rsi[-1] < rsi[-3]:
                         if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
                           stock_config_obj = models.CONFIG_15M_TEMP_DOWN.objects.get(symbol = stock)

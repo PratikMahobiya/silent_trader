@@ -112,7 +112,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, rsi_8, atr, fastk, fastd, kit
             if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
               if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
                 if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-                  if ((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100) <= 0.25):
+                  if abs((((ema_max[-1]-ema_min[-1])/ema_max[-1])*100)) <= 0.25:
                     if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
                       stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
                       # Place Order in ZERODHA.
@@ -152,7 +152,7 @@ def buys(stock, data_frame, ema_max, ema_min, rsi, rsi_8, atr, fastk, fastd, kit
               if data_frame[stock]['Close'].iloc[-2] > ema_max[-1]:
                 if data_frame[stock]['Close'].iloc[-3] > ema_min[-2]:
                   if data_frame[stock]['Close'].iloc[-3] > ema_max[-2]:
-                    if ((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100) <= 0.25):
+                    if abs((((ema_min[-1]-ema_max[-1])/ema_min[-1])*100)) <= 0.25:
                       if rsi[-1] > rsi[-2] and rsi[-1] > rsi[-3]:
                         if in_range(stock,data_frame[stock]['Close'].iloc[-2]):
                           stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
