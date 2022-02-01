@@ -32,9 +32,8 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
   ltp       = 0
   order_id  = 0
   order_status = 'NOT_PLACED'
-  ang_conn = angelbroking_conn()
   try:
-    ltp        = ang_conn.ltpData("NSE",symbol+'-EQ',models_a.STOCK.objects.get(symbol = symbol).token)['data']['ltp']
+    ltp        = kite_conn_var.quotes({"symbols":'NSE:{}-EQ'.format(symbol)})['d'][0]['v']['lp']
     while True:
       price = ltp * quantity
       if price >= zerodha_flag_obj.stock_amount:
@@ -42,6 +41,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         break
       quantity += 1
     if zerodha_flag_obj.zerodha_entry is True:
+      ang_conn = angelbroking_conn()
       orderparams = {
         "variety": "NORMAL",
         "tradingsymbol": symbol+'-EQ',
@@ -54,21 +54,21 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         "price": ltp,
         "quantity": '{}'.format(quantity)
         }
-    order_id = ang_conn.placeOrder(orderparams)
+      order_id = ang_conn.placeOrder(orderparams)
+      ang_conn.terminateSession("P567723")
     order_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
     order_status = 'PROBLEM AT ZERODHA END.'
-  ang_conn.terminateSession("P567723")
   return order_id, order_status, ltp, quantity
 
 def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
   # Place an order
   order_id = 0
   order_status = 'NOT_PLACED'
-  ang_conn = angelbroking_conn()
-  ltp        = ang_conn.ltpData("NSE",symbol+'-EQ',models_a.STOCK.objects.get(symbol = symbol).token)['data']['ltp']
+  ltp        = kite_conn_var.quotes({"symbols":'NSE:{}-EQ'.format(symbol)})['d'][0]['v']['lp']
   try:
     if stock_config_obj.order_id != 0:
+      ang_conn = angelbroking_conn()
       if order_status_FLAG(stock_config_obj.order_id,ang_conn):
         orderparams = {
             "variety": "NORMAL",
@@ -87,7 +87,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
         # CALL CANCEL ORDER ----
         order_id, order_status = exit_order(ang_conn,stock_config_obj)
         # ----------------------
+      ang_conn.terminateSession("P567723")
   except Exception as e:
     order_status = 'PROBLEM AT ZERODHA END.'
-  ang_conn.terminateSession("P567723")
   return order_id, order_status, ltp

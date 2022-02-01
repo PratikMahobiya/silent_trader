@@ -1,3 +1,4 @@
+from time import sleep
 from smartapi import SmartConnect
 from algo import models as models_a
 
@@ -13,9 +14,8 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
   ltp       = 0
   order_id  = 0
   order_status = 'NOT_PLACED'
-  ang_conn = angelbroking_conn()
   try:
-    ltp        = ang_conn.ltpData("NSE",symbol+'-EQ',models_a.STOCK.objects.get(symbol = symbol).token)['data']['ltp']
+    ltp        = kite_conn_var.quotes({"symbols":'NSE:{}-EQ'.format(symbol)})['d'][0]['v']['lp']
     while True:
       price = ltp * quantity
       if price >= zerodha_flag_obj.stock_amount:
@@ -23,6 +23,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         break
       quantity += 1
     if zerodha_flag_obj.zerodha_entry is True:
+      ang_conn = angelbroking_conn()
       orderparams = {
         "variety": "NORMAL",
         "tradingsymbol": symbol+'-EQ',
@@ -35,9 +36,10 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         "price": ltp,
         "quantity": '{}'.format(quantity)
         }
-    order_id = ang_conn.placeOrder(orderparams)
+      order_id = ang_conn.placeOrder(orderparams)
+      sleep(0.5)
+      ang_conn.terminateSession("P567723")
     order_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
     order_status = 'PROBLEM AT ZERODHA END.'
-  ang_conn.terminateSession("P567723")
   return order_id, order_status, ltp, quantity
