@@ -1,3 +1,4 @@
+from algo.models import PROFIT_CONFIG
 from datetime import datetime, time
 from . import trade
 from . import get_data
@@ -9,6 +10,10 @@ def model(intervals, kite_conn_var):
   '''
   # Regular Trades Execution
   if datetime.now().time() >= time(9,14,00) and datetime.now().time() < time(15,12,00):
+    # if (datetime.now().time() >= time(10,30,00) and datetime.now().time() < time(13,58,00)) and (PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').zerodha_entry is True):
+    #   PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').update(zerodha_entry = False)
+    # if (datetime.now().time() >= time(13,58,00)) and (PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').zerodha_entry is False):
+    #   PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').update(zerodha_entry = True)
     # DownLoad data for initiating Trades
     trade_data_frame, trading_stocks_list = get_data.download_trade_data(intervals,kite_conn_var)
 
