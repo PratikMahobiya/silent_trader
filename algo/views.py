@@ -87,7 +87,7 @@ def Index_FYERS(request):
   app_secret = open('./algo/config/app_secret.txt','r').read()
   try:
     session=accessToken.SessionModel(client_id=app_id,
-    secret_key=app_secret,redirect_uri='https://www.google.com/',
+    secret_key=app_secret,redirect_uri='https://www.google.co.in/',
     response_type='code', grant_type='authorization_code')
     fyers_url = session.generate_authcode()  
   except Exception as  e:
