@@ -27,6 +27,10 @@ app.conf.beat_schedule = {
         'task': 'algo.tasks.UPDATE_LIMIT',
         'schedule': crontab(minute=37, hour=9, day_of_week='mon-fri'),
     },
+    "GENERATE_FYERS_TOKEN":{
+        'task': 'algo.tasks.GENERATE_FYERS_TOKEN',
+        'schedule': crontab(minute=45, hour=8, day_of_week='sun-fri'),
+    },
     'LTP':{
         'task': 'algo.tasks.ltp_of_entries',
         'schedule': 3.0,
