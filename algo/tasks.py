@@ -5,6 +5,7 @@ from smartapi import SmartConnect
 from time import sleep
 import pandas as pd
 import requests
+import talib
 from urllib.parse import urlparse, parse_qs
 from django.db.models import Q
 
@@ -287,16 +288,21 @@ def get_stocks_configs(self):
     data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
     data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
     data_frame.index.names = ['date']
-    volatile_stocks[stock_sym] = cal_volatility(data_frame)
     models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
-
-  # cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
-  cut_off_volatility = 2.8
-  for stk in volatile_stocks:
-    if volatile_stocks[stk] > cut_off_volatility:
-      models_a.STOCK.objects.filter(symbol = stk).update(active_15 = True)
+    macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=13, signalperiod=9)
+    # cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
+    cut_off_volatility = 2.8
+    if cal_volatility(data_frame) > cut_off_volatility:
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
+      if macd[-1] > macdsignal[-1]:
+        if macd[-1] > macd[-2]:
+          models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
+        else:
+          models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
+      else:
+        models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
     else:
-      models_a.STOCK.objects.filter(symbol = stk).update(active_15 = False)
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False)
 
   # Config Model to Profit Tables
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST','CRS_15_TEMP_BTST_DOWN','OVER_ALL_PLACED']
