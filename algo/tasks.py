@@ -302,7 +302,7 @@ def get_stocks_configs(self):
       else:
         models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
     else:
-      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False)
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False,active_5 = False)
 
   # Config Model to Profit Tables
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST','CRS_15_TEMP_BTST_DOWN','OVER_ALL_PLACED']
