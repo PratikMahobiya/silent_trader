@@ -12,24 +12,12 @@ from datetime import date, datetime
 
 from . import freeze_all_15
 from . import freeze_all_15_temp
-from . import freeze_all_15_temp_btst
 from . import freeze_all_30
 from . import freeze_all_15_down
-from . import freeze_all_15_down_btst
 
 from rest_framework.decorators import api_view
 
 # Create your views here.
-def connect_to_kite_connection():
-  api_key = open('./algo/config/api_key.txt','r').read()
-  access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
-  try:
-    kite = KiteConnect(api_key=api_key)
-    kite.set_access_token(access_token)
-  except Exception as  e:
-    pass
-  return kite
-
 def fyers_conn():
   app_id = open('algo/config/app_id.txt','r').read()
   access_token = models.FYERS_KEYS.objects.get(app_id=app_id).access_token
@@ -38,49 +26,6 @@ def fyers_conn():
   except Exception as  e:
     pass
   return fyers
-
-def Index(request):
-  api_key = open('./algo/config/api_key.txt','r').read()
-  try:
-    kite = KiteConnect(api_key=api_key)
-    kite_url = kite.login_url()
-  except Exception as  e:
-    pass
-  context = {'kite_url': kite_url}
-  return render(request, 'index.html', context)
-
-def generate_acc_token(request):
-  api_key = open('./algo/config/api_key.txt','r').read()
-  api_secret = open('./algo/config/api_secret.txt','r').read()
-  if request.method == 'POST':
-    request_token 		= request.POST.get('request_token','')
-    try:
-      kite = KiteConnect(api_key=api_key)
-      data = kite.generate_session(request_token, api_secret=api_secret)
-      kite.set_access_token(data["access_token"])
-      models.ZERODHA_KEYS.objects.all().delete()
-      access_token_obj = models.ZERODHA_KEYS(api_key=api_key, api_secret=api_secret,access_token=data["access_token"])
-      access_token_obj.save()
-      ltp = kite.ltp(['NSE:SBIN'])
-      context = {'access_token': data["access_token"], 'fyers': '0', 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
-    except Exception as  e:
-      context = {'success':'ERROR','status':e}
-    return render(request, 'success.html', context)
-  else:
-    context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':'WORNG METHOD APPLID.'}
-    return render(request, 'success.html', context)
-
-def check(request):
-  api_key = open('./algo/config/api_key.txt','r').read()
-  try:
-    access_token = models.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
-    kite = KiteConnect(api_key=api_key)
-    kite.set_access_token(access_token)
-    ltp = kite.ltp(['NSE:SBIN'])
-    context = {'access_token': access_token,'fyers': '0', 'SBI_ltp': ltp['NSE:SBIN']['last_price'],'status':'Now you can "REST IN PEACE".'}
-  except Exception as  e:
-    context = {'success':'ERROR','status':'Please, Do it once again, My Lord. My Creater. My LUCIFER...','error':e}
-  return render(request, 'check.html', context)
 
 def Index_FYERS(request):
   app_id = open('./algo/config/app_id.txt','r').read()
@@ -149,20 +94,20 @@ def FREEZE_ALL(request):
   kite_conn_var = fyers_conn()
   # --------------------------------- FREEZE Profit at each LTP ------------------------
   crs_main_entry_list = models_15.CONFIG_15M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-  crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
+  # crs_temp_entry_list = models_temp.CONFIG_15M_TEMP.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
   crs_30_entry_list   = models_30.CONFIG_30M.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-  crs_down_entry_list = models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
-  total_placed_entry = len(crs_main_entry_list) + len(crs_temp_entry_list) + len(crs_30_entry_list) + len(crs_down_entry_list)
+  # crs_down_entry_list = models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True, placed = True).values_list('symbol', flat=True)
+  total_placed_entry = len(crs_main_entry_list) + len(crs_30_entry_list)#  + len(crs_temp_entry_list) + len(crs_down_entry_list)
 
   model_config_obj               = models.PROFIT.objects.get(model_name = 'OVER_ALL_PLACED', date = datetime.now().date())
   model_profit_config_obj        = models.PROFIT_CONFIG.objects.get(model_name = 'OVER_ALL_PLACED')
   # FREEZE PROFIT
   gain_main, p_l_main = freeze_all_15.freeze_all(list(crs_main_entry_list),kite_conn_var)
-  gain_temp, p_l_temp = freeze_all_15_temp.freeze_all(list(crs_temp_entry_list),kite_conn_var)
+  # gain_temp, p_l_temp = freeze_all_15_temp.freeze_all(list(crs_temp_entry_list),kite_conn_var)
   gain_30, p_l_30 = freeze_all_30.freeze_all(list(crs_30_entry_list),kite_conn_var)
-  gain_down, p_l_down = freeze_all_15_down.freeze_all(list(crs_down_entry_list),kite_conn_var)
-  gain = gain_main + gain_temp + gain_30 + gain_down
-  p_l  = p_l_main + p_l_temp + p_l_30 + p_l_down
+  # gain_down, p_l_down = freeze_all_15_down.freeze_all(list(crs_down_entry_list),kite_conn_var)
+  gain = gain_main + gain_30# + gain_temp + gain_down
+  p_l  = p_l_main + p_l_30# + p_l_temp + p_l_down
   models.FREEZE_PROFIT(model_name = 'OVER_ALL_PLACED', indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = total_placed_entry, day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
   model_profit_config_obj.day_hit   += 1
   model_profit_config_obj.target    = 10000

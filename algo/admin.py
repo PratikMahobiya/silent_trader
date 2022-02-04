@@ -9,12 +9,6 @@ class STOCK_Admin(ExportActionMixin,admin.ModelAdmin):
     search_fields = ['symbol',]
     list_filter = ("active_15","active_5",)
 
-@admin.register(models.ZERODHA_KEYS)
-class ZERODHA_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('access_token','api_key','api_secret')
-    list_per_page = 10
-    readonly_fields = ('access_token','api_key','api_secret')
-
 @admin.register(models.FYERS_KEYS)
 class FYERS_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('access_token','app_id','app_secret')
@@ -29,6 +23,7 @@ class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
 @admin.register(models.PROFIT_CONFIG)
 class PROFIT_CONFIG_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('model_name','zerodha_entry','stock_amount','active','count','day_hit','target','stoploss','entry')
+    list_filter = ('model_name')
 
 @admin.register(models.FREEZE_PROFIT)
 class FREEZE_PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
@@ -42,22 +37,8 @@ class CROSSOVER_15_Min_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol','date']
 
-@admin.register(models.CROSSOVER_15_MIN_BTST)
-class CROSSOVER_15_Min_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','niftytype','order_status','placed')
-    list_filter = ("created_on",)
-    list_per_page = 10
-    search_fields = ['symbol','date']
-
 @admin.register(models.CROSSOVER_30_MIN)
 class CROSSOVER_30_MIN_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','niftytype','order_status','placed')
-    list_filter = ("created_on",)
-    list_per_page = 10
-    search_fields = ['symbol','date']
-
-@admin.register(models.CROSSOVER_30_MIN_BTST)
-class CROSSOVER_30_MIN_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','niftytype','order_status','placed')
     list_filter = ("created_on",)
     list_per_page = 10
@@ -71,13 +52,6 @@ class CROSSOVER_15_Min_TEMP_Admin(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol','date']
 
-@admin.register(models.CROSSOVER_15_MIN_TEMP_BTST)
-class CROSSOVER_15_Min_TEMP_BTST_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','niftytype','order_status','placed')
-    list_filter = ("created_on",)
-    list_per_page = 10
-    search_fields = ['symbol','date']
-
 @admin.register(models.CROSSOVER_15_MIN_TEMP_DOWN)
 class CROSSOVER_15_Min_TEMP_Admin_DOWN(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','niftytype','order_status','placed')
@@ -85,8 +59,7 @@ class CROSSOVER_15_Min_TEMP_Admin_DOWN(ExportActionMixin,admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['symbol','date']
 
-@admin.register(models.CROSSOVER_15_MIN_TEMP_BTST_DOWN)
-class CROSSOVER_15_Min_TEMP_BTST_Admin_DOWN(ExportActionMixin,admin.ModelAdmin):
+
     list_display = ('date','symbol','indicate','type','price','target','stoploss','profit','order_id','difference','quantity','sector','niftytype','order_status','placed')
     list_filter = ("created_on",)
     list_per_page = 10

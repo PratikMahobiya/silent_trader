@@ -16,12 +16,9 @@ def get_stock_ltp(kite_conn_var):
       price = stocks_ltp[stock_key]
       stock_name = stock_key
       try:
-        if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,15,5):
+        if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,30,5):
           if stock_name in stock_list:
             exit_action_temp_down.sell(stock_name, price, gain, kite_conn_var)
-        elif datetime.now().time() >= time(15,15,5) and datetime.now().time() <= time(15,30,00):
-          if stock_name in stock_list:
-            exit_action_temp_down.square_off(stock_name, price, kite_conn_var)
       except Exception as e:
         pass
     return 'TRUE',list(stock_list), gain

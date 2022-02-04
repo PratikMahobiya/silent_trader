@@ -60,16 +60,11 @@
 										<p><b>{{ status }}</b></p>
 								{% endif %}
 							</form>
-							{% if success == 'ERROR' %}
-									<a href="http://139.59.54.145/index_fyers/"><button type="submit" class="loginhny-btn btn">FYERS</button></a>
-									<a href="http://139.59.54.145/index/"><button type="submit" class="loginhny-btn btn">ZERODHA</button></a>
-							{% else %}
-								{% if fyers == '1' %} 
-									<a href="http://139.59.54.145/check_fyers/"><button type="submit" class="loginhny-btn btn">CHECK FYERS</button></a>
+								{% if success == 'ERROR' %}
+									<a href="http://139.59.54.145/"><button type="submit" class="loginhny-btn btn">HOME</button></a>
 								{% else %}
-									<a href="http://139.59.54.145/check/"><button type="submit" class="loginhny-btn btn">CHECK ZERODHA</button></a>
+									<a href="http://139.59.54.145/check_fyers/"><button type="submit" class="loginhny-btn btn">CHECK</button></a>
 								{% endif %}
-							{% endif %}
 						</div>
 					</div>
 				</div>

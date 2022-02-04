@@ -28,16 +28,6 @@ def fyers_conn():
     pass
   return fyers
 
-def connect_to_kite_connection():
-  api_key = open('algo/config/api_key.txt','r').read()
-  access_token = models_a.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
-  try:
-    kite = KiteConnect(api_key=api_key)
-    kite.set_access_token(access_token)
-  except Exception as  e:
-    pass
-  return kite
-
 def place_regular_buy_order(symbol, price, quantity):
   # Place an order
   order_id      = 0

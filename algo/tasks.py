@@ -14,10 +14,8 @@ from Model_30M import models as models_30
 from . import models as models_a
 from . import freeze_all_15
 from . import freeze_all_15_temp
-from . import freeze_all_15_temp_btst
 from . import freeze_all_30
 from . import freeze_all_15_down
-from . import freeze_all_15_down_btst
 from . import check_ltp
 from . import check_ltp_crs_30
 from celery import shared_task
@@ -28,9 +26,7 @@ from .CROSSOVER_30_MIN.utils import backbone as backbone_CRS_30_MIN
 from Model_15_temp import models as models_temp
 from Model_15_temp_down import models as models_temp_down
 from . import check_ltp_temp
-from . import check_ltp_temp_btst
 from . import check_ltp_temp_down
-from . import check_ltp_temp_btst_down
 from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 from .DOWN_CROSSOVER_15_MIN_temp.utils import backbone as backbone_DOWN_CRS_temp
 
@@ -94,16 +90,6 @@ def fyers_conn():
     pass
   return fyers
 
-def connect_to_kite_connection():
-  api_key = open('algo/config/api_key.txt','r').read()
-  access_token = models_a.ZERODHA_KEYS.objects.get(api_key=api_key).access_token
-  try:
-    kite = KiteConnect(api_key=api_key)
-    kite.set_access_token(access_token)
-  except Exception as  e:
-    pass
-  return kite
-
 def cal_volatility(dt):
   dt['Return'] = 100 * (dt['Close'].pct_change())
   daily_volatility = dt['Return'].std()
@@ -122,7 +108,6 @@ def get_stocks_configs(self):
   now = date.today()
   last_6_days       = now - timedelta(days=360)
   fyers_conn_val = fyers_conn()
-  volatile_stocks   = {}
   # Stock dict
   stock_dict = {
       'AARTIIND':	[1793,		'COMMODITY','mid50','7'],
@@ -268,16 +253,10 @@ def get_stocks_configs(self):
     # CREATE CONFIG IN FOR 15 MIN TEMP
     if not models_temp.CONFIG_15M_TEMP.objects.filter(symbol = stock_sym).exists():
       models_temp.CONFIG_15M_TEMP(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
-    # CREATE CONFIG IN FOR 15 MIN TEMP BTST
-    if not models_temp.CONFIG_15M_TEMP_BTST.objects.filter(symbol = stock_sym).exists():
-      models_temp.CONFIG_15M_TEMP_BTST(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
 
     # CREATE CONFIG IN FOR 15 MIN TEMP DOWN
     if not models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(symbol = stock_sym).exists():
       models_temp_down.CONFIG_15M_TEMP_DOWN(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
-    # CREATE CONFIG IN FOR 15 MIN TEMP BTST DOWN
-    if not models_temp_down.CONFIG_15M_TEMP_BTST_DOWN.objects.filter(symbol = stock_sym).exists():
-      models_temp_down.CONFIG_15M_TEMP_BTST_DOWN(symbol = stock_sym, sector = stock_dict[stock_sym][1],niftytype = stock_dict[stock_sym][2]).save()
 
     # GET THE VOLATILITY OF EACH STK IN DICT
     sleep(0.3)
@@ -295,7 +274,7 @@ def get_stocks_configs(self):
     if cal_volatility(data_frame) > cut_off_volatility:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
       if macd[-1] > macdsignal[-1]:
-        if macd[-1] > macd[-2]:
+        if (macd[-1] > macd[-2]) and ((macd[-2] < macdsignal[-2]) or (macd[-3] < macdsignal[-3]) or (macd[-4] < macdsignal[-4])):
           models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
         else:
           models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
@@ -305,7 +284,7 @@ def get_stocks_configs(self):
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False,active_5 = False)
 
   # Config Model to Profit Tables
-  model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST','CRS_15_TEMP_BTST_DOWN','OVER_ALL_PLACED']
+  model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','OVER_ALL_PLACED']
   for model_name in model_name_list:
     # if model not configure in Profit Table
     if not models_a.PROFIT.objects.filter(model_name = model_name, date = datetime.now().date()).exists():
@@ -378,68 +357,6 @@ def ltp_of_entries(self):
   if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(15,17,00):
     kite_conn_var = angelbroking_conn()
 
-    # LTP CRS TEMP BTST
-    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
-      try:
-        status, active_stocks, gain = check_ltp_temp_btst.get_stock_ltp(kite_conn_var)
-        response.update({'LTP_BTST': True, 'STATUS_BTST': status,'ACTIVE_STOCKS_BTST':active_stocks})
-      except Exception as e:
-        pass
-      # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
-      model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_15_TEMP_BTST', date = datetime.now().date())
-      gain_val = []
-      gain_per = []
-      for val, per in gain:
-        gain_val.append(val)
-        gain_per.append(per)
-      total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
-      model_config_obj.current_gain           = round(total_sum,2)
-      model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models_temp.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol',flat=True))
-      if len(models_temp.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models_temp.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol',flat=True))
-      if total_sum > model_config_obj.top_gain:
-        model_config_obj.top_gain       = round(total_sum,2)
-        model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models_temp.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol',flat=True))
-      if total_sum < model_config_obj.top_loss:
-        model_config_obj.top_loss       = round(total_sum,2)
-        model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models_temp.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol',flat=True))
-      model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
-      model_config_obj.save()
-
-    # LTP CRS TEMP BTST DOWN
-    if datetime.now().time() > time(9,15,00) and datetime.now().time() < time(9,43,00):
-      try:
-        status, active_stocks, gain = check_ltp_temp_btst_down.get_stock_ltp(kite_conn_var)
-        response.update({'LTP_BTST_DOWN': True, 'STATUS_BTST_DOWN': status,'ACTIVE_STOCKS_BTST_DOWN':active_stocks})
-      except Exception as e:
-        pass
-      # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
-      model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_15_TEMP_BTST_DOWN', date = datetime.now().date())
-      gain_val = []
-      gain_per = []
-      for val, per in gain:
-        gain_val.append(val)
-        gain_per.append(per)
-      total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
-      model_config_obj.current_gain           = round(total_sum,2)
-      model_config_obj.current_gain_time      = datetime.now().time()
-      model_config_obj.current_gain_entry     = len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True))
-      if len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
-        model_config_obj.max_entry     = len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True))
-      if total_sum > model_config_obj.top_gain:
-        model_config_obj.top_gain       = round(total_sum,2)
-        model_config_obj.top_gain_time  = datetime.now().time()
-        model_config_obj.top_gain_entry = len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True))
-      if total_sum < model_config_obj.top_loss:
-        model_config_obj.top_loss       = round(total_sum,2)
-        model_config_obj.top_loss_time  = datetime.now().time()
-        model_config_obj.top_loss_entry = len(models_temp_down.ENTRY_15M_TEMP_BTST_DOWN.objects.all().values_list('symbol',flat=True))
-      model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
-      model_config_obj.save()
-    
     # LTP CRS
     try:
       status, active_stocks, gain = check_ltp.get_stock_ltp(kite_conn_var)
@@ -637,188 +554,10 @@ def ltp_of_entries(self):
     #     model_config_obj.p_l                    = 0
     # model_profit_config_obj.save()
     # model_config_obj.save()
-
-    # model_name_list = ['CRS_MAIN', 'CRS_30_MIN', 'CRS_TEMP','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST']
-    # for index, model_name in enumerate(model_name_list):
-    #   # ---------------------------- FREEZE THE STOCK AT IT LIVE GAIN --------------------
-    #   if index == 0:
-    #     model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-    #     model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
-    #     entry_list                     = models.ENTRY_15M.objects.all().values_list('symbol',flat=True)
-    #     if model_config_obj.current_gain > model_profit_config_obj.target:
-    #       model_profit_config_obj.stoploss  = model_profit_config_obj.target - 500
-    #       model_profit_config_obj.target    = model_profit_config_obj.target + 500
-    #       model_profit_config_obj.count     += 1
-    #       model_profit_config_obj.active    = True
-    #     elif model_profit_config_obj.active is True:
-    #       if model_config_obj.current_gain < model_profit_config_obj.stoploss:
-    #         # FREEZE PROFIT
-    #         gain, p_l = freeze_all_15.freeze_all(entry_list,kite_conn_var)
-    #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
-    #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 3000
-    #         model_profit_config_obj.stoploss  = 0
-    #         model_profit_config_obj.count     = 0
-    #         model_profit_config_obj.active    = False
-    #         model_profit_config_obj.entry     = 0
-    #         # PROFIT TABLE
-    #         model_config_obj.current_gain           = 0
-    #         model_config_obj.current_gain_entry     = 0
-    #         model_config_obj.top_gain               = 0
-    #         model_config_obj.top_gain_entry         = 0
-    #         model_config_obj.top_loss               = 0
-    #         model_config_obj.top_loss_entry         = 0
-    #     model_profit_config_obj.save()
-    #     model_config_obj.save()
-    #   if index == 1:
-    #     model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-    #     model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
-    #     entry_list                     = models_30.ENTRY_30M.objects.all().values_list('symbol',flat=True)
-    #     if model_config_obj.current_gain > model_profit_config_obj.target:
-    #       model_profit_config_obj.stoploss  = model_profit_config_obj.target - 400
-    #       model_profit_config_obj.target    = model_profit_config_obj.target + 500
-    #       model_profit_config_obj.count     += 1
-    #       model_profit_config_obj.active    = True
-    #     elif model_profit_config_obj.active is True:
-    #       if model_config_obj.current_gain < model_profit_config_obj.stoploss:
-    #         # FREEZE PROFIT
-    #         gain, p_l = freeze_all_30.freeze_all(entry_list,kite_conn_var)
-    #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
-    #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 10000
-    #         model_profit_config_obj.stoploss  = 0
-    #         model_profit_config_obj.count     = 0
-    #         model_profit_config_obj.active    = False
-    #         model_profit_config_obj.entry     = 0
-    #         # PROFIT TABLE
-    #         model_config_obj.current_gain           = 0
-    #         model_config_obj.current_gain_entry     = 0
-    #         model_config_obj.top_gain               = 0
-    #         model_config_obj.top_gain_entry         = 0
-    #         model_config_obj.top_loss               = 0
-    #         model_config_obj.top_loss_entry         = 0
-    #     model_profit_config_obj.save()
-    #     model_config_obj.save()
-    #   if index == 2:
-    #     model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-    #     model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
-    #     entry_list                     = models_temp.ENTRY_15M_TEMP.objects.all().values_list('symbol',flat=True)
-    #     if model_config_obj.current_gain > model_profit_config_obj.target:
-    #       model_profit_config_obj.stoploss  = model_profit_config_obj.target - 400
-    #       model_profit_config_obj.target    = model_profit_config_obj.target + 500
-    #       model_profit_config_obj.count     += 1
-    #       model_profit_config_obj.active    = True
-    #     elif model_profit_config_obj.active is True:
-    #       if model_config_obj.current_gain < model_profit_config_obj.stoploss:
-    #         # FREEZE PROFIT
-    #         gain, p_l = freeze_all_15_temp.freeze_all(entry_list,kite_conn_var)
-    #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
-    #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 10000
-    #         model_profit_config_obj.stoploss  = 0
-    #         model_profit_config_obj.count     = 0
-    #         model_profit_config_obj.active    = False
-    #         model_profit_config_obj.entry     = 0
-    #         # PROFIT TABLE
-    #         model_config_obj.current_gain           = 0
-    #         model_config_obj.current_gain_entry     = 0
-    #         model_config_obj.top_gain               = 0
-    #         model_config_obj.top_gain_entry         = 0
-    #         model_config_obj.top_loss               = 0
-    #         model_config_obj.top_loss_entry         = 0
-    #     model_profit_config_obj.save()
-    #     model_config_obj.save()
-    #   if index == 3:
-    #     model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-    #     model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
-    #     entry_list                     = models.ENTRY_15M_BTST.objects.all().values_list('symbol',flat=True)
-    #     if model_config_obj.current_gain > model_profit_config_obj.target:
-    #       model_profit_config_obj.stoploss  = model_profit_config_obj.target - 400
-    #       model_profit_config_obj.target    = model_profit_config_obj.target + 500
-    #       model_profit_config_obj.count     += 1
-    #       model_profit_config_obj.active    = True
-    #     elif model_profit_config_obj.active is True:
-    #       if model_config_obj.current_gain < model_profit_config_obj.stoploss:
-    #         # FREEZE PROFIT
-    #         gain, p_l = freeze_all_15_btst.freeze_all(entry_list,kite_conn_var)
-    #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
-    #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 10000
-    #         model_profit_config_obj.stoploss  = 0
-    #         model_profit_config_obj.count     = 0
-    #         model_profit_config_obj.active    = False
-    #         model_profit_config_obj.entry     = 0
-    #         # PROFIT TABLE
-    #         model_config_obj.current_gain           = 0
-    #         model_config_obj.current_gain_entry     = 0
-    #         model_config_obj.top_gain               = 0
-    #         model_config_obj.top_gain_entry         = 0
-    #         model_config_obj.top_loss               = 0
-    #         model_config_obj.top_loss_entry         = 0
-    #     model_profit_config_obj.save()
-    #     model_config_obj.save()
-    #   if index == 4:
-    #     model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-    #     model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
-    #     entry_list                     = models_temp.ENTRY_15M_TEMP_BTST.objects.all().values_list('symbol',flat=True)
-    #     if model_config_obj.current_gain > model_profit_config_obj.target:
-    #       model_profit_config_obj.stoploss  = model_profit_config_obj.target - 400
-    #       model_profit_config_obj.target    = model_profit_config_obj.target + 500
-    #       model_profit_config_obj.count     += 1
-    #       model_profit_config_obj.active    = True
-    #     elif model_profit_config_obj.active is True:
-    #       if model_config_obj.current_gain < model_profit_config_obj.stoploss:
-    #         # FREEZE PROFIT
-    #         gain, p_l = freeze_all_15_temp_btst.freeze_all(entry_list,kite_conn_var)
-    #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
-    #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 10000
-    #         model_profit_config_obj.stoploss  = 0
-    #         model_profit_config_obj.count     = 0
-    #         model_profit_config_obj.active    = False
-    #         model_profit_config_obj.entry     = 0
-    #         # PROFIT TABLE
-    #         model_config_obj.current_gain           = 0
-    #         model_config_obj.current_gain_entry     = 0
-    #         model_config_obj.top_gain               = 0
-    #         model_config_obj.top_gain_entry         = 0
-    #         model_config_obj.top_loss               = 0
-    #         model_config_obj.top_loss_entry         = 0
-    #     model_profit_config_obj.save()
-    #     model_config_obj.save()
-    #   if index == 5:
-    #     model_config_obj               = models_a.PROFIT.objects.get(model_name = model_name, date = datetime.now().date())
-    #     model_profit_config_obj        = models_a.PROFIT_CONFIG.objects.get(model_name = model_name)
-    #     entry_list                     = models_30.ENTRY_30M_BTST.objects.all().values_list('symbol',flat=True)
-    #     if model_config_obj.current_gain > model_profit_config_obj.target:
-    #       model_profit_config_obj.stoploss  = model_profit_config_obj.target - 400
-    #       model_profit_config_obj.target    = model_profit_config_obj.target + 500
-    #       model_profit_config_obj.count     += 1
-    #       model_profit_config_obj.active    = True
-    #     elif model_profit_config_obj.active is True:
-    #       if model_config_obj.current_gain < model_profit_config_obj.stoploss:
-    #         # FREEZE PROFIT
-    #         gain, p_l = freeze_all_30_btst.freeze_all(entry_list,kite_conn_var)
-    #         models_a.FREEZE_PROFIT(model_name = model_name, indicate = 'HIT_{}'.format(model_profit_config_obj.count), price = round(sum(gain), 2), p_l = round(sum(p_l), 2), entry = len(entry_list), day_hit = 'DAY_HIT_{}'.format(model_profit_config_obj.day_hit),top_price= model_config_obj.top_gain, stoploss = model_config_obj.top_loss).save()
-    #         model_profit_config_obj.day_hit   += 1
-    #         model_profit_config_obj.target    = 10000
-    #         model_profit_config_obj.stoploss  = 0
-    #         model_profit_config_obj.count     = 0
-    #         model_profit_config_obj.active    = False
-    #         model_profit_config_obj.entry     = 0
-    #         # PROFIT TABLE
-    #         model_config_obj.current_gain           = 0
-    #         model_config_obj.current_gain_entry     = 0
-    #         model_config_obj.top_gain               = 0
-    #         model_config_obj.top_gain_entry         = 0
-    #         model_config_obj.top_loss               = 0
-    #         model_config_obj.top_loss_entry         = 0
-    #     model_profit_config_obj.save()
-    #     model_config_obj.save()
     kite_conn_var.terminateSession("P567723")
   # CALCULATE THE RETURN OF ALL MODELS
   elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
-    model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN','CRS_15_MAIN_BTST','CRS_15_TEMP_BTST','CRS_30_MIN_BTST', 'CRS_TEMP_DOWN','CRS_15_TEMP_BTST_DOWN','OVER_ALL_PLACED']
+    model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN', 'CRS_TEMP_DOWN','OVER_ALL_PLACED']
     for ind, m_name in enumerate(model_name_list):
       # models_a.PROFIT_CONFIG.objects.filter(model_name = m_name).update(zerodha_entry = False)
       model_config_obj = models_a.PROFIT.objects.get(model_name = m_name, date = datetime.now().date())
@@ -844,41 +583,13 @@ def ltp_of_entries(self):
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = round(sum(profit),2)
       if ind == 3:
-        profit = models_a.CROSSOVER_15_MIN_BTST.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
-        total_sum = models_a.CROSSOVER_15_MIN_BTST.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
-        model_config_obj.current_gain            = round(sum(total_sum),2)
-        model_config_obj.current_gain_time       = datetime.now().time()
-        model_config_obj.current_gain_entry      = len(profit)
-        model_config_obj.p_l                     = round(sum(profit),2)
-      if ind == 4:
-        profit = models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
-        total_sum = models_a.CROSSOVER_15_MIN_TEMP_BTST.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
-        model_config_obj.current_gain            = round(sum(total_sum),2)
-        model_config_obj.current_gain_time       = datetime.now().time()
-        model_config_obj.current_gain_entry      = len(profit)
-        model_config_obj.p_l                     = round(sum(profit),2)
-      if ind == 5:
-        profit = models_a.CROSSOVER_30_MIN_BTST.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
-        total_sum = models_a.CROSSOVER_30_MIN_BTST.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
-        model_config_obj.current_gain            = round(sum(total_sum),2)
-        model_config_obj.current_gain_time       = datetime.now().time()
-        model_config_obj.current_gain_entry      = len(profit)
-        model_config_obj.p_l                     = round(sum(profit),2)
-      if ind == 6:
         profit = models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
         total_sum = models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
         model_config_obj.current_gain            = round(sum(total_sum),2)
         model_config_obj.current_gain_time       = datetime.now().time()
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = round(sum(profit),2)
-      if ind == 7:
-        profit = models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
-        total_sum = models_a.CROSSOVER_15_MIN_TEMP_BTST_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
-        model_config_obj.current_gain            = round(sum(total_sum),2)
-        model_config_obj.current_gain_time       = datetime.now().time()
-        model_config_obj.current_gain_entry      = len(profit)
-        model_config_obj.p_l                     = round(sum(profit),2)
-      if ind == 8:
+      if ind == 4:
         profit_main = list(models_a.CROSSOVER_15_MIN.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True))
         total_sum_main = list(models_a.CROSSOVER_15_MIN.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True))
         profit_temp = list(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(~Q(order_id = 0),indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True))
@@ -942,13 +653,13 @@ def CROSS_OVER_RUNS_30_MIN(self):
 @shared_task(bind=True,max_retries=3)
 def CROSS_OVER_RUNS_15_MIN_TEMP(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
-
+  sleep(901)
   # Initialize Kite Connections
   kite_conn_var       = fyers_conn()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15',20,60,55,16,8,'5',10,14,14,14]
+  intervals      = ['30',10,12,26,20,100]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
@@ -960,13 +671,13 @@ def CROSS_OVER_RUNS_15_MIN_TEMP(self):
 @shared_task(bind=True,max_retries=3)
 def DOWN_CROSS_OVER_RUNS_15_MIN_TEMP(self):
   response = {'CRS': False, 'STATUS': 'NONE'}
-
+  sleep(901)
   # Initialize Kite Connections
   kite_conn_var       = fyers_conn()
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['15',20,60,55,16,8,'5',10,14,14,14]
+  intervals      = ['30',10,12,26,20,100]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
