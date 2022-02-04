@@ -18,12 +18,11 @@ class FYERS_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
 @admin.register(models.PROFIT)
 class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('date','model_name','p_l','current_gain','top_gain','top_loss','max_entry','current_gain_time','current_gain_entry','top_gain_time','top_gain_entry','top_loss_time','top_loss_entry')
-    list_filter = ("date",)
+    list_filter = ('date','model_name',)
 
 @admin.register(models.PROFIT_CONFIG)
 class PROFIT_CONFIG_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('model_name','zerodha_entry','stock_amount','active','count','day_hit','target','stoploss','entry')
-    list_filter = ('model_name',)
 
 @admin.register(models.FREEZE_PROFIT)
 class FREEZE_PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
