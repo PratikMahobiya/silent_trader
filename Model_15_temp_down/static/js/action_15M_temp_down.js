@@ -316,7 +316,7 @@ function convertFromStringToDate(responseDate) {
     let SecondPieces = timePieces[2].split(".");
     var x = new Date(datePieces[2], (datePieces[1] - 1), datePieces[0],
         timePieces[0], timePieces[1], SecondPieces[0])
-    var time = (x.getHours() < 10 ? '0' : '') + x.getHours() + ":" + (x.getMinutes() < 10 ? '0' : '') + x.getMinutes() + ":" + (x.getSeconds() < 10 ? '0' : '') + x.getSeconds()
+    var time = (datePieces[2] +'-'+ (datePieces[1]) +'-'+  datePieces[0] +' ') + (x.getHours() < 10 ? '0' : '') + x.getHours() + ":" + (x.getMinutes() < 10 ? '0' : '') + x.getMinutes() + ":" + (x.getSeconds() < 10 ? '0' : '') + x.getSeconds()
     return (time)
 }
 
