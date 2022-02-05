@@ -5,6 +5,7 @@ from smartapi import SmartConnect
 from time import sleep
 import pandas as pd
 import requests
+import random
 import talib
 from urllib.parse import urlparse, parse_qs
 from django.db.models import Q
@@ -108,6 +109,7 @@ def get_stocks_configs(self):
   now = date.today()
   last_6_days       = now - timedelta(days=360)
   fyers_conn_val = fyers_conn()
+  for_intraday = []
   # Stock dict
   stock_dict = {
       'AARTIIND':	[1793,		'COMMODITY','mid50','7'],
@@ -274,14 +276,24 @@ def get_stocks_configs(self):
     if cal_volatility(data_frame) > cut_off_volatility:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
       if macd[-1] > macdsignal[-1]:
-        if (macd[-1] > macd[-2]) and (macd[-2] > macd[-3]):# and ((macd[-2] < macdsignal[-2]) or (macd[-3] < macdsignal[-3]) or (macd[-4] < macdsignal[-4])):
-          models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
+        if (macd[-1] > macd[-2]) and (macd[-2] > macd[-3]):
+          for_intraday.append(stock_sym)
         else:
           models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
       else:
         models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
     else:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False,active_5 = False)
+
+  if len(for_intraday) <= 5:
+    for stock_sym in for_intraday:
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
+  else:
+    random.shuffle(for_intraday)
+    for stock_sym in for_intraday[:5]:
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
+    for stock_sym in for_intraday[5:]:
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
 
   # Config Model to Profit Tables
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','OVER_ALL_PLACED']
