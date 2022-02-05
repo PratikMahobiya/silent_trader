@@ -274,7 +274,7 @@ def get_stocks_configs(self):
     if cal_volatility(data_frame) > cut_off_volatility:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
       if macd[-1] > macdsignal[-1]:
-        if (macd[-1] > macd[-2]) and ((macd[-2] < macdsignal[-2]) or (macd[-3] < macdsignal[-3]) or (macd[-4] < macdsignal[-4])):
+        if (macd[-1] > macd[-2]) and (macd[-2] > macd[-3]):# and ((macd[-2] < macdsignal[-2]) or (macd[-3] < macdsignal[-3]) or (macd[-4] < macdsignal[-4])):
           models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
         else:
           models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
