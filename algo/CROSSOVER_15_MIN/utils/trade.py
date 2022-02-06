@@ -27,13 +27,13 @@ def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
     macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'].iloc[:-1], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
     stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
-      buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zerodha_flag_obj)
+      buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var, zerodha_flag_obj)
     else:
       sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
   return 0
 
 # BUYS STOCKS ; ENTRY
-def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zerodha_flag_obj):
+def buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var, zerodha_flag_obj):
   stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
   # After CrossOver MACD AND MACDSIGNAL
   if macd[-1] < macdsignal[-1]:
@@ -41,7 +41,7 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zero
       if data_frame[stock]['Close'].iloc[-2] < ema[-1]:
         if macdhist[-1] < macdhist[-2]:
           if macdhist[-2] < macdhist[-3]:
-            # if macdhist[-3] < macdhist[-4]:
+            if adx[-1] <= 40:
               # Place Order in ZERODHA.
               order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
               if zerodha_flag_obj.zerodha_entry is True:
