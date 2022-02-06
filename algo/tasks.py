@@ -330,6 +330,7 @@ def get_stocks_configs(self):
     response.update({'config_table_30': True, 'config_len_30': len(models_30.CONFIG_30M.objects.all())})
   else:
     response.update({'config_table_30': False, 'config_len_30': len(models_30.CONFIG_30M.objects.all())})
+  response.update({'STOCKS_SELECTION':for_intraday})
   return response
 
 @shared_task(bind=True,max_retries=3)
