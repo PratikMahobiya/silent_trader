@@ -21,7 +21,7 @@ app.conf.update(timezone = 'Asia/Kolkata')
 app.conf.beat_schedule = {
     'STOCKS_CONFIG_FILES':{
         'task': 'algo.tasks.get_stocks_configs',
-        'schedule': crontab(minute=0, hour=1, day_of_week='mon-fri'),
+        'schedule': crontab(minute=0, hour=22, day_of_week='mon-fri'),
     },
     "UPDATE_LIMIT'S":{
         'task': 'algo.tasks.UPDATE_LIMIT',
@@ -29,7 +29,7 @@ app.conf.beat_schedule = {
     },
     "GENERATE_FYERS_TOKEN":{
         'task': 'algo.tasks.GENERATE_FYERS_TOKEN',
-        'schedule': crontab(minute=45, hour=8, day_of_week='sun-fri'),
+        'schedule': crontab(minute=45, hour=8),
     },
     'LTP':{
         'task': 'algo.tasks.ltp_of_entries',

@@ -270,14 +270,15 @@ def get_stocks_configs(self):
     data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
     data_frame.index.names = ['date']
     models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
-    macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=13, signalperiod=9)
+    macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=15, signalperiod=9)
     # cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
     cut_off_volatility = 2.8
     if cal_volatility(data_frame) > cut_off_volatility:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
       if macd[-1] > macdsignal[-1]:
         if (macd[-1] > macd[-2]) and (macd[-2] > macd[-3]):
-          for_intraday.append(stock_sym)
+          # for_intraday.append(stock_sym)
+          models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
         else:
           models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
       else:
@@ -285,15 +286,15 @@ def get_stocks_configs(self):
     else:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False,active_5 = False)
 
-  if len(for_intraday) <= 5:
-    for stock_sym in for_intraday:
-      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
-  else:
-    random.shuffle(for_intraday)
-    for stock_sym in for_intraday[:5]:
-      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
-    for stock_sym in for_intraday[5:]:
-      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
+  # if len(for_intraday) <= 5:
+  #   for stock_sym in for_intraday:
+  #     models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
+  # else:
+  #   random.shuffle(for_intraday)
+  #   for stock_sym in for_intraday[:5]:
+  #     models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
+  #   for stock_sym in for_intraday[5:]:
+  #     models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
 
   # Config Model to Profit Tables
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','OVER_ALL_PLACED']
@@ -635,7 +636,7 @@ def CROSS_OVER_RUNS_15_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['5',10,9,13,9,100]
+  intervals      = ['5',10,12,26,20,100]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
@@ -653,7 +654,7 @@ def CROSS_OVER_RUNS_30_MIN(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['5',10,9,13,9,100]
+  intervals      = ['5',10,12,26,20,100]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
@@ -672,7 +673,7 @@ def CROSS_OVER_RUNS_15_MIN_TEMP(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['30',100,9,13,9,100]
+  intervals      = ['30',90,9,15,9,100]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
@@ -690,7 +691,7 @@ def DOWN_CROSS_OVER_RUNS_15_MIN_TEMP(self):
   '''
     -> intervals = [trade_time_period, Num_Of_Days, Upper_rsi, Lower_rsi, EMA_max, EMA_min, trend_time_period, Num_Of_Days, Trend_rsi, Trade_rsi, Num_of_Candles_for_Target]
   '''
-  intervals      = ['30',100,9,13,9,100]
+  intervals      = ['30',90,9,15,9,100]
   '''
   -> Intervals:-
     ** Make Sure Don't change the Index, Otherwise You Are Responsible for the Disasters.. **
