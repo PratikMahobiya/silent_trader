@@ -19,7 +19,7 @@ def cancel_ord(kite_conn_var,stock_config_obj):
 def order_status_FLAG(order_id,kite_conn_var):
   book = kite_conn_var.orderBook()['data']
   for ord in book:
-    if ord['orderid'] == order_id and ord['status'] == 'completed':
+    if ord['orderid'] == order_id and ord['status'] == 'complete':
       return True
   return False
 

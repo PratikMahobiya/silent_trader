@@ -9,7 +9,7 @@ def angelbroking_conn():
 def order_status_FLAG(order_id,ang_conn):
   book = ang_conn.orderBook()['data']
   for ord in book:
-    if ord['orderid'] == order_id and ord['status'] == 'completed':
+    if ord['orderid'] == order_id and ord['status'] == 'complete':
       return True
   return False
 
