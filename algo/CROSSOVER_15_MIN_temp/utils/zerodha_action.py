@@ -58,7 +58,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
       ang_conn.terminateSession("P567723")
     order_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
-    order_status = 'PROBLEM AT ZERODHA END.'
+    order_status = e
   return order_id, order_status, ltp, quantity
 
 def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
@@ -89,5 +89,5 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
         # ----------------------
       ang_conn.terminateSession("P567723")
   except Exception as e:
-    order_status = 'PROBLEM AT ZERODHA END.'
+    order_status = e
   return order_id, order_status, ltp

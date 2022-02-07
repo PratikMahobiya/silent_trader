@@ -50,7 +50,7 @@ def place_regular_buy_order(symbol, price, quantity):
     order_status = 'SUCCESSFULLY_PLACED_ENTRY'
     ang_conn.terminateSession("P567723")
   except Exception as e:
-    order_status = 'PROBLEM AT ZERODHA END.'
+    order_status = e
   return order_id, order_status
 
 def place_regular_sell_order(symbol, stock_config_obj):
@@ -75,7 +75,7 @@ def place_regular_sell_order(symbol, stock_config_obj):
     error_status = 'SUCCESSFULLY_PLACED_EXIT'
     ang_conn.terminateSession("P567723")
   except Exception as e:
-    error_status = 'PROBLEM AT ZERODHA END.'
+    error_status = e
   return order_id, error_status, ltp
 
 @api_view(['GET','POST'])

@@ -26,7 +26,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
     order_id = kite_conn_var.placeOrder(orderparams)
     error_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
-    error_status = 'PROBLEM AT ZERODHA END.'
+    error_status = e
   return order_id, error_status
 
 def exit_order(kite_conn_var,stock_config_obj):
