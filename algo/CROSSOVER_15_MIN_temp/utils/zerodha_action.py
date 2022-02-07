@@ -23,7 +23,7 @@ def exit_order(ang_conn,stock_config_obj):
                                   variety="NORMAL")
     error_status = 'REJECTED_CANCELLED'
   except Exception as e:
-    error_status = 'PROBLEM AT ZERODHA END OR STOPLOSS HITTED.'
+    error_status = e
   return cancel_id, error_status
 
 def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):

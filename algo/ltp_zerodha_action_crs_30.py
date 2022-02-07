@@ -38,5 +38,5 @@ def exit_order(kite_conn_var,stock_config_obj):
                                   variety="NORMAL")
     error_status = 'REJECTED_CANCELLED'
   except Exception as e:
-    error_status = 'PROBLEM AT ZERODHA END OR STOPLOSS HITTED.'
+    error_status = e
   return cancel_id, error_status
