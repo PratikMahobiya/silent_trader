@@ -1,3 +1,4 @@
+from time import sleep
 from smartapi import SmartConnect
 from algo import models as models_a
 
@@ -70,6 +71,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
     if stock_config_obj.order_id != 0:
       ang_conn = angelbroking_conn()
       if order_status_FLAG(stock_config_obj.order_id,ang_conn):
+        sleep(0.5)
         orderparams = {
             "variety": "NORMAL",
             "tradingsymbol": symbol+'-EQ',
