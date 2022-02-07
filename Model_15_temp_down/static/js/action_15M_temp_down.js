@@ -6,11 +6,11 @@ async function TransactionAPI() {
     var userData = data.data.map(transaction => ({
         Time: convertFromStringToDate(transaction.date),
         Symbol: transaction.symbol,
-        quantity: transaction.quantity,
+        profit: transaction.profit,
         indicate: transaction.indicate,
         type: transaction.type,
         price: transaction.price,
-        profit: transaction.profit,
+        quantity: transaction.quantity,
         NiftyType: transaction.niftytype
     }));
     //console.log(userData);
@@ -223,7 +223,7 @@ function CreateTableFromJSON(data) {
                 tabCell.innerHTML = data[i][col[j]];
                 tabCell.setAttribute("style", "font-weight:bold");
             }
-            if (j === 6) {
+            if (j === 2) {
                 var v = parseFloat(data[i][col[j]])
 
                 if (v > 0) {
