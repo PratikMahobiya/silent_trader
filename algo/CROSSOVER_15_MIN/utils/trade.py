@@ -59,8 +59,8 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var,
               # TRANSACTION TABLE UPDATE
               trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
               transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
-              if transaction.is_valid():
-                transaction.save()
+              # if transaction.is_valid():
+              transaction.save()
               # UPDATE CURRENT ENTRY TABLE
               models.ENTRY_15M(symbol = stock, reference_id = transaction.data['id']).save()
 
@@ -78,8 +78,8 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
     type_str = 'ADX_{}'.format(stock_config_obj.count)
     trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':type_str,'price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
     transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
-    if transaction.is_valid():
-      transaction.save()
+    # if transaction.is_valid():
+    transaction.save()
     models.ENTRY_15M.objects.filter(symbol = stock).delete()
     stock_config_obj.buy          = False
     stock_config_obj.placed       = False
@@ -100,8 +100,8 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
       type_str = 'AF_BUY_{}'.format(stock_config_obj.count)
       trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':type_str,'price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
       transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
-      if transaction.is_valid():
-        transaction.save()
+      # if transaction.is_valid():
+      transaction.save()
       models.ENTRY_15M.objects.filter(symbol = stock).delete()
       stock_config_obj.buy          = False
       stock_config_obj.placed       = False
@@ -123,8 +123,8 @@ def squareoff(kite_conn_var):
     type_str = 'SQUAREOFF_{}'.format(stock_config_obj.count)
     trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':type_str,'price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
     transaction   = serializers.CROSSOVER_15_Min_Serializer(data=trans_data)
-    if transaction.is_valid():
-      transaction.save()
+    # if transaction.is_valid():
+    transaction.save()
     models.ENTRY_15M.objects.filter(symbol = stock).delete()
     stock_config_obj.buy          = False
     stock_config_obj.placed       = False

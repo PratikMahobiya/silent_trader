@@ -74,16 +74,17 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
       if order_status_FLAG(stock_config_obj.order_id,ang_conn):
         sleep(0.5)
         orderparams = {
-            "variety": "NORMAL",
-            "tradingsymbol": symbol+'-EQ',
-            "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
-            "transactiontype": "SELL",
-            "exchange": "NSE",
-            "ordertype": "MARKET",
-            "producttype": "INTRADAY",
-            "duration": "DAY",
-            "quantity": '{}'.format(stock_config_obj.quantity)
-            }
+        "variety": "NORMAL",
+        "tradingsymbol": symbol+'-EQ',
+        "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
+        "transactiontype": "SELL",
+        "exchange": "NSE",
+        "ordertype": "LIMIT",
+        "producttype": "INTRADAY",
+        "duration": "DAY",
+        "price": ltp,
+        "quantity": '{}'.format(stock_config_obj.quantity)
+        }
         order_id = ang_conn.placeOrder(orderparams)
         order_status = 'SUCCESSFULLY_PLACED_EXIT'
       else:
