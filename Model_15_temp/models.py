@@ -22,6 +22,6 @@ class CONFIG_15M_TEMP(models.Model):
     ltp                     = models.FloatField(verbose_name='LTP',default=0)
     count                   = models.FloatField(verbose_name='COUNT',default=0)
     order_id                = models.BigIntegerField(verbose_name='ORDER ID',default=0)
-    order_status            = models.CharField(max_length=100, verbose_name='ORDER STATUS',default='NONE')
+    order_status            = models.TextField( verbose_name='ORDER STATUS',default='NONE')
     class Meta:
         db_table = 'CONFIG_15M_TEMP'
