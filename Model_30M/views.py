@@ -1,4 +1,5 @@
 from algo import models as models_a, serializers
+from time import sleep
 from django.http import JsonResponse
 from django.shortcuts import render
 from kiteconnect import KiteConnect
@@ -48,6 +49,7 @@ def place_regular_buy_order(symbol, price, quantity):
         }
     order_id = ang_conn.placeOrder(orderparams)
     order_status = 'SUCCESSFULLY_PLACED_ENTRY'
+    sleep(1)
     ang_conn.terminateSession("P567723")
   except Exception as e:
     order_status = e
@@ -73,6 +75,7 @@ def place_regular_sell_order(symbol, stock_config_obj):
         }
     order_id = ang_conn.placeOrder(orderparams)
     error_status = 'SUCCESSFULLY_PLACED_EXIT'
+    sleep(1)
     ang_conn.terminateSession("P567723")
   except Exception as e:
     error_status = e

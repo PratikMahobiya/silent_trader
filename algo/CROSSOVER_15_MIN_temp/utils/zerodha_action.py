@@ -56,6 +56,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         "quantity": '{}'.format(quantity)
         }
       order_id = ang_conn.placeOrder(orderparams)
+      sleep(1)
       ang_conn.terminateSession("P567723")
     order_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
@@ -89,6 +90,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
         # CALL CANCEL ORDER ----
         order_id, order_status = exit_order(ang_conn,stock_config_obj)
         # ----------------------
+      sleep(1)
       ang_conn.terminateSession("P567723")
   except Exception as e:
     order_status = e
