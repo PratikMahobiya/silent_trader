@@ -45,7 +45,7 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, kite_conn_var, zero
             # if macdhist[-3] > macdhist[-4]:
               # Place Order in ZERODHA.
               order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
-              if zerodha_flag_obj.zerodha_entry is True:
+              if order_id != 0:
                 stock_config_obj.placed       = True
               # UPDATE CONFIG
               type_str         = 'AF_BUY'
