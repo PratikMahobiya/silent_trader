@@ -24,7 +24,7 @@ def exit_order(ang_conn,stock_config_obj):
                                   variety="NORMAL")
     error_status = 'REJECTED_CANCELLED'
   except Exception as e:
-    error_status = e
+    error_status = e.args[0]
   return cancel_id, error_status
 
 def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
@@ -61,7 +61,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
       ang_conn.terminateSession("P567723")
     order_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
-    order_status = e
+    order_status = e.args[0]
   return order_id, order_status, ltp, quantity
 
 def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
@@ -94,5 +94,5 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
       sleep(1)
       ang_conn.terminateSession("P567723")
   except Exception as e:
-    order_status = e
+    order_status = e.args[0]
   return order_id, order_status, ltp

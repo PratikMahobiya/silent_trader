@@ -52,7 +52,7 @@ def place_regular_buy_order(symbol, price, quantity):
     sleep(1)
     ang_conn.terminateSession("P567723")
   except Exception as e:
-    order_status = e
+    order_status = e.args[0]
   return order_id, order_status
 
 def place_regular_sell_order(symbol, stock_config_obj):
@@ -78,7 +78,7 @@ def place_regular_sell_order(symbol, stock_config_obj):
     sleep(1)
     ang_conn.terminateSession("P567723")
   except Exception as e:
-    error_status = e
+    error_status = e.args[0]
   return order_id, error_status, ltp
 
 @api_view(['GET','POST'])

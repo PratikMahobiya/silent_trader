@@ -26,7 +26,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
     order_id = kite_conn_var.placeOrder(orderparams)
     error_status = 'SUCCESSFULLY_PLACED_EXIT'
   except Exception as e:
-    error_status = e
+    error_status = e.args[0]
   return order_id, error_status
 
 def exit_order(kite_conn_var,stock_config_obj):
@@ -38,5 +38,5 @@ def exit_order(kite_conn_var,stock_config_obj):
                                   variety="NORMAL")
     error_status = 'REJECTED_CANCELLED'
   except Exception as e:
-    error_status = e
+    error_status = e.args[0]
   return cancel_id, error_status
