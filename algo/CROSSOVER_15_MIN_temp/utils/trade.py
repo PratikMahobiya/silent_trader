@@ -86,6 +86,7 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
     stock_config_obj.placed       = False
     stock_config_obj.count        = 0
     stock_config_obj.order_id     = 0
+    stock_config_obj.order_status   = order_status
     stock_config_obj.save()
 
   # After CrossOver MACD AND MACDSIGNAL
@@ -108,6 +109,7 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
       stock_config_obj.placed       = False
       stock_config_obj.count        = 0
       stock_config_obj.order_id     = 0
+      stock_config_obj.order_status   = order_status
       stock_config_obj.save()
 
 def squareoff(kite_conn_var):
@@ -131,5 +133,6 @@ def squareoff(kite_conn_var):
     stock_config_obj.placed       = False
     stock_config_obj.count        = 0
     stock_config_obj.order_id     = 0
+    stock_config_obj.order_status   = order_status
     stock_config_obj.save()
     sleep(0.3)
