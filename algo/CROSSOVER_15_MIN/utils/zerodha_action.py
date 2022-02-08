@@ -72,7 +72,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
   try:
     if stock_config_obj.order_id != 0:
       ang_conn = angelbroking_conn()
-      if order_status_FLAG(stock_config_obj.order_id,ang_conn):
+      if True:
         sleep(0.5)
         orderparams = {
         "variety": "NORMAL",

@@ -41,7 +41,7 @@ def freeze_all(stock_list, kite_conn_var):
       stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = stock)
       if stock_config_obj.order_id != 0:
         if stock_config_obj.buy is True:
-          if order_status_FLAG(stock_config_obj.order_id,kite_conn_var):
+          if True:
             # CALL PLACE ORDER ----
             order_id, order_status = place_ord(kite_conn_var,stock,stock_config_obj)
             # ---------------------
