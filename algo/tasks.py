@@ -272,7 +272,7 @@ def get_stocks_configs(self):
     models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
     macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=15, signalperiod=9)
     # cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
-    cut_off_volatility = 2.8
+    cut_off_volatility = 2.5
     if cal_volatility(data_frame) > cut_off_volatility:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
       if macd[-1] > macdsignal[-1]:
