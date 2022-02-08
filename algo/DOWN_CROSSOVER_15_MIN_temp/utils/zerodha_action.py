@@ -58,7 +58,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
       order_id = ang_conn.placeOrder(orderparams)
       sleep(1)
       ang_conn.terminateSession("P567723")
-    order_status = 'SUCCESSFULLY_PLACED_EXIT'
+    order_status = 'SUCCESSFULLY_PLACED_ENTRY'
   except Exception as e:
     order_status = e.args[0]
   return order_id, order_status, ltp, quantity
