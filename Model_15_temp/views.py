@@ -121,7 +121,7 @@ def EXIT_ORDER(request):
         transaction   = serializers.CROSSOVER_15_Min_Serializer_TEMP(data=trans_data)
         if transaction.is_valid():
           transaction.save()
-        models.ENTRY_30M.objects.filter(symbol = symbol).delete()
+        models.ENTRY_15M_TEMP.objects.filter(symbol = symbol).delete()
         stock_config_obj.buy          = False
         stock_config_obj.placed       = False
         stock_config_obj.count        = 0
@@ -140,7 +140,7 @@ def EXIT_ORDER(request):
 def Active_Stocks(request):
   response = {'success': False, 'data': None}
   if request.method == 'GET':
-    active_entry  = models.ENTRY_30M.objects.all().values_list('symbol', 'reference_id')
+    active_entry  = models.ENTRY_15M_TEMP.objects.all().values_list('symbol', 'reference_id')
     active_entry_list = []
     for sym_list in active_entry:
       stock_config_obj = models.CONFIG_15M_TEMP.objects.get(symbol = sym_list[0])
