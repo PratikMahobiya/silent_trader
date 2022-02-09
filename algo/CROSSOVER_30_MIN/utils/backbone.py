@@ -9,10 +9,10 @@ def model(intervals, kite_conn_var):
     kite_conn_var      = to place orders in zerodha
   '''
   # Regular Trades Execution
-  if datetime.now().time() >= time(9,57,00) and datetime.now().time() < time(15,12,00):
-    # if (datetime.now().time() >= time(10,30,00) and datetime.now().time() < time(13,58,00)) and (PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').zerodha_entry is True):
+  if datetime.now().time() >= time(9,43,00) and datetime.now().time() < time(15,12,00):
+    # if (datetime.now().time() >= time(10,30,5) and datetime.now().time() < time(13,28,00)) and (PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').zerodha_entry is True):
     #   PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').update(zerodha_entry = False)
-    # if (datetime.now().time() >= time(13,58,00)) and (PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').zerodha_entry is False):
+    # if (datetime.now().time() >= time(13,28,00)) and (PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').zerodha_entry is False):
     #   PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN').update(zerodha_entry = True)
     # DownLoad data for initiating Trades
     trade_data_frame, trading_stocks_list = get_data.download_trade_data(intervals,kite_conn_var)

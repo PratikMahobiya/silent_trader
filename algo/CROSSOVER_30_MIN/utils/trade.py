@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+import pandas as pd
 from algo import serializers
 from Model_30M import models
 from algo import models as models_a
@@ -19,6 +21,21 @@ def place_ord_sell(kite_conn_var,stock, stock_config_obj):
   # -------------------------------------------
   return order_id, order_status, price
 
+def check_15_min(stock_name,kite_conn_var):
+  now = date.today()
+  from_day = now - timedelta(days=30)
+  data = {"symbol":"NSE:{}-EQ".format(stock_name),"resolution":"15","date_format":"1","range_from":from_day,"range_to":now,"cont_flag":"0"}
+  data = kite_conn_var.history(data)['candles']
+  data=pd.DataFrame(data)
+  data[0] = pd.to_datetime(data[0],unit = 's')
+  data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
+  data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
+  data_frame.index.names = ['date']
+  macd, macdsignal, macdhist = talib.MACD(data_frame['Close'].iloc[:-1], fastperiod=12, slowperiod=26, signalperiod=20)
+  if macd[-1] > macdsignal[-1]:
+    return True
+  else:
+    return False
 
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
   zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_30_MIN')
@@ -43,27 +60,28 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var,
         if macdhist[-1] > macdhist[-2]:
           if macdhist[-2] > macdhist[-3]:
             if adx[-1] <= 40:
-              # Place Order in ZERODHA.
-              order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
-              if order_id != 0:
-                stock_config_obj.placed       = True
-              # UPDATE CONFIG
-              type_str         = 'AF_BUY'
-              stock_config_obj.buy            = True
-              stock_config_obj.stoploss       = price - price * 0.006
-              stock_config_obj.target         = price + price * 0.011
-              stock_config_obj.quantity       = quantity
-              stock_config_obj.buy_price      = price
-              stock_config_obj.order_id       = order_id
-              stock_config_obj.order_status   = order_status
-              stock_config_obj.save()
-              # TRANSACTION TABLE UPDATE
-              trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
-              transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
-              if transaction.is_valid():
-                transaction.save()
-              # UPDATE CURRENT ENTRY TABLE
-              models.ENTRY_30M(symbol = stock, reference_id = transaction.data['id']).save()
+              if check_15_min(stock,kite_conn_var):
+                # Place Order in ZERODHA.
+                order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
+                if order_id != 0:
+                  stock_config_obj.placed       = True
+                # UPDATE CONFIG
+                type_str         = 'AF_BUY'
+                stock_config_obj.buy            = True
+                stock_config_obj.stoploss       = price - price * 0.006
+                stock_config_obj.target         = price + price * 0.011
+                stock_config_obj.quantity       = quantity
+                stock_config_obj.buy_price      = price
+                stock_config_obj.order_id       = order_id
+                stock_config_obj.order_status   = order_status
+                stock_config_obj.save()
+                # TRANSACTION TABLE UPDATE
+                trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Entry','type':type_str,'price':price,'quantity':quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':None,'profit':None,'order_id':order_id,'order_status':order_status}
+                transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
+                if transaction.is_valid():
+                  transaction.save()
+                # UPDATE CURRENT ENTRY TABLE
+                models.ENTRY_30M(symbol = stock, reference_id = transaction.data['id']).save()
 
 def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj):
   stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)

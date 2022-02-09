@@ -10,7 +10,7 @@ def download_trade_data(intervals,kite_conn_var):
   df_key  = []
   if time(9,14,00) <= datetime.now().time() <= time(9,18,00):
     sleep(30)
-  for_trade = models_a.STOCK.objects.filter(active_5 = True, nifty_flag = False).values_list('symbol', flat=True)
+  for_trade = models_a.STOCK.objects.filter(active_5_up = True, nifty_flag = False).values_list('symbol', flat=True)
   for stock_name in for_trade:
     sleep(0.3)
     data = {"symbol":"NSE:{}-EQ".format(stock_name),"resolution":intervals[0],"date_format":"1","range_from":from_day,"range_to":now,"cont_flag":"0"}

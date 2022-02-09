@@ -102,6 +102,45 @@ def cal_volatility_VOL(dt):
   daily_volatility = dt['Volume'].iloc[-1]
   return round(daily_volatility,4)
 
+def checkrsiup(rsi):
+  if rsi[-1] < rsi[-2] and rsi[-2] < rsi[-3]:
+    return False
+  elif rsi[-1] > 60:
+    return True
+  for i in range(-1,-14,-1):
+    if rsi[i] <= 40:
+      return True
+  return False
+
+def checkrsidown(rsi):
+  if rsi[-1] > rsi[-2] and rsi[-2] > rsi[-3]:
+    return False
+  elif rsi[-1] < 40:
+    return True
+  for i in range(-1,-14,-1):
+    if rsi[i] >= 60:
+      return True
+  return False
+
+def stockselection(stock_sym,data_frame):
+  rsi           = talib.RSI(data_frame['Close'], timeperiod=14)
+  macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=13, signalperiod=9)
+  if cal_volatility(data_frame) > 2.5:
+    if checkrsiup(rsi):
+      if macd[-1] > macdsignal[-1]:
+        if macd[-1] > macd[-2]:
+          if macd[-2] > macd[-3]:
+            models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True)
+            return True
+
+    if checkrsidown(rsi):
+      if macd[-1] < macdsignal[-1]:
+        if macd[-1] < macd[-2]:
+          if macd[-2] < macd[-3]:
+            models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_down = True)
+            return True
+  return False
+
 @shared_task(bind=True,max_retries=3)
 # initial_setup on DATABASE -------------------------------------
 def get_stocks_configs(self):
@@ -272,19 +311,16 @@ def get_stocks_configs(self):
     models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
     macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=15, signalperiod=9)
     # cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
-    cut_off_volatility = 2.5
+    cut_off_volatility = 2.8
     if cal_volatility(data_frame) > cut_off_volatility:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
-      if macd[-1] > macdsignal[-1]:
-        if (macd[-1] > macd[-2]) and (macd[-2] > macd[-3]):
-          for_intraday.append(stock_sym)
-          models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
-        else:
-          models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
-      else:
-        models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
     else:
-      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False,active_5 = False)
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False)
+    
+    if stockselection(stock_sym,data_frame):
+      for_intraday.append(stock_sym)
+    else:
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = False, active_5_down = False)
 
   # if len(for_intraday) <= 5:
   #   for stock_sym in for_intraday:
