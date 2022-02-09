@@ -7,7 +7,7 @@ from import_export.admin import ExportActionMixin
 class STOCK_Admin(ExportActionMixin,admin.ModelAdmin):
     list_display = ('symbol','active_15','active_5_up','active_5_down','niftytype','volatility','sector','vol_volatility','upper_lim','lower_lim','instrument_key','token','nifty_flag')
     search_fields = ['symbol',]
-    list_filter = ("active_15","active_5",)
+    list_filter = ("active_15","active_5_up","active_5_down",)
 
 @admin.register(models.FYERS_KEYS)
 class FYERS_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
