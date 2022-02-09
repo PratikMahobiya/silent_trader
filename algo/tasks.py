@@ -277,7 +277,7 @@ def get_stocks_configs(self):
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
       if macd[-1] > macdsignal[-1]:
         if (macd[-1] > macd[-2]) and (macd[-2] > macd[-3]):
-          # for_intraday.append(stock_sym)
+          for_intraday.append(stock_sym)
           models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
         else:
           models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
