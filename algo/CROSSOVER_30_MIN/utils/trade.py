@@ -71,9 +71,10 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
   if (adx[-1] >= 40) and (adx[-1] < adx[-2]):
     # CALL PLACE ORDER ----
     order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
-    if (stock_config_obj.placed is True) and (order_id == 0):
-      sleep(1)
-      sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
+    if (stock_config_obj.placed is True):
+      if (order_id == 0):
+        sleep(1)
+        sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
 
     diff          = price - stock_config_obj.buy_price 
     profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
@@ -97,9 +98,10 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
     if macdsignal[-2] < macd[-2]:
       # CALL PLACE ORDER ----
       order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
-      if (stock_config_obj.placed is True) and (order_id == 0):
-        sleep(1)
-        sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
+      if (stock_config_obj.placed is True):
+        if (order_id == 0):
+          sleep(1)
+          sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
 
       diff          = price - stock_config_obj.buy_price 
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
@@ -124,9 +126,10 @@ def squareoff(kite_conn_var):
     stock_config_obj = models.CONFIG_30M.objects.get(symbol = stock)
     # CALL PLACE ORDER ----
     order_id, order_status, price = place_ord_sell(kite_conn_var,stock, stock_config_obj)
-    if (stock_config_obj.placed is True) and (order_id == 0):
-      sleep(1)
-      squareoff(kite_conn_var)
+    if (stock_config_obj.placed is True):
+      if (order_id == 0):
+        sleep(1)
+        squareoff(kite_conn_var)
 
     diff          = price - stock_config_obj.buy_price 
     profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
