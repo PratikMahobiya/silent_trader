@@ -31,7 +31,7 @@ def check_15_min(stock_name,kite_conn_var):
   data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
   data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
   data_frame.index.names = ['date']
-  macd, macdsignal, macdhist = talib.MACD(data_frame['Close'].iloc[:-1], fastperiod=9, slowperiod=23, signalperiod=9)
+  macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=23, signalperiod=9)
   if macd[-1] > macdsignal[-1]:
     return True
   else:
