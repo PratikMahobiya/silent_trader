@@ -7,7 +7,7 @@ class STOCK(models.Model):
     token                   = models.CharField(max_length=100, verbose_name='TOKEN')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
-    active_15               = models.BooleanField(verbose_name='ACTIVE 15 Minute',default=False)
+    active_15               = models.BooleanField(verbose_name='15 Minute',default=False)
     active_5_up             = models.BooleanField(verbose_name='5(UP) Minute',default=False)
     active_5_down           = models.BooleanField(verbose_name='5(DOWN) Minute',default=False)
     nifty_flag              = models.BooleanField(verbose_name='NIFTY FLAG',default=False)
