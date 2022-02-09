@@ -41,7 +41,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         quantity = quantity - 1
         break
       quantity += 1
-    quantity = 1
+    # quantity = 1
     if zerodha_flag_obj.zerodha_entry is True:
       ang_conn = angelbroking_conn()
       orderparams = {

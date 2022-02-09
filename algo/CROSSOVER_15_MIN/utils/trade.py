@@ -31,7 +31,7 @@ def check_15_min(stock_name,kite_conn_var):
   data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
   data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
   data_frame.index.names = ['date']
-  macd, macdsignal, macdhist = talib.MACD(data_frame['Close'].iloc[:-1], fastperiod=12, slowperiod=26, signalperiod=20)
+  macd, macdsignal, macdhist = talib.MACD(data_frame['Close'].iloc[:-1], fastperiod=9, slowperiod=23, signalperiod=9)
   if macd[-1] < macdsignal[-1]:
     return True
   else:
@@ -40,9 +40,9 @@ def check_15_min(stock_name,kite_conn_var):
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
   zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_MAIN')
   for stock in for_trade_stocks:
-    ema           = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
-    adx           = talib.ADX(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=11)
-    macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'].iloc[:-1], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
+    ema           = talib.EMA(data_frame[stock]['Close'], timeperiod=intervals[5])
+    adx           = talib.ADX(data_frame[stock]['High'],data_frame[stock]['Low'],data_frame[stock]['Close'], timeperiod=11)
+    macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
     stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
       buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var, zerodha_flag_obj)
@@ -56,7 +56,7 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var,
   # After CrossOver MACD AND MACDSIGNAL
   if macd[-1] < macdsignal[-1]:
     if macd[-2] > macdsignal[-2]:
-      if data_frame[stock]['Close'].iloc[-2] < ema[-1]:
+      # if data_frame[stock]['Close'].iloc[-2] < ema[-1]:
         if macdhist[-1] < macdhist[-2]:
           if macdhist[-2] < macdhist[-3]:
             if adx[-1] <= 40:
@@ -68,7 +68,7 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var,
                 # UPDATE CONFIG
                 type_str         = 'AF_SELL'
                 stock_config_obj.buy            = True
-                stock_config_obj.stoploss       = price + price * 0.006
+                stock_config_obj.stoploss       = price + price * 0.007
                 stock_config_obj.target         = price - price * 0.011
                 stock_config_obj.quantity       = quantity
                 stock_config_obj.buy_price      = price
