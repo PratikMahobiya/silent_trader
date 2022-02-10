@@ -103,7 +103,7 @@ def cal_volatility_VOL(dt):
   return round(daily_volatility,4)
 
 def checkrsiup(rsi):
-  if rsi[-1] < rsi[-2] and rsi[-2] < rsi[-3]:
+  if rsi[-1] < rsi[-2]:# and rsi[-1] > 60:
     return False
   elif rsi[-1] > 60:
     return True
@@ -113,7 +113,7 @@ def checkrsiup(rsi):
   return False
 
 def checkrsidown(rsi):
-  if rsi[-1] > rsi[-2] and rsi[-2] > rsi[-3]:
+  if rsi[-1] > rsi[-2]:# and rsi[-1] < 40:
     return False
   elif rsi[-1] < 40:
     return True
