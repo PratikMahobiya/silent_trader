@@ -56,11 +56,11 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var,
   # After CrossOver MACD AND MACDSIGNAL
   if macd[-1] > macdsignal[-1]:
     if macd[-2] < macdsignal[-2]:
-      # if data_frame[stock]['Close'].iloc[-2] > ema[-1]:
+      if data_frame[stock]['Close'].iloc[-2] > ema[-1]:
         if macdhist[-1] > macdhist[-2]:
           if macdhist[-2] > macdhist[-3]:
             if adx[-1] <= 40:
-              if check_15_min(stock,kite_conn_var):
+              # if check_15_min(stock,kite_conn_var):
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
                 if order_id != 0:
