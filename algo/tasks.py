@@ -130,14 +130,14 @@ def stockselection(stock_sym,data_frame):
       if macd[-1] > macdsignal[-1]:
         if macd[-1] > macd[-2]:
           if macd[-2] > macd[-3]:
-            models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True)
+            models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
             return True
 
     if checkrsidown(rsi):
       if macd[-1] < macdsignal[-1]:
         if macd[-1] < macd[-2]:
           if macd[-2] < macd[-3]:
-            models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_down = True)
+            models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
             return True
   return False
 
