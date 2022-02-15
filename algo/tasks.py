@@ -130,14 +130,14 @@ def stockselection(stock_sym,data_frame):
       if macd[-1] > macdsignal[-1]:
         if macd[-1] > macd[-2]:
           if macd[-2] > macd[-3]:
-            models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
+            # models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
             return True
 
     if checkrsidown(rsi):
       if macd[-1] < macdsignal[-1]:
         if macd[-1] < macd[-2]:
           if macd[-2] < macd[-3]:
-            models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
+            # models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
             return True
   return False
 
@@ -322,15 +322,15 @@ def get_stocks_configs(self):
     else:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = False, active_5_down = False)
 
-  # if len(for_intraday) <= 5:
-  #   for stock_sym in for_intraday:
-  #     models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
-  # else:
-  #   random.shuffle(for_intraday)
-  #   for stock_sym in for_intraday[:5]:
-  #     models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = True)
-  #   for stock_sym in for_intraday[5:]:
-  #     models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5 = False)
+  if len(for_intraday) <= 5:
+    for stock_sym in for_intraday:
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True, active_5_down = True)
+  else:
+    random.shuffle(for_intraday)
+    for stock_sym in for_intraday[:5]:
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True, active_5_down = True)
+    for stock_sym in for_intraday[5:]:
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = False, active_5_down = False)
 
   # Config Model to Profit Tables
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','OVER_ALL_PLACED']
