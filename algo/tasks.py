@@ -1,5 +1,4 @@
 from datetime import date, datetime, time, timedelta
-from kiteconnect import KiteConnect
 from fyers_api import fyersModel,accessToken
 from smartapi import SmartConnect
 from time import sleep
