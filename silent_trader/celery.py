@@ -21,7 +21,7 @@ app.conf.update(timezone = 'Asia/Kolkata')
 app.conf.beat_schedule = {
     'STOCKS_CONFIG_FILES':{
         'task': 'algo.tasks.get_stocks_configs',
-        'schedule': crontab(minute=2, hour=0, day_of_week='mon-fri'),
+        'schedule': crontab(minute=0, hour=22, day_of_week='sun-thu'),
     },
     "UPDATE_LIMIT'S":{
         'task': 'algo.tasks.UPDATE_LIMIT',
