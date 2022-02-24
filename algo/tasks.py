@@ -606,7 +606,8 @@ def ltp_of_entries(self):
     # model_config_obj.save()
     kite_conn_var.terminateSession("P567723")
   # CALCULATE THE RETURN OF ALL MODELS
-  elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
+  # elif datetime.now().time() >= time(15,17,00) and datetime.now().time() < time(15,30,00):
+  else:
     model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_30_MIN', 'CRS_TEMP_DOWN','OVER_ALL_PLACED']
     for ind, m_name in enumerate(model_name_list):
       # models_a.PROFIT_CONFIG.objects.filter(model_name = m_name).update(zerodha_entry = False)
@@ -619,8 +620,8 @@ def ltp_of_entries(self):
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = round(sum(profit),2)
       if ind == 1:
-        profit = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
-        total_sum = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
+        profit = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        total_sum = models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference',flat=True)
         model_config_obj.current_gain            = round(sum(total_sum),2)
         model_config_obj.current_gain_time       = datetime.now().time()
         model_config_obj.current_gain_entry      = len(profit)
@@ -633,8 +634,8 @@ def ltp_of_entries(self):
         model_config_obj.current_gain_entry      = len(profit)
         model_config_obj.p_l                     = round(sum(profit),2)
       if ind == 3:
-        profit = models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('profit',flat=True)
-        total_sum = models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit',created_on = datetime.now().date()).values_list('difference',flat=True)
+        profit = models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit').values_list('profit',flat=True)
+        total_sum = models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit').values_list('difference',flat=True)
         model_config_obj.current_gain            = round(sum(total_sum),2)
         model_config_obj.current_gain_time       = datetime.now().time()
         model_config_obj.current_gain_entry      = len(profit)
@@ -659,8 +660,8 @@ def ltp_of_entries(self):
 
     response.update({'LTP': True, 'STATUS': 'SQUARED OFF','LTP_30_MIN': True, 'STATUS_30_MIN': 'ALL STOCKS ARE SQUARED OFF.'})
 
-  else:
-    response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED','LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_30_MIN': True, 'STATUS_30_MIN': 'MARKET IS CLOSED.'})
+  # else:
+  #   response.update({'LTP': True, 'STATUS': 'MARKET IS CLOSED','LTP': True, 'STATUS': 'MARKET IS CLOSED.','LTP_30_MIN': True, 'STATUS_30_MIN': 'MARKET IS CLOSED.'})
   return response
 
 @shared_task(bind=True,max_retries=3)
