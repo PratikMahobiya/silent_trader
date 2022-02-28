@@ -66,7 +66,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
       place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj)
   return order_id, order_status, ltp, quantity
 
-def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
+def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj,zerodha_flag_obj):
   # Place an order
   order_id = 0
   order_status = 'NOT_PLACED'
@@ -97,4 +97,7 @@ def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
       ang_conn.terminateSession("P567723")
   except Exception as e:
     order_status = e.args[0]
+  if zerodha_flag_obj.zerodha_entry is True:
+    if order_id == 0:
+      place_regular_sell_order(kite_conn_var,symbol,stock_config_obj,zerodha_flag_obj)
   return order_id, order_status, ltp
