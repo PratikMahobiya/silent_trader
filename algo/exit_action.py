@@ -49,7 +49,7 @@ def sell(stock, price, gain, kite_conn_var):
           # CALL CANCEL ORDER ----
           order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
           # ----------------------
-        type_str = 'ADX_{}'.format(stock_config_obj.count)
+        type_str = 'StopLoss_{}'.format(stock_config_obj.count)
         diff          = stock_config_obj.buy_price - price
         profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
         diff          = round((diff * stock_config_obj.quantity),2) - 100
