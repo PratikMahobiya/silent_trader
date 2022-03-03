@@ -388,16 +388,23 @@ function Exitmsg(symbol) {
     }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-            ExitOrderAPI(symbol).then(data => {
-                Swal.fire(
-                    {
-                        title: data.status,
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#FF0000',
-                    }
-                )
-            }
-            );
+            // ExitOrderAPI(symbol).then(data => {
+            //     Swal.fire(
+            //         {
+            //             title: data.status,
+            //             confirmButtonText: 'OK',
+            //             confirmButtonColor: '#FF0000',
+            //         }
+            //     )
+            // }
+            // );
+            Swal.fire(
+                        {
+                            title: "..Nai Hoga..",
+                            confirmButtonText: 'Theek hai',
+                            confirmButtonColor: '#FF0000',
+                        }
+                    );
         } else if (result.isDenied) {
             Swal.fire('Changes are not saved', '', 'info')
         }
