@@ -50,19 +50,19 @@ def sell(stock, price, gain, kite_conn_var):
           order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
           # ----------------------
 
-        diff          = price - stock_config_obj.buy_price
-        profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
-        diff          = round((diff * stock_config_obj.quantity),2) - 100
-        type_str = 'StopLoss_{}'.format(stock_config_obj.count)
-        trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':type_str,'price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
-        transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
-        if transaction.is_valid():
-          transaction.save()
-        models.ENTRY_30M.objects.filter(symbol = stock).delete()
-        stock_config_obj.buy          = False
-        stock_config_obj.placed       = False
-        stock_config_obj.count        = 0
-        stock_config_obj.order_id     = 0
-        stock_config_obj.order_status   = order_status
-        stock_config_obj.save()
+      diff          = price - stock_config_obj.buy_price
+      profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)
+      diff          = round((diff * stock_config_obj.quantity),2) - 100
+      type_str = 'StopLoss_{}'.format(stock_config_obj.count)
+      trans_data = {'symbol':stock,'sector':stock_config_obj.sector,'niftytype':stock_config_obj.niftytype,'indicate':'Exit','type':type_str,'price':price,'quantity':stock_config_obj.quantity,'stoploss':stock_config_obj.stoploss,'target':stock_config_obj.target,'difference':diff,'profit':profit,'order_id':order_id,'order_status':order_status}
+      transaction   = serializers.CROSSOVER_30_MIN_Serializer(data=trans_data)
+      if transaction.is_valid():
+        transaction.save()
+      models.ENTRY_30M.objects.filter(symbol = stock).delete()
+      stock_config_obj.buy          = False
+      stock_config_obj.placed       = False
+      stock_config_obj.count        = 0
+      stock_config_obj.order_id     = 0
+      stock_config_obj.order_status   = order_status
+      stock_config_obj.save()
   return 0

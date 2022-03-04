@@ -62,9 +62,9 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
   except Exception as e:
     # order_status = e.args[0]
     order_status = "Error"
-  if zerodha_flag_obj.zerodha_entry is True:
-    if order_id == 0:
-      place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj)
+  # if zerodha_flag_obj.zerodha_entry is True:
+  #   if order_id == 0:
+  #     place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj)
   return order_id, order_status, ltp, quantity
 
 def place_regular_sell_order(kite_conn_var,symbol,stock_config_obj):
