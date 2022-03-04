@@ -32,7 +32,7 @@ from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 from .DOWN_CROSSOVER_15_MIN_temp.utils import backbone as backbone_DOWN_CRS_temp
 
 @shared_task(bind=True,max_retries=3)
-def send_report():
+def send_report(self):
   per5up    = round(sum(models_a.CROSSOVER_30_MIN.objects.all().values_list('profit', flat=True)),2)
   price5up  = round(sum(models_a.CROSSOVER_30_MIN.objects.all().values_list('difference', flat=True)),2)
   per5dwn    = round(sum(models_a.CROSSOVER_15_MIN.objects.all().values_list('profit', flat=True)),2)
