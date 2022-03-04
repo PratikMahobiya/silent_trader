@@ -46,7 +46,7 @@ def send_report(self):
   per30dwn    = round(sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit').values_list('profit', flat=True)),2)
   price30dwn  = round(sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)),2)
   # Sending SMS
-  sms_content = '5MIN UP: {} %: {}/{} %: {}\n5MIN Down: {} %: {}/{} %: {}\n30MIN UP:- {} %: {}\n30MIN Down: {} %: {}'.format(tper5up,tprice5up,tper5dwn,tprice5dwn,per5up,price5up,per5dwn,price5dwn,per30up,price30up,per30dwn,price30dwn)
+  sms_content = '5MIN UP: {}%:{}/{}%:{}\n5MIN Down: {}%:{}/{}%:{}\n30MIN UP:- {}%:{}\n30MIN Down: {}%:{}'.format(tper5up,tprice5up,tper5dwn,tprice5dwn,per5up,price5up,per5dwn,price5dwn,per30up,price30up,per30dwn,price30dwn)
   for mob in ['7000681073','9691212846']:
     my_data = {'sender_id': 'FST2SMS','message': sms_content,'language': 'english','route': 'p','numbers': mob}
     headers = {'authorization': '6a0iXHGODBECvnVbmSoeYPd5K1Mgl3thUL2zNQp79cJWRfTZFx40eYPvV2SJ1lKXU9Tzp8qGtCsDcuL5',\
