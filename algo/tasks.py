@@ -33,14 +33,14 @@ from .DOWN_CROSSOVER_15_MIN_temp.utils import backbone as backbone_DOWN_CRS_temp
 
 @shared_task(bind=True,max_retries=3)
 def send_report(self):
-  per5up    = round(sum(models_a.CROSSOVER_30_MIN.objects.all().values_list('profit', flat=True)),2)
-  price5up  = round(sum(models_a.CROSSOVER_30_MIN.objects.all().values_list('difference', flat=True)),2)
-  per5dwn    = round(sum(models_a.CROSSOVER_15_MIN.objects.all().values_list('profit', flat=True)),2)
-  price5dwn  = round(sum(models_a.CROSSOVER_15_MIN.objects.all().values_list('difference', flat=True)),2)
-  per30up    = round(sum(models_a.CROSSOVER_15_MIN_TEMP.objects.all().values_list('profit', flat=True)),2)
-  price30up  = round(sum(models_a.CROSSOVER_15_MIN_TEMP.objects.all().values_list('difference', flat=True)),2)
-  per30dwn    = round(sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.all().values_list('profit', flat=True)),2)
-  price30dwn  = round(sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.all().values_list('difference', flat=True)),2)
+  per5up    = round(sum(models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit').values_list('profit', flat=True)),2)
+  price5up  = round(sum(models_a.CROSSOVER_30_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)),2)
+  per5dwn    = round(sum(models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('profit', flat=True)),2)
+  price5dwn  = round(sum(models_a.CROSSOVER_15_MIN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)),2)
+  per30up    = round(sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('profit', flat=True)),2)
+  price30up  = round(sum(models_a.CROSSOVER_15_MIN_TEMP.objects.filter(indicate = 'Exit').values_list('difference', flat=True)),2)
+  per30dwn    = round(sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit').values_list('profit', flat=True)),2)
+  price30dwn  = round(sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(indicate = 'Exit').values_list('difference', flat=True)),2)
   # Sending SMS
   sms_content = '5MIN UP: {} % : {}\n5MIN Down: {} % : {}\n\n30MIN UP: {} % :{}\n30MIN Down: {} % : {}'.format(per5up,price5up,per5dwn,price5dwn,per30up,price30up,per30dwn,price30dwn)
   for mob in ['7000681073','9691212846']:
