@@ -32,6 +32,27 @@ from .CROSSOVER_15_MIN_temp.utils import backbone as backbone_CRS_temp
 from .DOWN_CROSSOVER_15_MIN_temp.utils import backbone as backbone_DOWN_CRS_temp
 
 @shared_task(bind=True,max_retries=3)
+def send_report():
+  per5up    = round(sum(models_a.CROSSOVER_30_MIN.objects.all().values_list('profit', flat=True)),2)
+  price5up  = round(sum(models_a.CROSSOVER_30_MIN.objects.all().values_list('difference', flat=True)),2)
+  per5dwn    = round(sum(models_a.CROSSOVER_15_MIN.objects.all().values_list('profit', flat=True)),2)
+  price5dwn  = round(sum(models_a.CROSSOVER_15_MIN.objects.all().values_list('difference', flat=True)),2)
+  per30up    = round(sum(models_a.CROSSOVER_15_MIN_TEMP.objects.all().values_list('profit', flat=True)),2)
+  price30up  = round(sum(models_a.CROSSOVER_15_MIN_TEMP.objects.all().values_list('difference', flat=True)),2)
+  per30dwn    = round(sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.all().values_list('profit', flat=True)),2)
+  price30dwn  = round(sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.all().values_list('difference', flat=True)),2)
+  # Sending SMS
+  sms_content = '5MIN UP: {} % : {}\n5MIN Down: {} % : {}\n\n30MIN UP: {} % :{}\n30MIN Down: {} % : {}'.format(per5up,price5up,per5dwn,price5dwn,per30up,price30up,per30dwn,price30dwn)
+  for mob in ['7000681073','9691212846']:
+    my_data = {'sender_id': 'FST2SMS','message': sms_content,'language': 'english','route': 'p','numbers': mob}
+    headers = {'authorization': '6a0iXHGODBECvnVbmSoeYPd5K1Mgl3thUL2zNQp79cJWRfTZFx40eYPvV2SJ1lKXU9Tzp8qGtCsDcuL5',\
+                'Content-Type': "application/x-www-form-urlencoded",'Cache-Control': "no-cache"}
+    url = "https://www.fast2sms.com/dev/bulk"
+    requests.request("POST",url,data = my_data,headers = headers)
+  return {"success":True}
+
+
+@shared_task(bind=True,max_retries=3)
 def GENERATE_FYERS_TOKEN(self):
   username = open('./algo/config/fyers_username.txt','r').read()
   password = open('./algo/config/fyers_password.txt','r').read()
