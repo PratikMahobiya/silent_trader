@@ -326,26 +326,29 @@ def get_stocks_configs(self):
 
     # GET THE VOLATILITY OF EACH STK IN DICT
     sleep(0.3)
-    data = {"symbol":"NSE:{}-EQ".format(stock_sym),"resolution":'D',"date_format":"1","range_from":last_6_days,"range_to":now,"cont_flag":"0"}
-    data = fyers_conn_val.history(data)['candles']
-    data=pd.DataFrame(data)
-    data[0] = pd.to_datetime(data[0],unit = 's')
-    data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
-    data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
-    data_frame.index.names = ['date']
-    models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
-    macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=15, signalperiod=9)
-    # cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
-    cut_off_volatility = 2.8
-    if cal_volatility(data_frame) > cut_off_volatility:
-      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
-    else:
-      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False)
-    
-    if stockselection(stock_sym,data_frame):
-      for_intraday.append(stock_sym)
-    else:
-      models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = False, active_5_down = False)
+    try:
+      data = {"symbol":"NSE:{}-EQ".format(stock_sym),"resolution":'D',"date_format":"1","range_from":last_6_days,"range_to":now,"cont_flag":"0"}
+      data = fyers_conn_val.history(data)['candles']
+      data=pd.DataFrame(data)
+      data[0] = pd.to_datetime(data[0],unit = 's')
+      data_frame = data.set_index(data[0], drop=False, append=False, inplace=False, verify_integrity=False).drop(0, 1)
+      data_frame.rename(columns = {0:'date',1:'Open',2:'High',3:'Low',4:'Close',5:'Volume'}, inplace = True)
+      data_frame.index.names = ['date']
+      models_a.STOCK.objects.filter(symbol = stock_sym).update(volatility = cal_volatility(data_frame), vol_volatility = cal_volatility_VOL(data_frame))
+      macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=15, signalperiod=9)
+      # cut_off_volatility = sum(volatile_stocks.values())/len(volatile_stocks)
+      cut_off_volatility = 2.8
+      if cal_volatility(data_frame) > cut_off_volatility:
+        models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = True)
+      else:
+        models_a.STOCK.objects.filter(symbol = stock_sym).update(active_15 = False)
+      
+      if stockselection(stock_sym,data_frame):
+        for_intraday.append(stock_sym)
+      else:
+        models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = False, active_5_down = False)
+    except Exception as e:
+      pass
 
   if len(for_intraday) <= 5:
     for stock_sym in for_intraday:
