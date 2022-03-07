@@ -364,8 +364,8 @@ def get_stocks_configs(self):
   model_name_list = ['CRS_MAIN', 'CRS_TEMP', 'CRS_TEMP_DOWN', 'CRS_30_MIN','OVER_ALL_PLACED']
   for model_name in model_name_list:
     # if model not configure in Profit Table
-    if not models_a.PROFIT.objects.filter(model_name = model_name, date = (datetime.now().date() + timedelta(days=1))).exists():
-      models_a.PROFIT(model_name = model_name, date = (datetime.now().date() + timedelta(days=1))).save()
+    if not models_a.PROFIT.objects.filter(model_name = model_name, date = (datetime.now().date())).exists():
+      models_a.PROFIT(model_name = model_name, date = (datetime.now().date())).save()
     if not models_a.PROFIT_CONFIG.objects.filter(model_name = model_name).exists():
       models_a.PROFIT_CONFIG(model_name = model_name).save()
     else:
