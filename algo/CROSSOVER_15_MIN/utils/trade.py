@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 import pandas as pd
+import numpy as np
 from algo import serializers
 from Model_15M import models
 from algo import models as models_a
@@ -40,9 +41,14 @@ def check_15_min(stock_name,kite_conn_var):
 def trade_execution(data_frame, for_trade_stocks, intervals, kite_conn_var):
   zerodha_flag_obj = models_a.PROFIT_CONFIG.objects.get(model_name = 'CRS_MAIN')
   for stock in for_trade_stocks:
-    ema           = talib.EMA(data_frame[stock]['Close'], timeperiod=intervals[5])
-    adx           = talib.ADX(data_frame[stock]['High'],data_frame[stock]['Low'],data_frame[stock]['Close'], timeperiod=11)
-    macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
+    if not np.isnan(data_frame[stock]['Close'].iloc[-1]):
+      ema           = talib.EMA(data_frame[stock]['Close'], timeperiod=intervals[5])
+      adx           = talib.ADX(data_frame[stock]['High'],data_frame[stock]['Low'],data_frame[stock]['Close'], timeperiod=11)
+      macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
+    else:
+      ema           = talib.EMA(data_frame[stock]['Close'].iloc[:-1], timeperiod=intervals[5])
+      adx           = talib.ADX(data_frame[stock]['High'].iloc[:-1],data_frame[stock]['Low'].iloc[:-1],data_frame[stock]['Close'].iloc[:-1], timeperiod=11)
+      macd, macdsignal, macdhist = talib.MACD(data_frame[stock]['Close'].iloc[:-1], fastperiod=intervals[2], slowperiod=intervals[3], signalperiod=intervals[4])
     stock_config_obj = models.CONFIG_15M.objects.get(symbol = stock)
     if stock_config_obj.buy is False:
       buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var, zerodha_flag_obj)
