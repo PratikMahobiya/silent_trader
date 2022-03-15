@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    <title>CRS 15M MAIN DASHBOARD</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Sofia&effect=neon|outline|emboss|shadow-multiple">
+        <link rel="stylesheet" href="{% static 'css/style_2.css' %}">
+
+</head>
+<body style="background-image:url(http://139.59.54.145/static/images/banner2.jpg);color: white;">
+    {% csrf_token %}
+    <div class="container-fluid p-2 mt-2 text-white text-center" style="overflow: hidden;">
+        <div class="row container-fluid">
+
+            <div class="col-sm-3">
+                <h6><a href="http://139.59.54.145/crs15mtemp/dashboard/">CRS 15 TEMP</a></h6>
+                <h6 id="CRS_TEMP"></h6><h6 id="CRS_TEMP_%"></h6>
+            </div>
+
+            <div class="col-sm-2">
+                <h6><a href="http://139.59.54.145/crs30m/dashboard/">CRS 30</a></h6>
+                <h6 id="CRS_30_MIN"></h6><h6 id="CRS_30_MIN_%"></h6>
+            </div>
+
+            <div class="col-sm-2">
+                <h3 class="font-effect-emboss" style="color: blanchedalmond;"><a href="http://139.59.54.145/" style="color: rgb(245, 214, 157);">Trade Bros</a></h3>
+                <h6 id="TODAY_DATE" style="color: rgb(0, 255, 255); display: none;"></h6>
+                <h6 id="OVER_ALL_PLACED"></h6><h6 id="OVER_ALL_PLACED_%" style="display: none;"></h6>
+            </div>
+
+            <div class="col-sm-2">
+                <h6><a href="http://139.59.54.145/crs15m/dashboard/" class="active">CRS 15</a></h6>
+                <h6 id="CRS_MAIN"></h6><h6 id="CRS_MAIN_%"></h6>
+            </div>
+
+            <div class="col-sm-3">
+                <h6><a href="http://139.59.54.145/crs15mtempdown/dashboard/">CRS 15 TEMP DOWN</a></h6>
+                <h6 id="CRS_TEMP_DOWN"></h6><h6 id="CRS_TEMP_DOWN_%"></h6>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container-fluid p-3 mt-3" style="margin-top: -2rem!important;">
+        <div class="row">
+            <div class="row">
+
+                <div style="width: 15px;">&nbsp;</div>
+                <div class="col-sm-5">
+                    <h4 style="background-color: black;">Active Transaction</h4>
+                </div>
+
+                <div style="width: 2px;">&nbsp;</div>
+                <div class="col-sm-6" style="margin-left: 35px ;">
+                    <h4>Today`s Transaction</h4>
+                </div>
+                <div style="width: 5px;">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div style="width: 15px;">&nbsp;</div>
+                <div class="col-sm-5 container1 border" style="background-color:white;width: 45.5%;;overflow: scroll;">
+                    <div id="showDataTransaction" class="mt-3" style="height: 67vh;margin-left: -9px;"></div>
+                </div>
+                <div style="width: 2px;">&nbsp;</div>
+                <div class="col-sm-6 container1 border" style="background-color:white;overflow: scroll;">
+                    <div id="showDataActive" class="mt-3" style="height: 67vh;width: 80px"></div>
+                </div>
+                <div style="width: 5px;">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/action_15M.js' %}"></script>
+
+    <script src="{% static 'js/sweetalertmin.js' %}"></script>
+
+
+</body>
+
+</html>

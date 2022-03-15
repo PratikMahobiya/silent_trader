@@ -19,6 +19,7 @@ from . import freeze_all_30
 from . import freeze_all_15_down
 from . import check_ltp
 from . import check_ltp_crs_30
+from . import check_ltp_nse_bse
 from celery import shared_task
 from .CROSSOVER_15_MIN.utils import backbone as backbone_CRS_15_MIN
 from .CROSSOVER_30_MIN.utils import backbone as backbone_CRS_30_MIN
@@ -535,6 +536,38 @@ def ltp_of_entries(self):
     # LTP CRS TEMP DOWN
     try:
       status, active_stocks, gain = check_ltp_temp_down.get_stock_ltp(kite_conn_var)
+      response.update({'LTP_TEMP_DOWN': True, 'STATUS_TEMP_DOWN': status,'ACTIVE_STOCKS_TEMP_DOWN':active_stocks})
+    except Exception as e:
+      pass
+    # -------------------------------- CURRENT/ACTUAL LIVE GAIN -------------------------
+    model_config_obj = models_a.PROFIT.objects.get(model_name = 'CRS_TEMP_DOWN', date = datetime.now().date())
+    gain_val = []
+    gain_per = []
+    for val, per in gain:
+      gain_val.append(val)
+      gain_per.append(per)
+    total_sum = sum(gain_val) + sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('difference', flat=True))
+    model_config_obj.current_gain           = round(total_sum,2)
+    model_config_obj.current_gain_time      = datetime.now().time()
+    model_config_obj.current_gain_entry     = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
+    if len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True)) > model_config_obj.max_entry:
+      model_config_obj.max_entry     = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
+    if total_sum > model_config_obj.top_gain:
+      model_config_obj.top_gain       = round(total_sum,2)
+      model_config_obj.top_gain_time  = datetime.now().time()
+      model_config_obj.top_gain_entry = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
+    if total_sum < model_config_obj.top_loss:
+      model_config_obj.top_loss       = round(total_sum,2)
+      model_config_obj.top_loss_time  = datetime.now().time()
+      model_config_obj.top_loss_entry = len(models_temp_down.ENTRY_15M_TEMP_DOWN.objects.all().values_list('symbol',flat=True))
+    model_config_obj.p_l = sum(gain_per) + sum(models_a.CROSSOVER_15_MIN_TEMP_DOWN.objects.filter(created_on = date.today(),indicate = 'Exit').values_list('profit', flat=True))
+    model_config_obj.save()
+    gain_placed_price += sum(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    active_placed_entry += len(models_temp_down.CONFIG_15M_TEMP_DOWN.objects.filter(buy = True,placed = True).values_list('return_price', flat=True))
+    
+    # NSE BSE
+    try:
+      status, active_stocks, gain = check_ltp_nse_bse.get_stock_ltp(kite_conn_var)
       response.update({'LTP_TEMP_DOWN': True, 'STATUS_TEMP_DOWN': status,'ACTIVE_STOCKS_TEMP_DOWN':active_stocks})
     except Exception as e:
       pass

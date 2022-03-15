@@ -5,6 +5,7 @@ class STOCK(models.Model):
     symbol                  = models.CharField(max_length=100, verbose_name='SYMBOL',unique=True)
     instrument_key          = models.BigIntegerField(verbose_name='INSTRUMENT KEY')
     token                   = models.CharField(max_length=100, verbose_name='TOKEN')
+    bse_token                   = models.CharField(max_length=100, verbose_name='BSE TOKEN')
     sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
     niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
     active_15               = models.BooleanField(verbose_name='15 Minute',default=False)
@@ -167,3 +168,27 @@ class CROSSOVER_15_MIN_TEMP_DOWN(models.Model):
         return self.id
     class Meta:
         db_table = 'CROSSOVER_15_MIN_TEMP_DOWN'
+
+class NSE_BSE(models.Model):
+    symbol 					= models.CharField(max_length=100, verbose_name='SYMBOL')
+    indicate    			= models.CharField(max_length=100, verbose_name='INDICATE')
+    type           			= models.CharField(max_length=100, verbose_name='TYPE')
+    date                    = models.DateTimeField(auto_now_add=True)
+    price_nse    				= models.FloatField(verbose_name='PRICE')
+    price_bse    				= models.FloatField(verbose_name='PRICE')
+    profit 				    = models.FloatField(verbose_name='(%)',blank=True,null=True,default=None)
+    order_id_nse                = models.BigIntegerField(verbose_name='ORDER_ID NSE',blank=True,null=True,default=None)
+    order_id_bse                = models.BigIntegerField(verbose_name='ORDER_ID BSE',blank=True,null=True,default=None)
+    order_status_nse            = models.TextField(verbose_name='ORDER_STATUS NSE')
+    order_status_bse            = models.TextField(verbose_name='ORDER_STATUS BSE')
+    difference 				= models.FloatField(verbose_name='PRICE DIFFERENCE', blank=True, null=True,default=None)
+    quantity                = models.BigIntegerField(verbose_name='QUANTITY')
+    sector                  = models.CharField(max_length=100, verbose_name='SECTOR')
+    niftytype               = models.CharField(max_length=100, verbose_name='NiftyType',null=True, blank=True)
+    created_on              = models.DateField(auto_now_add=True,null=True,blank=True)
+    placed_nse                  = models.BooleanField(verbose_name='PLACED',default=False)
+    placed_bse                  = models.BooleanField(verbose_name='PLACED',default=False)
+    def __int__(self):
+        return self.id
+    class Meta:
+        db_table = 'NSE_BSE'
