@@ -401,13 +401,13 @@ def get_stocks_configs(self):
 @shared_task(bind=True,max_retries=3)
 def UPDATE_LIMIT(self):
   now = date.today()
-  from_day = now - timedelta(days=20)
+  from_day = now - timedelta(days=7)
   # Initialize Kite Connections
   fyers_conn_val = fyers_conn()
   stocks = models_a.STOCK.objects.all().values_list('symbol', flat=True)
   for stock_name in stocks:
     sleep(0.3)
-    data = {"symbol":"NSE:{}-EQ".format(stock_name),"resolution":'15',"date_format":"1","range_from":from_day,"range_to":now,"cont_flag":"0"}
+    data = {"symbol":"NSE:{}-EQ".format(stock_name),"resolution":'5',"date_format":"1","range_from":from_day,"range_to":now,"cont_flag":"0"}
     data = fyers_conn_val.history(data)['candles']
     data=pd.DataFrame(data)
     data[0] = pd.to_datetime(data[0],unit = 's')
