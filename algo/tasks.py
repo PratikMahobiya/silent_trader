@@ -128,7 +128,7 @@ def cal_volatility_VOL(dt):
   return round(daily_volatility,4)
 
 def checkrsiup(rsi):
-  if rsi[-1] < rsi[-2]:# and rsi[-1] > 60:
+  if rsi[-1] < rsi[-2] and rsi[-1] > 85:
     return False
   elif rsi[-1] > 60 and rsi[-1] > rsi[-2]:
     return True
@@ -138,7 +138,7 @@ def checkrsiup(rsi):
   return False
 
 def checkrsidown(rsi):
-  if rsi[-1] > rsi[-2]:# and rsi[-1] < 40:
+  if rsi[-1] > rsi[-2] and rsi[-1] < 25:
     return False
   elif rsi[-1] < 40 and rsi[-1] < rsi[-2]:
     return True
@@ -151,17 +151,17 @@ def stockselection(stock_sym,data_frame):
   rsi           = talib.RSI(data_frame['Close'], timeperiod=14)
   macd, macdsignal, macdhist = talib.MACD(data_frame['Close'], fastperiod=9, slowperiod=13, signalperiod=9)
   if cal_volatility(data_frame) > 2.5:
-    if checkrsiup(rsi):
-      if macd[-1] > macdsignal[-1]:
-        if macd[-1] > macd[-2]:
-          if macd[-2] > macd[-3]:
-            # models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
-            return True
-
     if checkrsidown(rsi):
       if macd[-1] < macdsignal[-1]:
         if macd[-1] < macd[-2]:
           if macd[-2] < macd[-3]:
+            # models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
+            return True
+
+    if checkrsiup(rsi):
+      if macd[-1] > macdsignal[-1]:
+        if macd[-1] > macd[-2]:
+          if macd[-2] > macd[-3]:
             # models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True,active_5_down = True)
             return True
   return False
