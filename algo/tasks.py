@@ -248,7 +248,6 @@ def get_stocks_configs(self):
       'INDUSTOWER':	[7458561,	'INFRA','nxt50','29135'],
       'INFY':		[408065,	'IT','nify','1594'],
       'IOC':		[415745,	'INFRA,PSE,COMMODITY','nify','1624'],
-      'IRCTC':	[3484417,	'PSE','mid50','13611'],
       'ITC':		[424961,	'FMCG,CONSUMPTION','nify','1660'],
       'JINDALSTEL':	[1723649,	'METAL,COMMODITY','nxt50','6733'],
       'JSWSTEEL':	[3001089,	'METAL,COMMODITY','nify','11723'],
