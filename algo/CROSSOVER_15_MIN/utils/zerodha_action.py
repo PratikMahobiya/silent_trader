@@ -1,4 +1,6 @@
 from time import sleep
+from Model_15M.models import ENTRY_15M
+from Model_30M.models import ENTRY_30M
 from smartapi import SmartConnect
 from algo import models as models_a
 
@@ -42,23 +44,24 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         break
       quantity += 1
     # quantity = 1
-    if zerodha_flag_obj.zerodha_entry is True:
-      ang_conn = angelbroking_conn()
-      orderparams = {
-        "variety": "NORMAL",
-        "tradingsymbol": symbol+'-EQ',
-        "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
-        "transactiontype": "SELL",
-        "exchange": "NSE",
-        "ordertype": "LIMIT",
-        "producttype": "INTRADAY",
-        "duration": "DAY",
-        "price": ltp,
-        "quantity": '{}'.format(quantity)
-        }
-      order_id = ang_conn.placeOrder(orderparams)
-      ang_conn.terminateSession("P567723")
-    order_status = 'SUCCESSFULLY_PLACED_ENTRY'
+    if (len(ENTRY_15M.objects.all()) + len(ENTRY_30M.objects.all())) < 4:
+      if zerodha_flag_obj.zerodha_entry is True:
+        ang_conn = angelbroking_conn()
+        orderparams = {
+          "variety": "NORMAL",
+          "tradingsymbol": symbol+'-EQ',
+          "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
+          "transactiontype": "SELL",
+          "exchange": "NSE",
+          "ordertype": "LIMIT",
+          "producttype": "INTRADAY",
+          "duration": "DAY",
+          "price": ltp,
+          "quantity": '{}'.format(quantity)
+          }
+        order_id = ang_conn.placeOrder(orderparams)
+        ang_conn.terminateSession("P567723")
+      order_status = 'SUCCESSFULLY_PLACED_ENTRY'
   except Exception as e:
     # order_status = e.args[0]
     order_status = "Error"

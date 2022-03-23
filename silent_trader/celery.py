@@ -41,11 +41,11 @@ app.conf.beat_schedule = {
     },
     'CRS_15_MIN':{
         'task': 'algo.tasks.CROSS_OVER_RUNS_15_MIN',
-        'schedule': crontab(minute='*/3',hour='9-15', day_of_week='mon-fri'),
+        'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
     'CRS_30_MIN':{
         'task': 'algo.tasks.CROSS_OVER_RUNS_30_MIN',
-        'schedule': crontab(minute='*/3',hour='9-15', day_of_week='mon-fri'),
+        'schedule': crontab(minute='*/5',hour='9-15', day_of_week='mon-fri'),
     },
     # ------------------------ Not Active -----------------
     'CRS_15_MIN_TEMP':{
