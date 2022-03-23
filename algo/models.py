@@ -43,6 +43,7 @@ class PROFIT(models.Model):
     current_gain_time       = models.TimeField(verbose_name='CURRENT GAIN TIME',null=True, blank=True)
     current_gain_entry		= models.BigIntegerField(verbose_name='TOTAL ENTRY',default=0)
     p_l                     = models.FloatField(verbose_name='P/L(%)',default=0)
+    entry_count       		= models.BigIntegerField(verbose_name='Entry Count',default=0)
     def __int__(self):
         return self.id
     class Meta:

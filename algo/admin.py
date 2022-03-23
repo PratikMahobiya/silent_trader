@@ -17,7 +17,7 @@ class FYERS_KEYS_Admin(ExportActionMixin,admin.ModelAdmin):
 
 @admin.register(models.PROFIT)
 class PROFIT_Admin(ExportActionMixin,admin.ModelAdmin):
-    list_display = ('date','model_name','p_l','current_gain','top_gain','top_loss','max_entry','current_gain_time','current_gain_entry','top_gain_time','top_gain_entry','top_loss_time','top_loss_entry')
+    list_display = ('date','model_name','p_l','current_gain','top_gain','top_loss','max_entry','current_gain_time','current_gain_entry','top_gain_time','top_gain_entry','top_loss_time','top_loss_entry','entry_count')
     list_filter = ('date','model_name',)
 
 @admin.register(models.PROFIT_CONFIG)

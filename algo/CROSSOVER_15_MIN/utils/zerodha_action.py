@@ -1,6 +1,4 @@
 from time import sleep
-from Model_15M.models import ENTRY_15M
-from Model_30M.models import ENTRY_30M
 from smartapi import SmartConnect
 from algo import models as models_a
 
@@ -44,7 +42,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         break
       quantity += 1
     # quantity = 1
-    if (len(ENTRY_15M.objects.all()) + len(ENTRY_30M.objects.all())) < 4:
+    if (models_a.PROFIT.objects.get(model_name = 'CRS_MAIN').entry_count + models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN').entry_count) < 4:
       if zerodha_flag_obj.zerodha_entry is True:
         ang_conn = angelbroking_conn()
         orderparams = {

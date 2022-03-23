@@ -1,6 +1,4 @@
 from time import sleep
-from Model_15_temp.models import ENTRY_15M_TEMP
-from Model_15_temp_down .models import ENTRY_15M_TEMP_DOWN
 from smartapi import SmartConnect
 from algo import models as models_a
 
@@ -43,24 +41,24 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         quantity = quantity - 1
         break
       quantity += 1
-    if (len(ENTRY_15M_TEMP.objects.all()) + len(ENTRY_15M_TEMP_DOWN.objects.all())) < 6:
-      if zerodha_flag_obj.zerodha_entry is True:
-        ang_conn = angelbroking_conn()
-        orderparams = {
-          "variety": "NORMAL",
-          "tradingsymbol": symbol+'-EQ',
-          "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
-          "transactiontype": "SELL",
-          "exchange": "NSE",
-          "ordertype": "LIMIT",
-          "producttype": "INTRADAY",
-          "duration": "DAY",
-          "price": ltp,
-          "quantity": '{}'.format(quantity)
-          }
-        order_id = ang_conn.placeOrder(orderparams)
-        ang_conn.terminateSession("P567723")
-      order_status = 'SUCCESSFULLY_PLACED_ENTRY'
+    # if (models_a.PROFIT.objects.get(model_name = 'CRS_TEMP').entry_count + models_a.PROFIT.objects.get(model_name = 'CRS_TEMP_DOWN').entry_count) < 6:
+    if zerodha_flag_obj.zerodha_entry is True:
+      ang_conn = angelbroking_conn()
+      orderparams = {
+        "variety": "NORMAL",
+        "tradingsymbol": symbol+'-EQ',
+        "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
+        "transactiontype": "SELL",
+        "exchange": "NSE",
+        "ordertype": "LIMIT",
+        "producttype": "INTRADAY",
+        "duration": "DAY",
+        "price": ltp,
+        "quantity": '{}'.format(quantity)
+        }
+      order_id = ang_conn.placeOrder(orderparams)
+      ang_conn.terminateSession("P567723")
+    order_status = 'SUCCESSFULLY_PLACED_ENTRY'
   except Exception as e:
     order_status = e.args[0]
   return order_id, order_status, ltp, quantity

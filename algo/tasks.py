@@ -350,7 +350,7 @@ def get_stocks_configs(self):
     except Exception as e:
       pass
 
-  if len(for_intraday) <= 5:
+  if len(for_intraday) <= 30:
     for stock_sym in for_intraday:
       models_a.STOCK.objects.filter(symbol = stock_sym).update(active_5_up = True, active_5_down = True)
   else:
