@@ -98,7 +98,7 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
         sleep(1)
         sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
         entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN')
-        entry_count_obj.entry_count -= 1
+        entry_count_obj.entry_count = entry_count_obj.entry_count - 1
         entry_count_obj.save()
 
     diff          = stock_config_obj.buy_price - price
@@ -128,7 +128,7 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
           sleep(1)
           sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
           entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN')
-          entry_count_obj.entry_count -= 1
+          entry_count_obj.entry_count = entry_count_obj.entry_count - 1
           entry_count_obj.save()
 
       diff          = stock_config_obj.buy_price - price

@@ -1,5 +1,6 @@
 from algo import serializers
 from Model_15M import models
+from algo import models as models_a
 from . import ltp_zerodha_action
 
 # place a sell order for exit
@@ -49,6 +50,9 @@ def sell(stock, price, gain, kite_conn_var):
           # CALL CANCEL ORDER ----
           order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
           # ----------------------
+        entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN')
+        entry_count_obj.entry_count = entry_count_obj.entry_count - 1
+        entry_count_obj.save()
 
       diff          = stock_config_obj.buy_price - price
       profit        = round((((diff/stock_config_obj.buy_price) * 100)),2)

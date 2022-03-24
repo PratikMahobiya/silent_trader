@@ -42,7 +42,7 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         break
       quantity += 1
     # quantity = 1
-    if (models_a.PROFIT.objects.get(model_name = 'CRS_MAIN').entry_count + models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN').entry_count) < 4:
+    if (models_a.PROFIT.objects.get(model_name = 'CRS_MAIN').entry_count + models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN').entry_count) < 3:
       if zerodha_flag_obj.zerodha_entry is True:
         ang_conn = angelbroking_conn()
         orderparams = {
