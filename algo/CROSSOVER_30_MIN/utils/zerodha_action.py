@@ -42,24 +42,24 @@ def place_regular_buy_order(kite_conn_var,symbol, zerodha_flag_obj):
         break
       quantity += 1
     # quantity = 1
-    if (models_a.PROFIT.objects.get(model_name = 'CRS_MAIN').entry_count + models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN').entry_count) < 3:
-      if zerodha_flag_obj.zerodha_entry is True:
-        ang_conn = angelbroking_conn()
-        orderparams = {
-          "variety": "NORMAL",
-          "tradingsymbol": symbol+'-EQ',
-          "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
-          "transactiontype": "BUY",
-          "exchange": "NSE",
-          "ordertype": "LIMIT",
-          "producttype": "INTRADAY",
-          "duration": "DAY",
-          "price": ltp,
-          "quantity": '{}'.format(quantity)
-          }
-        order_id = ang_conn.placeOrder(orderparams)
-        ang_conn.terminateSession("P567723")
-      order_status = 'SUCCESSFULLY_PLACED_ENTRY'
+    if zerodha_flag_obj.zerodha_entry is True:
+    # if (models_a.PROFIT.objects.get(model_name = 'CRS_MAIN').entry_count + models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN').entry_count) < 3:
+      ang_conn = angelbroking_conn()
+      orderparams = {
+        "variety": "NORMAL",
+        "tradingsymbol": symbol+'-EQ',
+        "symboltoken": models_a.STOCK.objects.get(symbol = symbol).token,
+        "transactiontype": "BUY",
+        "exchange": "NSE",
+        "ordertype": "LIMIT",
+        "producttype": "INTRADAY",
+        "duration": "DAY",
+        "price": ltp,
+        "quantity": '{}'.format(quantity)
+        }
+      order_id = ang_conn.placeOrder(orderparams)
+      ang_conn.terminateSession("P567723")
+    order_status = 'SUCCESSFULLY_PLACED_ENTRY'
   except Exception as e:
     # order_status = e.args[0]
     order_status = "Error"
