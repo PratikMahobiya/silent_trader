@@ -2,6 +2,7 @@ from algo import serializers
 from Model_30M import models
 from algo import models as models_a
 from . import ltp_zerodha_action_crs_30
+from datetime import datetime
 
 # place a sell order for exit
 def place_ord(kite_conn_var,stock,stock_config_obj):
@@ -50,7 +51,7 @@ def sell(stock, price, gain, kite_conn_var):
           # CALL CANCEL ORDER ----
           order_id, order_status = cancel_ord(kite_conn_var,stock_config_obj)
           # ----------------------
-        entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN')
+        entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_30_MIN' , date = datetime.now().date())
         entry_count_obj.entry_count = entry_count_obj.entry_count - 1
         entry_count_obj.save()
 

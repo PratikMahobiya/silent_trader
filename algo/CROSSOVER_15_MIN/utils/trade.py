@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import pandas as pd
 import numpy as np
 from algo import serializers
@@ -65,7 +65,7 @@ def buys(stock, data_frame, macd, macdsignal, macdhist, ema, adx, kite_conn_var,
                 # Place Order in ZERODHA.
                 order_id, order_status, price, quantity = place_ord_buy(kite_conn_var,stock, zerodha_flag_obj)
                 if order_id != 0:
-                  entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN')
+                  entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN', date = datetime.now().date())
                   entry_count_obj.entry_count += 1
                   entry_count_obj.save()
                   stock_config_obj.placed       = True
@@ -97,7 +97,7 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
       if (order_id == 0):
         sleep(1)
         sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
-        entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN')
+        entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN', date = datetime.now().date())
         entry_count_obj.entry_count = entry_count_obj.entry_count - 1
         entry_count_obj.save()
 
@@ -127,7 +127,7 @@ def sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zero
         if (order_id == 0):
           sleep(1)
           sell(stock, data_frame, macd, macdsignal, macdhist, adx, kite_conn_var, zerodha_flag_obj)
-          entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN')
+          entry_count_obj = models_a.PROFIT.objects.get(model_name = 'CRS_MAIN', date = datetime.now().date())
           entry_count_obj.entry_count = entry_count_obj.entry_count - 1
           entry_count_obj.save()
 
